@@ -24,24 +24,59 @@ This script creates a complete project structure with all necessary configuratio
 - Bash shell
 - Basic command line knowledge
 
+Here's the updated version of your instructions in a clean, professional format for a repository README:
+
+---
+
 ## Usage
 
-1. Download the setup script:
-   ```bash
-   curl -O https://raw.githubusercontent.com/nabinkhair42/mern-stater-kit/main/setup.sh
-   ```
+### 1. Download the Setup Script
 
-2. Make the script executable:
-   ```bash
-   chmod +x setup.sh
-   ```
+#### **Windows (PowerShell)**
+```powershell
+Invoke-WebRequest -Uri "https://raw.githubusercontent.com/nabinkhair42/mern-stater-kit/main/setup.sh" -OutFile "setup.sh"
+```
+Or, if `curl` is installed:
+```powershell
+curl.exe -O https://raw.githubusercontent.com/nabinkhair42/mern-stater-kit/main/setup.sh
+```
 
-3. Run the script:
-   ```bash
-   ./setup.sh
-   ```
+#### **macOS & Linux (Terminal)**
+```bash
+curl -O https://raw.githubusercontent.com/nabinkhair42/mern-stater-kit/main/setup.sh
+```
 
-4. Enter your project name when prompted (or press Enter to use the default name)
+### 2. Make the Script Executable
+
+#### **macOS & Linux**
+```bash
+chmod +x setup.sh
+```
+
+#### **Windows (Git Bash, WSL, or PowerShell with Ubuntu Subsystem)**
+```bash
+chmod +x setup.sh
+```
+*(PowerShell does not require this step.)*
+
+### 3. Run the Script
+
+#### **macOS & Linux**
+```bash
+./setup.sh
+```
+
+#### **Windows (PowerShell)**
+```powershell
+bash setup.sh
+```
+*(Requires WSL, Git Bash, or a compatible shell.)*
+
+### 4. Enter the Project Name
+
+When prompted, enter your project name or press **Enter** to use the default name.
+
+---
 
 ## Generated Structure
 
