@@ -8,18 +8,29 @@
 
 ## The Progressive Node.js Template Engine
 
-PEST.js is a production-ready, feature-based Node.js project generator that follows enterprise-grade practices and modern development standards.
+PEST.js is an advanced template engine that generates production-ready Node.js applications with enterprise-grade architecture and modern development practices. It focuses on progressive enhancement, allowing your application to grow seamlessly from a simple API to a full-scale enterprise system.
+
+## Core Features
+
+- 🏗️ **Progressive Architecture**: Scale from simple to complex without restructuring
+- 🔒 **Enterprise Security**: Industry-standard security practices built-in
+- 📦 **Intelligent Defaults**: Smart configurations that adapt to your needs
+- 🔍 **TypeScript-First**: Built for type safety and modern development
+- 🧪 **Testing Framework**: Comprehensive testing suite included
+- 📚 **Self-Documenting**: Automated API documentation generation
+- 🐳 **Container-Ready**: Containerization support from day one
+- 📝 **Observable**: Logging and monitoring built-in
 
 ## Why PEST.js?
 
-- 🚀 **Progressive**: Built for scaling from day one
-- 🎯 **Production-Ready**: Enterprise-grade architecture and security
-- 📦 **Zero-Config**: Start coding in seconds
-- 🔒 **Type-Safe**: TypeScript-first approach
-- 🏗️ **Feature-Based**: Organized, maintainable architecture
-- 🧪 **Testing Ready**: Automated testing infrastructure
-- 📚 **Well Documented**: Automated API documentation
-- 🐳 **Container Ready**: Docker integration out of the box
+- 🚀 **Start Small, Grow Big**: Perfect for both MVPs and enterprise applications
+- 🎯 **Production-First**: No need to restructure for production
+- 📦 **Zero-Config**: Works out of the box with smart defaults
+- 🔒 **Type-Safe**: Catch errors before they happen
+- 🏗️ **Feature-Based**: Organized for maintainability
+- 🧪 **Test-Driven**: Testing infrastructure ready to go
+- 📚 **Well Documented**: Clear, automated documentation
+- 🐳 **Cloud-Native**: Ready for modern deployment
 
 ## Overview
 
