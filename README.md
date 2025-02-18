@@ -199,4 +199,4 @@ The generated project includes several npm scripts:
 
 ## Contributing
 
-Feel free to submit issues and enhancement requests to our [GitHub repository](https://github.com/nabinkhair42/mern-stater-kit)!
+Feel free to submit issues and enhancement requests to our [GitHub repository](https://github.com/nabinkhair42/pest.js)!
