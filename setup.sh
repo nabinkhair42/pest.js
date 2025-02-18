@@ -167,10 +167,23 @@ mongoose.set('strictQuery', true);
 
 // Connect to MongoDB
 export const connectToDatabase = async (): Promise<void> => {
+  // Skip database connection in test environment if SKIP_DB_CONNECTION is set
+  if (env.IS_TEST && process.env.SKIP_DB_CONNECTION === 'true') {
+    logger.info('Skipping database connection in test environment');
+    return;
+  }
+
   try {
-    const connection = await mongoose.connect(env.MONGODB_URI);
+    const connection = await mongoose.connect(env.MONGODB_URI, {
+      serverSelectionTimeoutMS: 5000, // Timeout after 5 seconds
+      retryWrites: true,
+    });
     logger.info(\`Successfully connected to MongoDB: \${connection.connection.name}\`);
   } catch (error) {
+    if (env.IS_TEST) {
+      logger.warn('Could not connect to MongoDB in test environment. Continuing without database connection.');
+      return;
+    }
     logger.error('Error connecting to MongoDB:', error);
     process.exit(1);
   }
@@ -178,6 +191,10 @@ export const connectToDatabase = async (): Promise<void> => {
 
 // Disconnect from MongoDB
 export const disconnectFromDatabase = async (): Promise<void> => {
+  if (env.IS_TEST && process.env.SKIP_DB_CONNECTION === 'true') {
+    return;
+  }
+
   try {
     await mongoose.disconnect();
     logger.info('Successfully disconnected from MongoDB');
@@ -189,11 +206,15 @@ export const disconnectFromDatabase = async (): Promise<void> => {
 
 // Handle MongoDB connection events
 mongoose.connection.on('error', (error) => {
-  logger.error('MongoDB connection error:', error);
+  if (!env.IS_TEST) {
+    logger.error('MongoDB connection error:', error);
+  }
 });
 
 mongoose.connection.on('disconnected', () => {
-  logger.info('MongoDB disconnected');
+  if (!env.IS_TEST) {
+    logger.info('MongoDB disconnected');
+  }
 });
 
 process.on('SIGINT', async () => {
@@ -227,7 +248,8 @@ JWT_SECRET=test_jwt_secret
 JWT_EXPIRATION=7d
 RATE_LIMIT_WINDOW_MS=900000
 RATE_LIMIT_MAX=100
-LOGS_DIRECTORY=logs"
+LOGS_DIRECTORY=logs
+SKIP_DB_CONNECTION=true"
 
 # Create configuration files
 create_file "package.json" '{
@@ -1010,14 +1032,27 @@ create_file "jest.config.js" "module.exports = {
   setupFilesAfterEnv: ['./jest.setup.js'],
 }"
 
-create_file "jest.setup.js" "jest.setTimeout(30000);"
+create_file "jest.setup.js" "// Set test environment variables
+process.env.SKIP_DB_CONNECTION = 'true';
+process.env.NODE_ENV = 'test';
+
+jest.setTimeout(30000);"
 
 # Create a sample test
 create_file "src/__tests__/app.test.ts" "import request from 'supertest';
 import { createApp } from '../config/app';
+import { connectToDatabase, disconnectFromDatabase } from '../config/database';
 
 describe('App', () => {
   const app = createApp();
+
+  beforeAll(async () => {
+    await connectToDatabase();
+  });
+
+  afterAll(async () => {
+    await disconnectFromDatabase();
+  });
 
   it('should return welcome message on root route', async () => {
     const response = await request(app).get('/');
