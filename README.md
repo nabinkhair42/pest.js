@@ -1,6 +1,24 @@
-# Node.js TypeScript Project Setup Script
+# PEST.js - Progressive Express Starter Template
 
-A bash script that automatically generates a feature-based Node.js project structure with TypeScript, Express, and Mongoose configuration.
+<div align="center">
+  <img src="docs/assets/pestjs-logo.png" alt="PEST.js Logo" width="200"/>
+  <p><strong>Progressive • Elegant • Structured • TypeScript</strong></p>
+</div>
+
+## The Progressive Node.js Template Engine
+
+PEST.js is a production-ready, feature-based Node.js project generator that follows enterprise-grade practices and modern development standards.
+
+## Why PEST.js?
+
+- 🚀 **Progressive**: Built for scaling from day one
+- 🎯 **Production-Ready**: Enterprise-grade architecture and security
+- 📦 **Zero-Config**: Start coding in seconds
+- 🔒 **Type-Safe**: TypeScript-first approach
+- 🏗️ **Feature-Based**: Organized, maintainable architecture
+- 🧪 **Testing Ready**: Automated testing infrastructure
+- 📚 **Well Documented**: Automated API documentation
+- 🐳 **Container Ready**: Docker integration out of the box
 
 ## Overview
 

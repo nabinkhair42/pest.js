@@ -1,4 +1,10 @@
+# PEST.js specific
+.pest-cache/
+.pest-temp/
+
 # Testing folders
 /demo-testing
 /pnpm-testing
 /testing-demo
+
+[... rest of gitignore content ...]

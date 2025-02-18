@@ -2,8 +2,7 @@
 
 ## Supported Versions
 
-Use this section to tell people about which versions of your project are
-currently being supported with security updates.
+PEST.js maintains security updates for the following versions:
 
 | Version | Supported          |
 | ------- | ------------------ |
@@ -11,11 +10,11 @@ currently being supported with security updates.
 
 ## Reporting a Vulnerability
 
-We take the security of MERN Starter Kit seriously. If you believe you have found a security vulnerability, please report it to us as described below.
+We take the security of PEST.js seriously. If you believe you have found a security vulnerability, please report it to us as described below.
 
 **Please do not report security vulnerabilities through public GitHub issues.**
 
-Instead, please report them via email to [INSERT SECURITY EMAIL].
+Instead, please report them via email to security@pestjs.dev
 
 You should receive a response within 48 hours. If for some reason you do not, please follow up via email to ensure we received your original message.
 

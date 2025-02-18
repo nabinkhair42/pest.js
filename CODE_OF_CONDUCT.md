@@ -1,4 +1,4 @@
-# Contributor Covenant Code of Conduct
+# PEST.js Code of Conduct
 
 ## Our Pledge
 

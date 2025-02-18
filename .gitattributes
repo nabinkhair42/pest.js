@@ -1,3 +1,8 @@
+# PEST.js specific
+*.pest.js linguist-language=JavaScript
+*.pest.ts linguist-language=TypeScript
+
+# Default settings
 * text=auto eol=lf
 *.{cmd,[cC][mM][dD]} text eol=crlf
 *.{bat,[bB][aA][tT]} text eol=crlf 

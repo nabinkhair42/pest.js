@@ -1,6 +1,6 @@
 ---
 name: Feature request
-about: Suggest an idea for this project
+about: Suggest an idea for PEST.js
 title: ''
 labels: 'enhancement'
 assignees: ''
