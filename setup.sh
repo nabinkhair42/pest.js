@@ -31,6 +31,10 @@ create_file() {
 read -p "Enter project name (default: nodejs-ts-express-mongoose-boilerplate): " PROJECT_NAME
 PROJECT_NAME=${PROJECT_NAME:-nodejs-ts-express-mongoose-boilerplate}
 
+# Add GitHub username prompt
+read -p "Enter your GitHub username: " GITHUB_USERNAME
+GITHUB_USERNAME=${GITHUB_USERNAME:-example-user}
+
 # Create root directory
 create_dir "$PROJECT_NAME"
 cd "$PROJECT_NAME"
@@ -63,22 +67,22 @@ for feature in "${FEATURES[@]}"; do
 done
 
 # Create core files
-create_file "src/app.ts" "import express from 'express';
-import { createApp } from './config/app';
+create_file "src/app.ts" "import { createApp } from './config/app';
 import { connectToDatabase } from './config/database';
 import { env } from './config/env';
 import logger from './utils/logger';
 
-// Import feature routes
-// import authRoutes from './features/auth/routes';
-// import userRoutes from './features/users/routes';
-
 async function bootstrap() {
   const app = createApp();
   
-  // Register routes
-  // app.use('/api/auth', authRoutes);
-  // app.use('/api/users', userRoutes);
+  // Add root route
+  app.get('/', (_, res) => {
+    res.json({
+      message: 'Welcome to ${PROJECT_NAME} API',
+      version: '1.0.0',
+      docs: '/api-docs'
+    });
+  });
   
   // Connect to database
   await connectToDatabase();
@@ -104,8 +108,7 @@ async function bootstrap() {
 bootstrap().catch((error) => {
   logger.error('Failed to start server:', error);
   process.exit(1);
-});
-"
+});"
 
 # Create config files
 create_file "src/config/env.ts" "import { z } from 'zod';
@@ -127,27 +130,32 @@ const envSchema = z.object({
 });
 
 // Validate environment variables
-try {
-  envSchema.parse(process.env);
-} catch (error) {
-  if (error instanceof z.ZodError) {
-    console.error('❌ Invalid environment variables:', JSON.stringify(error.format(), null, 2));
-    process.exit(1);
+const validateEnv = () => {
+  try {
+    return envSchema.parse(process.env);
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      console.error('❌ Invalid environment variables:', JSON.stringify(error.format(), null, 2));
+      process.exit(1);
+    }
+    throw error;
   }
-}
+};
+
+const validatedEnv = validateEnv();
 
 export const env = {
-  NODE_ENV: process.env.NODE_ENV,
-  PORT: parseInt(process.env.PORT, 10),
-  MONGODB_URI: process.env.MONGODB_URI,
-  JWT_SECRET: process.env.JWT_SECRET,
-  JWT_EXPIRATION: process.env.JWT_EXPIRATION,
-  RATE_LIMIT_WINDOW_MS: parseInt(process.env.RATE_LIMIT_WINDOW_MS, 10),
-  RATE_LIMIT_MAX: parseInt(process.env.RATE_LIMIT_MAX, 10),
-  LOGS_DIRECTORY: process.env.LOGS_DIRECTORY,
-  IS_PRODUCTION: process.env.NODE_ENV === 'production',
-  IS_TEST: process.env.NODE_ENV === 'test',
-  IS_DEVELOPMENT: process.env.NODE_ENV === 'development',
+  NODE_ENV: validatedEnv.NODE_ENV,
+  PORT: parseInt(validatedEnv.PORT, 10),
+  MONGODB_URI: validatedEnv.MONGODB_URI,
+  JWT_SECRET: validatedEnv.JWT_SECRET,
+  JWT_EXPIRATION: validatedEnv.JWT_EXPIRATION,
+  RATE_LIMIT_WINDOW_MS: parseInt(validatedEnv.RATE_LIMIT_WINDOW_MS, 10),
+  RATE_LIMIT_MAX: parseInt(validatedEnv.RATE_LIMIT_MAX, 10),
+  LOGS_DIRECTORY: validatedEnv.LOGS_DIRECTORY,
+  IS_PRODUCTION: validatedEnv.NODE_ENV === 'production',
+  IS_TEST: validatedEnv.NODE_ENV === 'test',
+  IS_DEVELOPMENT: validatedEnv.NODE_ENV === 'development',
 };"
 
 create_file "src/config/database.ts" "import mongoose from 'mongoose';
@@ -227,6 +235,11 @@ create_file "package.json" '{
   "version": "1.0.0",
   "description": "A feature-based Node.js, TypeScript, Mongoose, Express.js boilerplate",
   "main": "dist/app.js",
+  "author": "'$GITHUB_USERNAME'",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/'$GITHUB_USERNAME'/'$PROJECT_NAME'.git"
+  },
   "scripts": {
     "start": "node dist/app.js",
     "dev": "nodemon --exec ts-node src/app.ts",
@@ -237,8 +250,7 @@ create_file "package.json" '{
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
     "seed": "ts-node scripts/seed-db.ts",
-    "docs": "ts-node scripts/generate-docs.ts",
-    "prepare": "husky install"
+    "docs": "ts-node scripts/generate-docs.ts"
   },
   "dependencies": {
     "bcrypt": "^5.1.1",
@@ -275,21 +287,13 @@ create_file "package.json" '{
     "eslint": "^8.56.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-prettier": "^5.1.3",
-    "husky": "^8.0.3",
     "jest": "^29.7.0",
-    "lint-staged": "^15.2.0",
     "nodemon": "^3.0.3",
     "prettier": "^3.2.4",
     "supertest": "^6.3.3",
     "ts-jest": "^29.1.1",
     "ts-node": "^10.9.2",
-    "typescript": "^5.3.3"
-  },
-  "lint-staged": {
-    "*.ts": [
-      "eslint --fix",
-      "prettier --write"
-    ]
+    "typescript": "~4.9.5"
   }
 }'
 
@@ -357,132 +361,13 @@ build/
 # TypeScript build info
 *.tsbuildinfo"
 
-create_file ".eslintrc.js" "module.exports = {
-  parser: '@typescript-eslint/parser',
-  parserOptions: {
-    ecmaVersion: 2022,
-    sourceType: 'module',
-  },
-  extends: [
-    'plugin:@typescript-eslint/recommended',
-    'prettier',
-  ],
-  plugins: ['@typescript-eslint', 'prettier'],
-  rules: {
-    'prettier/prettier': 'error',
-    '@typescript-eslint/explicit-function-return-type': 'off',
-    '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
-    '@typescript-eslint/no-explicit-any': 'warn',
-    'no-console': 'warn',
-  },
-  env: {
-    node: true,
-    jest: true,
-  },
-};"
-
-create_file ".prettierrc" '{
-  "semi": true,
-  "trailingComma": "es5",
-  "singleQuote": true,
-  "printWidth": 100,
-  "tabWidth": 2,
-  "useTabs": false,
-  "endOfLine": "lf"
-}'
-
-create_file "jest.config.js" "module.exports = {
-  preset: 'ts-jest',
-  testEnvironment: 'node',
-  roots: ['<rootDir>/tests'],
-  collectCoverageFrom: ['<rootDir>/src/**/*.ts'],
-  coverageDirectory: 'coverage',
-  coveragePathIgnorePatterns: ['/node_modules/', '/dist/'],
-  moduleFileExtensions: ['ts', 'js', 'json'],
-  transform: {
-    '^.+\\.tsx?$': 'ts-jest',
-  },
-  setupFilesAfterEnv: ['<rootDir>/tests/setup.ts'],
-  testMatch: ['**/tests/**/*.test.ts'],
-};"
-
-create_file "tests/setup.ts" "import { connectToDatabase, disconnectFromDatabase } from '../src/config/database';
-
-// Setup before all tests
-beforeAll(async () => {
-  await connectToDatabase();
-});
-
-// Cleanup after all tests
-afterAll(async () => {
-  await disconnectFromDatabase();
-});"
-
-# Create Docker files
-create_file "Dockerfile" "FROM node:20-alpine as builder
-
-WORKDIR /app
-
-COPY package*.json ./
-RUN npm ci
-
-COPY . .
-RUN npm run build
-
-FROM node:20-alpine
-
-WORKDIR /app
-
-COPY package*.json ./
-RUN npm ci --only=production
-
-COPY --from=builder /app/dist ./dist
-
-# Environment variables
-ENV NODE_ENV=production
-ENV PORT=3000
-
-EXPOSE 3000
-
-CMD [\"node\", \"dist/app.js\"]"
-
-create_file "docker-compose.yml" "version: '3.8'
-
-services:
-  app:
-    build: .
-    ports:
-      - '3000:3000'
-    environment:
-      - NODE_ENV=production
-      - MONGODB_URI=mongodb://mongodb:27017/your_database
-      - JWT_SECRET=your_production_jwt_secret
-    depends_on:
-      - mongodb
-    restart: unless-stopped
-    networks:
-      - app-network
-
-  mongodb:
-    image: mongo:latest
-    ports:
-      - '27017:27017'
-    volumes:
-      - mongodb_data:/data/db
-    networks:
-      - app-network
-
-networks:
-  app-network:
-    driver: bridge
-
-volumes:
-  mongodb_data:
-    driver: local"
+# Initialize git repository
+git init
+git add .
+git commit -m "Initial commit"
 
 # Create utility scripts
-create_file "scripts/seed-db.ts" "import mongoose from 'mongoose';
-import { connectToDatabase, disconnectFromDatabase } from '../src/config/database';
+create_file "scripts/seed-db.ts" "import { connectToDatabase, disconnectFromDatabase } from '../src/config/database';
 import logger from '../src/utils/logger';
 
 // Import models
@@ -523,6 +408,45 @@ import path from 'path';
 import { version } from '../package.json';
 import logger from '../src/utils/logger';
 
+interface SwaggerServer {
+  url: string;
+  description: string;
+}
+
+interface SwaggerParameter {
+  name: string;
+  in: string;
+  description?: string;
+}
+
+interface SwaggerMethodDetails {
+  summary?: string;
+  description?: string;
+  parameters?: SwaggerParameter[];
+  requestBody?: {
+    content: {
+      'application/json': {
+        schema: unknown;
+      };
+    };
+  };
+  responses: Record<string, { description: string }>;
+}
+
+interface SwaggerPaths {
+  [path: string]: {
+    [method: string]: SwaggerMethodDetails;
+  };
+}
+
+interface SwaggerSpec {
+  info: {
+    description: string;
+  };
+  servers: SwaggerServer[];
+  paths: SwaggerPaths;
+}
+
 const swaggerOptions = {
   definition: {
     openapi: '3.0.0',
@@ -530,11 +454,23 @@ const swaggerOptions = {
       title: 'API Documentation',
       version,
       description: 'API documentation for the Node.js TypeScript Express Mongoose boilerplate',
+      contact: {
+        name: 'API Support',
+        email: 'support@example.com',
+      },
+      license: {
+        name: 'MIT',
+        url: 'https://opensource.org/licenses/MIT',
+      },
     },
     servers: [
       {
         url: 'http://localhost:3000',
         description: 'Development server',
+      },
+      {
+        url: 'https://api.example.com',
+        description: 'Production server',
       },
     ],
     components: {
@@ -545,19 +481,49 @@ const swaggerOptions = {
           bearerFormat: 'JWT',
         },
       },
+      schemas: {
+        Error: {
+          type: 'object',
+          properties: {
+            status: {
+              type: 'string',
+              example: 'error',
+            },
+            message: {
+              type: 'string',
+              example: 'Error message',
+            },
+          },
+        },
+      },
     },
     security: [
       {
         bearerAuth: [],
       },
     ],
+    tags: [
+      {
+        name: 'Auth',
+        description: 'Authentication endpoints',
+      },
+      {
+        name: 'Users',
+        description: 'User management endpoints',
+      },
+    ],
   },
-  apis: ['./src/features/**/routes/*.ts', './src/features/**/schemas/*.ts'],
+  apis: [
+    './src/features/**/routes/*.ts',
+    './src/features/**/schemas/*.ts',
+    './src/features/**/controllers/*.ts',
+  ],
 };
 
 const generateDocs = async () => {
   try {
-    const swaggerSpec = swaggerJsdoc(swaggerOptions);
+    logger.info('Generating API documentation...');
+    const swaggerSpec = swaggerJsdoc(swaggerOptions) as SwaggerSpec;
     
     // Create docs directory if it doesn't exist
     const docsDir = path.join(process.cwd(), 'docs', 'api');
@@ -566,16 +532,70 @@ const generateDocs = async () => {
     }
     
     // Write swagger.json file
-    fs.writeFileSync(
-      path.join(docsDir, 'swagger.json'),
-      JSON.stringify(swaggerSpec, null, 2)
-    );
+    const swaggerPath = path.join(docsDir, 'swagger.json');
+    fs.writeFileSync(swaggerPath, JSON.stringify(swaggerSpec, null, 2));
     
-    logger.info('API documentation generated successfully at docs/api/swagger.json');
+    // Generate markdown documentation (optional)
+    const markdownContent = generateMarkdownDocs(swaggerSpec);
+    fs.writeFileSync(path.join(docsDir, 'api.md'), markdownContent);
+    
+    logger.info(\`API documentation generated successfully:
+    - Swagger JSON: docs/api/swagger.json
+    - Markdown: docs/api/api.md\`);
   } catch (error) {
     logger.error('Error generating API documentation:', error);
     process.exit(1);
   }
+};
+
+const generateMarkdownDocs = (swagger: SwaggerSpec): string => {
+  let markdown = \`# API Documentation
+Generated on: \${new Date().toISOString()}
+
+## Overview
+\${swagger.info.description}
+
+## Base URLs
+\${swagger.servers.map((server: SwaggerServer) => \`- \${server.description}: \${server.url}\`).join('\\n')}
+
+## Authentication
+This API uses Bearer token authentication. Include the JWT token in the Authorization header:
+\\\`\\\`\\\`
+Authorization: Bearer your-token-here
+\\\`\\\`\\\`
+
+## Endpoints\n\`;
+
+  // Generate documentation for each path
+  Object.entries(swagger.paths).forEach(([path, methods]) => {
+    markdown += \`\\n### \${path}\\n\`;
+    
+    Object.entries(methods).forEach(([method, details]) => {
+      markdown += \`
+#### \${method.toUpperCase()}
+\${details.summary || ''}
+
+\${details.description || ''}
+
+\${details.parameters ? \`**Parameters:**
+\${details.parameters.map((param: SwaggerParameter) => 
+  \`- \${param.name} (\${param.in}) - \${param.description || ''}\`
+).join('\\n')}\` : ''}
+
+\${details.requestBody ? \`**Request Body:**
+\\\`\\\`\\\`json
+\${JSON.stringify(details.requestBody.content['application/json'].schema, null, 2)}
+\\\`\\\`\\\`\` : ''}
+
+**Responses:**
+\${Object.entries(details.responses).map(([code, response]) => 
+  \`- \${code}: \${response.description || ''}\`
+).join('\\n')}
+\`;
+    });
+  });
+
+  return markdown;
 };
 
 generateDocs();"
@@ -607,7 +627,7 @@ declare global {
 # Create README file
 create_file "README.md" "# $PROJECT_NAME
 
-A feature-based Node.js, TypeScript, Mongoose, Express.js boilerplate with industry-standard tools and practices.
+A feature-based Node.js, TypeScript, Mongoose, Express.js boilerplate created by [$GITHUB_USERNAME](https://github.com/$GITHUB_USERNAME).
 
 ## Features
 
@@ -636,42 +656,36 @@ A feature-based Node.js, TypeScript, Mongoose, Express.js boilerplate with indus
 - npm or yarn
 - MongoDB (local instance or Atlas)
 
-### Installation
+### Quick Start with Docker
 
-1. Clone the repository:
-   \`\`\`
-   git clone https://github.com/yourusername/$PROJECT_NAME.git
-   cd $PROJECT_NAME
+1. Start MongoDB:
+   \`\`\`bash
+   docker-compose up -d mongodb
    \`\`\`
 
 2. Install dependencies:
-   \`\`\`
+   \`\`\`bash
    npm install
    \`\`\`
 
-3. Configure environment variables:
-   \`\`\`
-   cp .env.example .env
-   \`\`\`
-   Update the values in .env with your configuration.
-
-4. Start the development server:
-   \`\`\`
+3. Start the application:
+   \`\`\`bash
    npm run dev
    \`\`\`
 
-### Building for Production
+### Alternative MongoDB Setup
 
-\`\`\`
-npm run build
-npm start
-\`\`\`
+If not using Docker, you can:
 
-### Docker Setup
+1. Install MongoDB locally:
+   - Windows: [MongoDB Windows Installation Guide](https://docs.mongodb.com/manual/tutorial/install-mongodb-on-windows/)
+   - macOS: \`brew install mongodb-community\`
+   - Linux: [MongoDB Linux Installation Guide](https://docs.mongodb.com/manual/administration/install-on-linux/)
 
-\`\`\`
-docker-compose up -d
-\`\`\`
+2. Start MongoDB service:
+   - Windows: \`net start MongoDB\`
+   - macOS: \`brew services start mongodb-community\`
+   - Linux: \`sudo systemctl start mongod\`
 
 ## Project Structure
 
@@ -680,23 +694,25 @@ project-root/
 │
 ├── src/                          # Source files
 │   ├── config/                   # Configuration files
-│   ├── features/                 # Feature-based organization
-│   │   ├── auth/                 # Authentication feature
-│   │   ├── users/                # Users feature
-│   │   └── [other-features]/     # Other features
-│   ├── middleware/               # Custom middleware
-│   ├── utils/                    # Utility functions and helpers
-│   ├── types/                    # TypeScript type definitions
-│   └── app.ts                    # Application entry point
-│
-├── tests/                        # Test files
-│   ├── unit/                     # Unit tests
-│   ├── integration/              # Integration tests
-│   └── setup.ts                  # Test setup
-│
-├── scripts/                      # Utility scripts
-├── docs/                         # Documentation
-├── [configuration files]         # Various config files (.env, etc.)
+│   │   ├── config/               # Configuration files
+│   │   ├── features/             # Feature-based organization
+│   │   │   ├── auth/             # Authentication feature
+│   │   │   ├── users/            # Users feature
+│   │   │   └── [other-features]/ # Other features
+│   │   ├── middleware/           # Custom middleware
+│   │   ├── utils/                # Utility functions and helpers
+│   │   ├── types/                # TypeScript type definitions
+│   │   └── app.ts                # Application entry point
+│   │
+│   ├── tests/                    # Test files
+│   │   ├── unit/                 # Unit tests
+│   │   ├── integration/          # Integration tests
+│   │   └── setup.ts              # Test setup
+│   │
+│   ├── scripts/                  # Utility scripts
+│   ├── docs/                     # Documentation
+│   ├── [configuration files]     # Various config files (.env, etc.)
+│   └── [configuration files]       # Various config files (.env, etc.)
 \`\`\`
 
 ## Available Scripts
@@ -714,7 +730,50 @@ project-root/
 
 ## API Documentation
 
-API documentation is available at \`http://localhost:3000/api-docs\` when the server is running.
+The API documentation is generated using Swagger/OpenAPI. To use it:
+
+1. Generate the documentation:
+   \`\`\`bash
+   npm run docs
+   \`\`\`
+   This will create a swagger.json file in docs/api directory.
+
+2. To view the documentation in the browser:
+   - Add the following to src/config/app.ts:
+
+   \`\`\`typescript
+   import swaggerUi from 'swagger-ui-express';
+   import * as swaggerDocument from '../docs/api/swagger.json';
+
+   // Add before error handling middleware
+   app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+   \`\`\`
+
+3. Access the documentation at http://localhost:3000/api-docs
+
+### Documenting APIs
+
+To document your APIs, add JSDoc comments to your route handlers. Example:
+
+\`\`\`typescript
+/**
+ * @swagger
+ * /api/users:
+ *   get:
+ *     summary: Get all users
+ *     tags: [Users]
+ *     responses:
+ *       200:
+ *         description: List of users
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/User'
+ */
+router.get('/users', userController.getUsers);
+\`\`\`
 
 ## License
 
@@ -743,6 +802,255 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Testing setup with Jest
 - Docker configuration
 "
+
+# After the config files section, add:
+
+# Create app configuration
+create_file "src/config/app.ts" "import express, { Express } from 'express';
+import cors from 'cors';
+import helmet from 'helmet';
+import morgan from 'morgan';
+import compression from 'compression';
+import rateLimit from 'express-rate-limit';
+import swaggerUi from 'swagger-ui-express';
+import fs from 'fs';
+import path from 'path';
+import { env } from './env';
+import { errorHandler } from '../middleware/error-handler';
+import 'express-async-errors';
+
+export function createApp(): Express {
+  const app = express();
+
+  // Security middleware
+  app.use(helmet());
+  app.use(cors());
+  
+  // Rate limiting
+  const limiter = rateLimit({
+    windowMs: env.RATE_LIMIT_WINDOW_MS,
+    max: env.RATE_LIMIT_MAX,
+  });
+  app.use(limiter);
+
+  // Request parsing
+  app.use(express.json());
+  app.use(express.urlencoded({ extended: true }));
+  
+  // Compression
+  app.use(compression());
+  
+  // Logging
+  if (!env.IS_TEST) {
+    app.use(morgan('dev'));
+  }
+
+  // Root route
+  app.get('/', (_, res) => {
+    res.json({
+      message: 'Welcome to API',
+      version: '1.0.0',
+      docs: '/api-docs'
+    });
+  });
+
+  // Health check
+  app.get('/health', (_, res) => res.status(200).json({ status: 'ok' }));
+
+  // API Documentation
+  if (!env.IS_PRODUCTION) {
+    try {
+      const swaggerPath = path.join(__dirname, '../../docs/api/swagger.json');
+      if (fs.existsSync(swaggerPath)) {
+        const swaggerDocument = JSON.parse(fs.readFileSync(swaggerPath, 'utf8'));
+        app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+      } else {
+        console.warn('Swagger documentation not found. Run npm run docs to generate it.');
+      }
+    } catch (error) {
+      console.warn('Error loading Swagger documentation:', error);
+    }
+  }
+
+  // Error handling
+  app.use(errorHandler);
+
+  return app;
+}"
+
+# Create error handler middleware
+create_file "src/middleware/error-handler.ts" "import { Request, Response, NextFunction } from 'express';
+import { ZodError } from 'zod';
+import { MongooseError } from 'mongoose';
+import logger from '../utils/logger';
+
+export class AppError extends Error {
+  constructor(
+    public statusCode: number,
+    public message: string,
+    public isOperational = true
+  ) {
+    super(message);
+    Object.setPrototypeOf(this, AppError.prototype);
+  }
+}
+
+export const errorHandler = (
+  err: Error,
+  req: Request,
+  res: Response,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  next: NextFunction
+) => {
+  if (err instanceof AppError) {
+    return res.status(err.statusCode).json({
+      status: 'error',
+      message: err.message,
+    });
+  }
+
+  if (err instanceof ZodError) {
+    return res.status(400).json({
+      status: 'error',
+      message: 'Validation error',
+      errors: err.errors,
+    });
+  }
+
+  if (err instanceof MongooseError) {
+    return res.status(400).json({
+      status: 'error',
+      message: 'Database error',
+      error: err.message,
+    });
+  }
+
+  // Log unexpected errors
+  logger.error('Unexpected error:', err);
+
+  return res.status(500).json({
+    status: 'error',
+    message: 'Internal server error',
+  });
+};"
+
+# Create logger utility
+create_file "src/utils/logger.ts" "import winston from 'winston';
+import { env } from '../config/env';
+
+const logger = winston.createLogger({
+  level: env.IS_PRODUCTION ? 'info' : 'debug',
+  format: winston.format.combine(
+    winston.format.timestamp(),
+    winston.format.errors({ stack: true }),
+    winston.format.json()
+  ),
+  defaultMeta: { service: 'api' },
+  transports: [
+    new winston.transports.File({ 
+      filename: \`\${env.LOGS_DIRECTORY}/error.log\`, 
+      level: 'error' 
+    }),
+    new winston.transports.File({ 
+      filename: \`\${env.LOGS_DIRECTORY}/combined.log\` 
+    }),
+  ],
+});
+
+if (!env.IS_PRODUCTION) {
+  logger.add(
+    new winston.transports.Console({
+      format: winston.format.combine(
+        winston.format.colorize(),
+        winston.format.simple()
+      ),
+    })
+  );
+}
+
+export default logger;"
+
+# Create ESLint configuration
+create_file ".eslintrc.json" '{
+  "parser": "@typescript-eslint/parser",
+  "extends": [
+    "plugin:@typescript-eslint/recommended",
+    "prettier"
+  ],
+  "parserOptions": {
+    "ecmaVersion": 2022,
+    "sourceType": "module"
+  },
+  "rules": {
+    "@typescript-eslint/explicit-function-return-type": "off",
+    "@typescript-eslint/no-explicit-any": "warn",
+    "@typescript-eslint/no-unused-vars": ["error", { "argsIgnorePattern": "^_" }],
+    "no-console": ["warn", { "allow": ["warn", "error"] }],
+    "@typescript-eslint/no-var-requires": "off"
+  },
+  "overrides": [
+    {
+      "files": ["src/config/**/*.ts"],
+      "rules": {
+        "no-console": "off"
+      }
+    }
+  ]
+}'
+
+# Create Jest configuration
+create_file "jest.config.js" "module.exports = {
+  preset: 'ts-jest',
+  testEnvironment: 'node',
+  testMatch: ['**/*.test.ts'],
+  moduleFileExtensions: ['ts', 'js'],
+  transform: {
+    '^.+\\.ts$': 'ts-jest',
+  },
+  setupFilesAfterEnv: ['./jest.setup.js'],
+}"
+
+create_file "jest.setup.js" "jest.setTimeout(30000);"
+
+# Create a sample test
+create_file "src/__tests__/app.test.ts" "import request from 'supertest';
+import { createApp } from '../config/app';
+
+describe('App', () => {
+  const app = createApp();
+
+  it('should return welcome message on root route', async () => {
+    const response = await request(app).get('/');
+    expect(response.status).toBe(200);
+    expect(response.body).toMatchObject({
+      message: expect.stringContaining('Welcome'),
+      version: expect.any(String),
+      docs: expect.stringContaining('/api-docs')
+    });
+  });
+
+  it('should return health check status', async () => {
+    const response = await request(app).get('/health');
+    expect(response.status).toBe(200);
+    expect(response.body.status).toBe('ok');
+  });
+});"
+
+# Create Docker Compose file
+create_file "docker-compose.yml" "version: '3.8'
+
+services:
+  mongodb:
+    image: mongo:latest
+    ports:
+      - '27017:27017'
+    volumes:
+      - mongodb_data:/data/db
+    environment:
+      - MONGO_INITDB_DATABASE=your_database
+
+volumes:
+  mongodb_data:"
 
 echo -e "\n${GREEN}Project structure for $PROJECT_NAME created successfully!${NC}"
 echo -e "To get started:
