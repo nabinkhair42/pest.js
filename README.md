@@ -1,7 +1,8 @@
 # PEST.js - Progressive Express Starter Template
 
 <div align="center">
-  <img src="docs/assets/pestjs-logo.png" alt="PEST.js Logo" width="200"/>
+  <img src="/pestjs-logo.png" alt="PEST.js Logo" width="200"/>
+  
   <p><strong>Progressive • Elegant • Structured • TypeScript</strong></p>
 </div>
 
