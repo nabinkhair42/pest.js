@@ -84,30 +84,31 @@ The script creates the following structure:
 
 ```
 project-root/
-├── src/
-│   ├── config/
-│   │   ├── auth/
-│   │   │   ├── controllers/
-│   │   │   ├── models/
-│   │   │   ├── routes/
-│   │   │   ├── services/
-│   │   │   └── schemas/
-│   │   └── users/
-│   │       ├── controllers/
-│   │       ├── models/
-│   │       ├── routes/
-│   │       ├── services/
-│   │       └── schemas/
-│   ├── middleware/
-│   ├── utils/
-│   └── types/
-├── tests/
-│   ├── unit/
-│   ├── integration/
-│   └── fixtures/
-├── scripts/
-└── docs/
-    └── api/
+├───docs
+│   └───api
+├───scripts
+├───src
+│   ├───config
+│   ├───features
+│   │   ├───auth
+│   │   │   ├───controllers
+│   │   │   ├───models
+│   │   │   ├───routes
+│   │   │   ├───schemas
+│   │   │   └───services
+│   │   └───users
+│   │       ├───controllers
+│   │       ├───models
+│   │       ├───routes
+│   │       ├───schemas
+│   │       └───services
+│   ├───middleware
+│   ├───types
+│   └───utils
+└───tests
+    ├───fixtures
+    ├───integration
+    └───unit
 ```
 
 ## Generated Files
