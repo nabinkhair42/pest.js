@@ -2,148 +2,40 @@
 title: Introduction
 description: A feature-based Express.js and TypeScript boilerplate
 ---
+## What is PEST.js?  
 
-<Note type="success">
-  PEST.js is a structured boilerplate for building Node.js applications with Express.js and TypeScript.
-</Note>
+PEST.js is a feature-rich Express.js template engine designed to simplify and enhance backend development. It provides a structured, scalable foundation for building production-ready Node.js applications while abstracting essential configurations such as middleware, security, and logging.  
 
-## Quick Start
+PEST.js is built on top of Express.js, offering additional optimizations while maintaining flexibility. It enables developers to focus on business logic rather than boilerplate configurations.  
 
-<Stepper>
-  <StepperItem title="Get the Template">
-    ```bash
-    # Clone the repository
-    git clone https://github.com/username/pestjs-template my-app
-    cd my-app
-    ```
-  </StepperItem>
+## Why Use PEST.js?  
 
-  <StepperItem title="Install Dependencies">
-    ```bash
-    npm install
-    ```
-  </StepperItem>
+PEST.js offers several advantages over a standard Express.js setup:  
 
-  <StepperItem title="Configure Environment">
-    ```bash
-    cp .env.example .env
-    # Update the .env file with your settings
-    ```
-  </StepperItem>
+- **Feature-Based Structure** – Encourages modular development with separate controllers, services, and models.  
+- **Pre-Configured Security** – Includes industry-standard security practices such as Helmet, CORS, and rate limiting.  
+- **Built-In Type Safety** – Fully supports TypeScript for better maintainability and fewer runtime errors.  
+- **Automated API Documentation** – Generates OpenAPI/Swagger documentation for all endpoints.  
+- **Production-Ready Logging & Monitoring** – Uses Winston for structured logging and error handling.  
+- **Scalability** – Designed to scale from small applications to enterprise-level systems.  
 
-  <StepperItem title="Start Development">
-    ```bash
-    npm run dev
-    ```
-  </StepperItem>
-</Stepper>
+## Key Features  
 
-## Features
+PEST.js includes the following built-in features:  
 
-<Note type="note">
-Core features included in this template:
+- **Express.js Foundation** – Standard Express.js setup with additional enhancements.  
+- **TypeScript-First** – Provides strong type safety across the entire project.  
+- **Modular Architecture** – Feature-based folder structure for better organization.  
+- **Security Best Practices** – Built-in middleware for authentication, rate limiting, and input validation.  
+- **Integrated Database Support** – Uses Mongoose for MongoDB integration with structured schemas.  
+- **Middleware Support** – Includes common middleware for request validation, authentication, and logging.  
+- **Automated Testing** – Pre-configured with Jest and Supertest for unit and integration testing.  
+- **Containerization** – Docker-ready setup for deployment in cloud environments.  
 
-- Feature-based folder structure
-- TypeScript configuration
-- MongoDB integration with Mongoose
-- Basic security middleware
-- Error handling and logging
-- Testing setup with Jest
-- Docker configuration
-</Note>
+## Who Should Use PEST.js?  
 
-## Project Structure
-
-<Files items={[
-  {
-    type: "folder",
-    name: "src",
-    isOpen: true,
-    indicator: "add",
-    children: [
-      { type: "folder", name: "features", indicator: "add" },
-      { type: "folder", name: "config", indicator: "add" },
-      { type: "folder", name: "middleware", indicator: "add" },
-      { type: "folder", name: "utils", indicator: "add" },
-      { type: "file", name: "app.ts", indicator: "add" }
-    ]
-  }
-]} />
-
-## Project Overview
-
-<Files items={[
-  {
-    type: "folder",
-    name: "Getting Started Guide",
-    isOpen: true,
-    indicator: "add",
-    children: [
-      { type: "file", name: "Project Structure", indicator: "add" },
-      { type: "file", name: "Core Principles", indicator: "add" },
-      { type: "file", name: "Configuration Guide", indicator: "add" },
-      { type: "file", name: "How PEST.js Works", indicator: "add" }
-    ]
-  }
-]} />
-
-## Key Features
-
-<Note type="note">
-PEST.js comes with several built-in features to accelerate your development:
-
-- **TypeScript Support**: Built-in TypeScript configuration
-- **Security Features**: CORS, Helmet, Rate Limiting
-- **Database Integration**: MongoDB with Mongoose
-- **API Documentation**: Automated Swagger/OpenAPI docs
-- **Testing Setup**: Jest and Supertest configuration
-- **Docker Support**: Ready for containerization
-</Note>
-
-## Next Steps
-
-<Files items={[
-  {
-    type: "folder",
-    name: "Documentation",
-    isOpen: true,
-    indicator: "add",
-    children: [
-      { 
-        type: "folder", 
-        name: "Guides", 
-        indicator: "add",
-        children: [
-          { type: "file", name: "Authentication", indicator: "add" },
-          { type: "file", name: "Database Setup", indicator: "add" },
-          { type: "file", name: "API Documentation", indicator: "add" }
-        ]
-      },
-      { 
-        type: "folder", 
-        name: "Advanced", 
-        indicator: "add",
-        children: [
-          { type: "file", name: "Custom Middleware", indicator: "add" },
-          { type: "file", name: "Testing Strategies", indicator: "add" }
-        ]
-      }
-    ]
-  }
-]} />
-
-<Note type="warning">
-  Make sure to read through the documentation sections to understand PEST.js's features and best practices thoroughly.
-</Note>
-
-## Support
-
-If you need help or want to contribute:
-
-- [GitHub Repository](https://github.com/pestjs/pestjs)
-- [Discord Community](https://discord.gg/pestjs)
-- [Documentation](https://docs.pestjs.dev)
-
-<Note type="danger">
-  For security vulnerabilities, please email security@pestjs.dev instead of using the public issue tracker.
-</Note> 
+- **Developers building RESTful APIs with Express.js**  
+- **Teams that need a scalable, maintainable project structure**  
+- **Projects that require security best practices out of the box**  
+- **Applications that benefit from TypeScript’s type safety**  
+- **Enterprise applications that require structured logging and error handling**  
