@@ -7,3 +7,8 @@
 /pnpm-testing
 /testing-demo
 desktop.ini
+context.md
+
+/pest-test
+
+/pest-local-test    
