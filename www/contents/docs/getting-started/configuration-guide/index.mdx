@@ -9,7 +9,7 @@ description: Environment and application configuration
   Configure your application by setting environment variables in the .env file
 </Note>
 
-```env
+```bash:.env showLineNumbers
 NODE_ENV=development
 PORT=3000
 MONGODB_URI=mongodb://localhost:27017/your_database
@@ -39,7 +39,7 @@ LOGS_DIRECTORY=logs
 
 Environment variables are validated using Zod:
 
-```typescript
+```typescript:env.ts
 const envSchema = z.object({
   NODE_ENV: z.enum(['development', 'production', 'test']),
   PORT: z.string(),
