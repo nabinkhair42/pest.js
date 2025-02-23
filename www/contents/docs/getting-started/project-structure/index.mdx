@@ -1,0 +1,63 @@
+---
+title: Project Structure
+description: Understanding the feature-based architecture
+---
+
+## Directory Structure
+
+<Files items={[
+  {
+    type: "folder",
+    name: "src",
+    isOpen: true,
+    indicator: "add",
+    children: [
+      { 
+        type: "folder", 
+        name: "features", 
+        indicator: "add",
+        children: [
+          { type: "folder", name: "auth", indicator: "add" },
+          { type: "folder", name: "users", indicator: "add" }
+        ]
+      },
+      { type: "folder", name: "config", indicator: "add" },
+      { type: "folder", name: "middleware", indicator: "add" },
+      { type: "folder", name: "utils", indicator: "add" },
+      { type: "folder", name: "types", indicator: "add" }
+    ]
+  },
+  { type: "folder", name: "tests", indicator: "add" },
+  { type: "folder", name: "scripts", indicator: "add" }
+]} />
+
+## Feature Module Structure
+
+Each feature (like auth, users) contains:
+
+<Files items={[
+  {
+    type: "folder",
+    name: "feature",
+    isOpen: true,
+    indicator: "add",
+    children: [
+      { type: "folder", name: "controllers", indicator: "add" },
+      { type: "folder", name: "models", indicator: "add" },
+      { type: "folder", name: "routes", indicator: "add" },
+      { type: "folder", name: "services", indicator: "add" },
+      { type: "file", name: "index.ts", indicator: "add" }
+    ]
+  }
+]} />
+
+### Feature-Based Approach  
+
+Each feature (e.g., authentication, users) contains:  
+
+- **controllers/** – Defines API endpoints  
+- **models/** – Handles database schemas  
+- **services/** – Contains business logic  
+- **routes/** – Defines Express routes  
+
+This modular structure ensures **maintainability and scalability**. 

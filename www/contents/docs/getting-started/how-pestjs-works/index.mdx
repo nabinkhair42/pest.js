@@ -1,0 +1,92 @@
+---
+title: How PEST.js Works
+description: Understanding the request lifecycle and architecture of PEST.js.
+---
+
+<Note type="note">
+  PEST.js provides a structured, scalable way to handle backend requests while maintaining flexibility.
+</Note>
+
+## Request Lifecycle
+
+<Stepper>
+  <StepperItem title="Client Request">
+    Request is sent to the server via API endpoints
+    ```typescript
+    POST /api/auth/login
+    ```
+  </StepperItem>
+
+  <StepperItem title="Middleware Processing">
+    Security, validation, and logging middleware are applied:
+    - Rate limiting
+    - CORS checks
+    - Authentication
+    - Request validation
+  </StepperItem>
+
+  <StepperItem title="Route Handling">
+    Request is routed to the appropriate controller:
+    ```typescript
+    router.post('/login', authController.login);
+    ```
+  </StepperItem>
+
+  <StepperItem title="Controller & Service">
+    Business logic is executed through services:
+    ```typescript
+    // Controller
+    async login(req: Request, res: Response) {
+      const user = await authService.validateUser(req.body);
+      const token = await authService.generateToken(user);
+      res.json({ token });
+    }
+    ```
+  </StepperItem>
+</Stepper>
+
+## Key Components
+
+<Files items={[
+  {
+    type: "folder",
+    name: "Components",
+    isOpen: true,
+    indicator: "add",
+    children: [
+      { 
+        type: "folder", 
+        name: "Middleware", 
+        indicator: "add",
+        children: [
+          { type: "file", name: "auth.middleware.ts", indicator: "add" },
+          { type: "file", name: "validation.middleware.ts", indicator: "add" }
+        ]
+      },
+      { 
+        type: "folder", 
+        name: "Controllers", 
+        indicator: "add",
+        children: [
+          { type: "file", name: "user.controller.ts", indicator: "add" }
+        ]
+      },
+      { 
+        type: "folder", 
+        name: "Services", 
+        indicator: "add",
+        children: [
+          { type: "file", name: "user.service.ts", indicator: "add" }
+        ]
+      }
+    ]
+  }
+]} />
+
+<Note type="warning">
+  Each component has a specific responsibility:
+  - **Middleware**: Request processing and validation
+  - **Controllers**: Request/response handling
+  - **Services**: Business logic
+  - **Models**: Data structure and validation
+</Note>

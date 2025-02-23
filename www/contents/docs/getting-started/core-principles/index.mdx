@@ -1,0 +1,73 @@
+---
+title: Core Principles
+description: The foundational principles behind PEST.js and its architecture.
+---
+
+<Note type="success">
+  PEST.js is built on core principles that ensure scalability, maintainability, and security for backend applications.
+</Note>
+
+## Core Principles
+
+<Stepper>
+  <StepperItem title="Modularity">
+    PEST.js follows a **feature-based modular structure**, separating concerns into well-defined components:
+    
+    <Files items={[
+      {
+        type: "folder",
+        name: "features",
+        isOpen: true,
+        indicator: "add",
+        children: [
+          { type: "folder", name: "controllers", indicator: "add" },
+          { type: "folder", name: "services", indicator: "add" },
+          { type: "folder", name: "models", indicator: "add" }
+        ]
+      }
+    ]} />
+  </StepperItem>
+
+  <StepperItem title="Type Safety">
+    With a **TypeScript-first approach**, PEST.js leverages strong typing for:
+    - Better code quality
+    - Fewer runtime errors
+    - Enhanced developer experience
+    - Improved maintainability
+  </StepperItem>
+
+  <StepperItem title="Security by Default">
+    <Note type="warning">
+      Security is a top priority. PEST.js includes:
+      - Helmet for HTTP headers
+      - CORS configuration
+      - Rate limiting
+      - Input validation using Zod
+    </Note>
+  </StepperItem>
+
+  <StepperItem title="Scalability">
+    Designed to scale from **small projects to large enterprise applications** with:
+    - Modular architecture
+    - Efficient routing
+    - Database optimization
+    - Caching support
+  </StepperItem>
+</Stepper>
+
+## Production Readiness
+
+<Files items={[
+  {
+    type: "folder",
+    name: "Production Features",
+    isOpen: true,
+    indicator: "add",
+    children: [
+      { type: "file", name: "Structured Logging", indicator: "add" },
+      { type: "file", name: "Error Handling", indicator: "add" },
+      { type: "file", name: "Monitoring", indicator: "add" },
+      { type: "file", name: "Docker Support", indicator: "add" }
+    ]
+  }
+]} />

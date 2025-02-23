@@ -6,5 +6,4 @@
 /demo-testing
 /pnpm-testing
 /testing-demo
-
-[... rest of gitignore content ...]
+desktop.ini

@@ -1,0 +1,161 @@
+---
+title: "Introduction to PEST.js"
+description: "PEST.js is an unopinionated Express.js template engine that enables seamless scalability, enterprise security, and modern development practices."
+date: 23-02-2025
+authors:
+  - avatar: "/devs/nabinkhair.png"
+    handle: nabinkhair
+    username: nabinkhair42
+    handleUrl: "https://github.com/nabinkhair42"
+cover: "/blogs/introducing-pest-js.webp"
+---
+
+I'm excited to introduce **PEST.js** - a feature-based Express.js boilerplate designed to streamline backend development while maintaining flexibility and scalability.
+
+<Note type="success">
+  PEST.js combines the simplicity of Express.js with enterprise-grade features, robust security, and modern development practices - all preconfigured and ready to use.
+</Note>
+
+## Why PEST.js?
+
+While Express.js provides an excellent foundation, setting up a production-ready application often requires significant configuration and boilerplate code. PEST.js provides a well-structured starting point with essential features pre-configured.
+
+<Stepper>
+  <StepperItem title="Feature-Based Architecture">
+    A modular structure that organizes code by features rather than technical layers, making it easier to:
+    - Scale applications
+    - Maintain code
+    - Add new features
+    - Work in teams
+  </StepperItem>
+
+  <StepperItem title="Enterprise Security">
+    Pre-configured security features including:
+    - Helmet for HTTP headers
+    - CORS configuration
+    - Rate limiting
+  </StepperItem>
+
+  <StepperItem title="Developer Experience">
+    Ready-to-use development setup with:
+    - TypeScript configuration
+    - Development server with hot reload
+    - API documentation setup
+    - Testing configuration
+  </StepperItem>
+</Stepper>
+
+## Key Features
+
+<Files items={[
+  {
+    type: "folder",
+    name: "Features",
+    isOpen: true,
+    indicator: "add",
+    children: [
+      { 
+        type: "folder", 
+        name: "Core", 
+        indicator: "add",
+        children: [
+          { type: "file", name: "TypeScript Setup", indicator: "add" },
+          { type: "file", name: "Express.js Configuration", indicator: "add" },
+          { type: "file", name: "MongoDB Setup", indicator: "add" }
+        ]
+      },
+      { 
+        type: "folder", 
+        name: "Security", 
+        indicator: "add",
+        children: [
+          { type: "file", name: "Security Middleware", indicator: "add" },
+          { type: "file", name: "Authentication Boilerplate", indicator: "add" }
+        ]
+      },
+      { 
+        type: "folder", 
+        name: "DevOps", 
+        indicator: "add",
+        children: [
+          { type: "file", name: "Dockerfile", indicator: "add" },
+          { type: "file", name: "Docker Compose", indicator: "add" }
+        ]
+      }
+    ]
+  }
+]} />
+
+## Getting Started
+
+To use this template:
+
+```bash
+# Clone the repository
+git clone https://github.com/username/pestjs-template my-app
+
+# Navigate to project directory
+cd my-app
+
+# Install dependencies
+npm install
+
+# Start development server
+npm run dev
+```
+
+<Note type="note">
+  Check the README.md file for detailed setup instructions and available scripts.
+</Note>
+
+## Project Structure
+
+PEST.js follows a feature-based architecture that keeps your code organized and maintainable:
+
+```typescript
+src/
+  ├── features/          # Feature modules
+  │   ├── auth/         # Authentication feature
+  │   └── users/        # User management
+  ├── middleware/       # Custom middleware
+  ├── utils/           # Utility functions
+  ├── config/          # Configuration files
+  └── app.ts           # Application entry point
+```
+
+## Use Cases
+
+This template is ideal for:
+
+- **REST APIs**: Robust routing and middleware system
+- **Backend Services**: Security and scalability features
+- **MVP Projects**: Quick setup and development workflow
+- **Learning Projects**: Well-structured Express.js example
+
+## Performance Considerations
+
+<Note type="warning">
+The template includes best practices for:
+
+- Efficient routing setup
+- Database connection management
+- Error handling
+- Security configurations
+</Note>
+
+## Contributing
+
+This is an open-source template and contributions are welcome! Whether it's:
+
+- Bug fixes
+- Feature suggestions
+- Documentation improvements
+- Code contributions
+
+<Note type="danger">
+  Found a security vulnerability? Please create an issue on GitHub with the label 'security'.
+</Note>
+
+## License
+
+This project is licensed under the MIT License - see the LICENSE file for details.

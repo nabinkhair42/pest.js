@@ -1,0 +1,49 @@
+---
+title: Configuration
+description: Environment and application configuration
+---
+
+## Environment Variables
+
+<Note type="warning">
+  Configure your application by setting environment variables in the .env file
+</Note>
+
+```env
+NODE_ENV=development
+PORT=3000
+MONGODB_URI=mongodb://localhost:27017/your_database
+JWT_SECRET=your_jwt_secret
+RATE_LIMIT_WINDOW_MS=900000
+RATE_LIMIT_MAX=100
+LOGS_DIRECTORY=logs
+```
+
+## Configuration Files
+
+<Files items={[
+  {
+    type: "folder",
+    name: "config",
+    isOpen: true,
+    indicator: "add",
+    children: [
+      { type: "file", name: "env.ts", indicator: "add" },
+      { type: "file", name: "database.ts", indicator: "add" },
+      { type: "file", name: "app.ts", indicator: "add" }
+    ]
+  }
+]} />
+
+## Environment Validation
+
+Environment variables are validated using Zod:
+
+```typescript
+const envSchema = z.object({
+  NODE_ENV: z.enum(['development', 'production', 'test']),
+  PORT: z.string(),
+  MONGODB_URI: z.string(),
+  // ... other validations
+});
+```

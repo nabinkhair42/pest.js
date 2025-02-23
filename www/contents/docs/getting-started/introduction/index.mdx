@@ -1,0 +1,149 @@
+---
+title: Introduction
+description: A feature-based Express.js and TypeScript boilerplate
+---
+
+<Note type="success">
+  PEST.js is a structured boilerplate for building Node.js applications with Express.js and TypeScript.
+</Note>
+
+## Quick Start
+
+<Stepper>
+  <StepperItem title="Get the Template">
+    ```bash
+    # Clone the repository
+    git clone https://github.com/username/pestjs-template my-app
+    cd my-app
+    ```
+  </StepperItem>
+
+  <StepperItem title="Install Dependencies">
+    ```bash
+    npm install
+    ```
+  </StepperItem>
+
+  <StepperItem title="Configure Environment">
+    ```bash
+    cp .env.example .env
+    # Update the .env file with your settings
+    ```
+  </StepperItem>
+
+  <StepperItem title="Start Development">
+    ```bash
+    npm run dev
+    ```
+  </StepperItem>
+</Stepper>
+
+## Features
+
+<Note type="note">
+Core features included in this template:
+
+- Feature-based folder structure
+- TypeScript configuration
+- MongoDB integration with Mongoose
+- Basic security middleware
+- Error handling and logging
+- Testing setup with Jest
+- Docker configuration
+</Note>
+
+## Project Structure
+
+<Files items={[
+  {
+    type: "folder",
+    name: "src",
+    isOpen: true,
+    indicator: "add",
+    children: [
+      { type: "folder", name: "features", indicator: "add" },
+      { type: "folder", name: "config", indicator: "add" },
+      { type: "folder", name: "middleware", indicator: "add" },
+      { type: "folder", name: "utils", indicator: "add" },
+      { type: "file", name: "app.ts", indicator: "add" }
+    ]
+  }
+]} />
+
+## Project Overview
+
+<Files items={[
+  {
+    type: "folder",
+    name: "Getting Started Guide",
+    isOpen: true,
+    indicator: "add",
+    children: [
+      { type: "file", name: "Project Structure", indicator: "add" },
+      { type: "file", name: "Core Principles", indicator: "add" },
+      { type: "file", name: "Configuration Guide", indicator: "add" },
+      { type: "file", name: "How PEST.js Works", indicator: "add" }
+    ]
+  }
+]} />
+
+## Key Features
+
+<Note type="note">
+PEST.js comes with several built-in features to accelerate your development:
+
+- **TypeScript Support**: Built-in TypeScript configuration
+- **Security Features**: CORS, Helmet, Rate Limiting
+- **Database Integration**: MongoDB with Mongoose
+- **API Documentation**: Automated Swagger/OpenAPI docs
+- **Testing Setup**: Jest and Supertest configuration
+- **Docker Support**: Ready for containerization
+</Note>
+
+## Next Steps
+
+<Files items={[
+  {
+    type: "folder",
+    name: "Documentation",
+    isOpen: true,
+    indicator: "add",
+    children: [
+      { 
+        type: "folder", 
+        name: "Guides", 
+        indicator: "add",
+        children: [
+          { type: "file", name: "Authentication", indicator: "add" },
+          { type: "file", name: "Database Setup", indicator: "add" },
+          { type: "file", name: "API Documentation", indicator: "add" }
+        ]
+      },
+      { 
+        type: "folder", 
+        name: "Advanced", 
+        indicator: "add",
+        children: [
+          { type: "file", name: "Custom Middleware", indicator: "add" },
+          { type: "file", name: "Testing Strategies", indicator: "add" }
+        ]
+      }
+    ]
+  }
+]} />
+
+<Note type="warning">
+  Make sure to read through the documentation sections to understand PEST.js's features and best practices thoroughly.
+</Note>
+
+## Support
+
+If you need help or want to contribute:
+
+- [GitHub Repository](https://github.com/pestjs/pestjs)
+- [Discord Community](https://discord.gg/pestjs)
+- [Documentation](https://docs.pestjs.dev)
+
+<Note type="danger">
+  For security vulnerabilities, please email security@pestjs.dev instead of using the public issue tracker.
+</Note> 
