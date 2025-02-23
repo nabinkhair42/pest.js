@@ -1,17 +1,26 @@
+/* Light Mode - Developer-focused syntax highlighting */
 .keyword {
   color: #d73a49; /* GitHub Red */
+  font-weight: 600;
+  letter-spacing: 0.3px;
 }
 
 .function {
   color: #6f42c1; /* GitHub Purple */
+  font-style: italic;
+  text-decoration-thickness: from-font;
 }
 
 .punctuation {
   color: #24292e; /* GitHub Black */
+  opacity: 0.85;
+  font-family: monospace;
 }
 
 .comment {
   color: #6a737d; /* GitHub Muted Gray */
+  font-style: italic;
+  font-size: 0.95em;
 }
 
 .string,
@@ -20,35 +29,51 @@
 .boolean,
 .number {
   color: #005cc5; /* GitHub Blue */
+  font-weight: 500;
+  font-family: 'Fira Code', monospace;
 }
 
 .tag {
   color: #22863a; /* GitHub Green */
+  font-weight: 600;
+  letter-spacing: 0.3px;
 }
 
 .attr-name {
   color: #6f42c1; /* GitHub Purple */
+  font-style: italic;
+  font-weight: 500;
 }
 
 .attr-value {
   color: #e36209; /* GitHub Orange */
+  font-weight: 500;
+  font-family: 'Fira Code', monospace;
 }
 
-/* Dark Mode */
+/* Dark Mode - Enhanced for long coding sessions */
 .dark .keyword {
   color: #f97583; /* GitHub Light Red */
+  font-weight: 600;
+  letter-spacing: 0.3px;
 }
 
 .dark .function {
   color: #d2a8ff; /* GitHub Light Purple */
+  font-style: italic;
+  text-decoration-thickness: from-font;
 }
 
 .dark .punctuation {
   color: #c9d1d9; /* GitHub Light Gray */
+  opacity: 0.9;
+  font-family: monospace;
 }
 
 .dark .comment {
   color: #8b949e; /* GitHub Muted Gray */
+  font-style: italic;
+  font-size: 0.95em;
 }
 
 .dark .string,
@@ -57,16 +82,24 @@
 .dark .boolean,
 .dark .number {
   color: #79c0ff; /* GitHub Light Blue */
+  font-weight: 500;
+  font-family: 'Fira Code', monospace;
 }
 
 .dark .tag {
   color: #a5d6ff; /* GitHub Cyan */
+  font-weight: 600;
+  letter-spacing: 0.3px;
 }
 
 .dark .attr-name {
   color: #d2a8ff; /* GitHub Light Purple */
+  font-style: italic;
+  font-weight: 500;
 }
 
 .dark .attr-value {
   color: #ffa657; /* GitHub Light Orange */
+  font-weight: 500;
+  font-family: 'Fira Code', monospace;
 }
