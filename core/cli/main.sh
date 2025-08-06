@@ -243,11 +243,25 @@ EOF
 # Initialize git
 init_git() {
   print_info "Initializing git repository..."
-  git config user.email "pestjs@example.com"
-  git config user.name "PEST.js CLI"
+  
+  # Set git config before init
+  git config --global user.email "pestjs@example.com" || true
+  git config --global user.name "PEST.js CLI" || true
+  
+  # Initialize git repository
   git init
+  
+  # Add all files
   git add .
-  git commit -m "Initial commit: PEST.js project"
+  
+  # Commit with proper identity
+  git commit -m "Initial commit: PEST.js project" || {
+    print_error "Failed to commit. Trying with local config..."
+    git config user.email "pestjs@example.com"
+    git config user.name "PEST.js CLI"
+    git commit -m "Initial commit: PEST.js project"
+  }
+  
   print_success "Git repository initialized"
 }
 
