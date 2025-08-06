@@ -67,6 +67,7 @@ generate_files() {
   generate_tsconfig
   generate_eslint
   generate_gitignore
+  generate_jest_config
   generate_app_file "$PROJECT_NAME"
   generate_env_files
   print_success "Project files generated"
@@ -167,6 +168,24 @@ dist/
 *.log
 coverage/
 .DS_Store
+EOF
+}
+
+# Generate Jest config
+generate_jest_config() {
+  # Jest config
+  cat > jest.config.js << 'EOF'
+module.exports = {
+  testEnvironment: 'node',
+  testMatch: ['**/*.test.ts'],
+  transform: {
+    '^.+\\.ts$': 'ts-jest'
+  },
+  moduleNameMapper: {
+    '^src/(.*)$': '<rootDir>/src/$1'
+  },
+  setupFiles: ['./src/tests/setup.ts']
+};
 EOF
 }
 

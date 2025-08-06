@@ -35,6 +35,7 @@ generate_package_json() {
     "ts-node": "^10.9.2",
     "nodemon": "^3.0.3",
     "jest": "^29.7.0",
+    "ts-jest": "^29.1.1",
     "@types/jest": "^29.5.11",
     "eslint": "^8.56.0",
     "@typescript-eslint/eslint-plugin": "^6.19.1",

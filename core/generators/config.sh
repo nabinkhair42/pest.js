@@ -57,9 +57,28 @@ generate_env_files() {
 NODE_ENV=development
 PORT=3000
 EOF
-
   cat > .env << 'EOF'
 NODE_ENV=development
 PORT=3000
+EOF
+}
+
+generate_jest_config() {
+  cat > jest.config.js << 'EOF'
+module.exports = {
+  preset: 'ts-jest',
+  testEnvironment: 'node',
+  roots: ['<rootDir>/src'],
+  testMatch: ['**/__tests__/**/*.ts', '**/?(*.)+(spec|test).ts'],
+  transform: {
+    '^.+\\.ts$': 'ts-jest',
+  },
+  collectCoverageFrom: [
+    'src/**/*.ts',
+    '!src/**/*.d.ts',
+  ],
+  coverageDirectory: 'coverage',
+  coverageReporters: ['text', 'lcov'],
+};
 EOF
 } 

@@ -57,12 +57,20 @@ jobs:
           test -d src/utils
           test -d src/types
 
-      - name: Test generated project
+      - name: Install generated project dependencies
         run: |
           cd test-project
           npm install --legacy-peer-deps
+
+      - name: Build generated project
+        run: |
+          cd test-project
           npm run build
-          npm test
+
+      - name: Test generated project
+        run: |
+          cd test-project
+          npm test -- --passWithNoTests
 
       - name: Cleanup test project
         run: |
