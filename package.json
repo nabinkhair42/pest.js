@@ -1,0 +1,43 @@
+{
+  "name": "pestjs",
+  "version": "2.0.0",
+  "description": "Progressive Express Starter Template - CLI Framework",
+  "private": true,
+  "scripts": {
+    "prepare": "husky",
+    "lint": "npm run lint:www",
+    "lint:www": "cd www && npm run lint",
+    "test": "npm run test:www && npm run test:cli",
+    "test:www": "cd www && npm test",
+    "test:cli": "bash -c 'echo \"test-project\\ntest-user\" | ./pestjs && cd test-project && npm install && npm run build && npm test && cd .. && rm -rf test-project'",
+    "build": "npm run build:www",
+    "build:www": "cd www && npm run build",
+    "dev": "cd www && npm run dev",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^19.8.1",
+    "@commitlint/config-conventional": "^19.8.1",
+    "husky": "^9.1.7",
+    "prettier": "^3.3.3"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/nabinkhair42/pest.js.git"
+  },
+  "keywords": [
+    "cli",
+    "framework",
+    "nodejs",
+    "express",
+    "typescript",
+    "generator"
+  ],
+  "author": "nabinkhair",
+  "license": "MIT"
+}

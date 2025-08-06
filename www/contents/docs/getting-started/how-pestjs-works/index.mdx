@@ -1,82 +1,81 @@
 ---
 title: How PEST.js Works
-description: Understanding the request lifecycle and architecture of PEST.js.
+description: Framework execution process and file generation
 ---
 
 <Note type="note">
-  PEST.js provides a structured, scalable way to handle backend requests while maintaining flexibility.
+  PEST.js generates Node.js projects through a simple CLI interface and modular file generators.
 </Note>
 
-## Request Lifecycle
+## Framework Execution
 
 <Stepper>
-  <StepperItem title="Client Request">
-    Request is sent to the server via API endpoints
-    ```typescript
-    POST /api/auth/login
+  <StepperItem title="CLI Entry">
+    Framework starts with:
+    ```bash
+    ./pestjs
     ```
+    Validates environment and collects user input
   </StepperItem>
 
-  <StepperItem title="Middleware Processing">
-    Security, validation, and logging middleware are applied:
-    - Rate limiting
-    - CORS checks
-    - Authentication
-    - Request validation
+  <StepperItem title="User Input">
+    Prompts for project details:
+    - Project name (default: pestjs-app)
+    - GitHub username (default: your-username)
   </StepperItem>
 
-  <StepperItem title="Route Handling">
-    Request is routed to the appropriate controller:
-    ```typescript
-    router.post('/login', authController.login);
-    ```
+  <StepperItem title="File Generation">
+    Creates project files:
+    - package.json with dependencies
+    - tsconfig.json for TypeScript
+    - .eslintrc.json for linting
+    - src/app.ts for Express app
+    - .env files for environment
   </StepperItem>
 
-  <StepperItem title="Controller & Service">
-    Business logic is executed through services:
-    ```typescript
-    // Controller
-    async login(req: Request, res: Response) {
-      const user = await authService.validateUser(req.body);
-      const token = await authService.generateToken(user);
-      res.json({ token });
-    }
+  <StepperItem title="Git Setup">
+    Initializes repository:
+    ```bash
+    git init
+    git add .
+    git commit -m "Initial commit: PEST.js project"
     ```
   </StepperItem>
 </Stepper>
 
-## Key Components
+## Framework Components
 
 <Files items={[
   {
     type: "folder",
-    name: "Components",
+    name: "core",
     isOpen: true,
     indicator: "add",
     children: [
       { 
         type: "folder", 
-        name: "Middleware", 
+        name: "cli", 
         indicator: "add",
         children: [
-          { type: "file", name: "auth.middleware.ts", indicator: "add" },
-          { type: "file", name: "validation.middleware.ts", indicator: "add" }
+          { type: "file", name: "main.sh", indicator: "add" }
         ]
       },
       { 
         type: "folder", 
-        name: "Controllers", 
+        name: "generators", 
         indicator: "add",
         children: [
-          { type: "file", name: "user.controller.ts", indicator: "add" }
+          { type: "file", name: "package.sh", indicator: "add" },
+          { type: "file", name: "config.sh", indicator: "add" },
+          { type: "file", name: "app.sh", indicator: "add" }
         ]
       },
       { 
         type: "folder", 
-        name: "Services", 
+        name: "utils", 
         indicator: "add",
         children: [
-          { type: "file", name: "user.service.ts", indicator: "add" }
+          { type: "file", name: "helpers.sh", indicator: "add" }
         ]
       }
     ]
@@ -84,9 +83,55 @@ description: Understanding the request lifecycle and architecture of PEST.js.
 ]} />
 
 <Note type="warning">
-  Each component has a specific responsibility:
-  - **Middleware**: Request processing and validation
-  - **Controllers**: Request/response handling
-  - **Services**: Business logic
-  - **Models**: Data structure and validation
+  Each component has specific responsibilities:
+  - **CLI**: User interaction and project setup
+  - **Generators**: Create essential project files
+  - **Utils**: Helper functions and utilities
 </Note>
+
+## Generated Files
+
+### package.json
+```json
+{
+  "name": "your-project",
+  "scripts": {
+    "start": "node dist/app.js",
+    "dev": "nodemon --exec ts-node src/app.ts",
+    "build": "tsc",
+    "test": "jest",
+    "lint": "eslint . --ext .ts"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "cors": "^2.8.5",
+    "helmet": "^7.1.0",
+    "dotenv": "^16.4.1"
+  }
+}
+```
+
+### src/app.ts
+```typescript
+import express from 'express';
+import cors from 'cors';
+import helmet from 'helmet';
+
+const app = express();
+
+app.use(helmet());
+app.use(cors());
+app.use(express.json());
+
+app.get('/', (_, res) => {
+  res.json({
+    message: 'Welcome to your-project API',
+    version: '1.0.0'
+  });
+});
+
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
+```

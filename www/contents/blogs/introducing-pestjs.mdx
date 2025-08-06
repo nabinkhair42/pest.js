@@ -1,6 +1,6 @@
 ---
-title: "Introduction to PEST.js"
-description: "PEST.js is an unopinionated Express.js template engine that enables seamless scalability, enterprise security, and modern development practices."
+title: "PEST.js - Minimal Node.js Framework"
+description: "A minimal, scalable framework that generates production-ready Node.js applications with clean architecture."
 date: 23-02-2025
 authors:
   - avatar: "/devs/nabinkhair.png"
@@ -10,152 +10,119 @@ authors:
 cover: "/blogs/introducing-pest-js.webp"
 ---
 
-I'm excited to introduce **PEST.js** - a feature-based Express.js boilerplate designed to streamline backend development while maintaining flexibility and scalability.
+**PEST.js** is a minimal framework that generates production-ready Node.js applications. It focuses on essential functionality and developer experience.
 
 <Note type="success">
-  PEST.js combines the simplicity of Express.js with enterprise-grade features, robust security, and modern development practices - all preconfigured and ready to use.
+  PEST.js provides a clean foundation with minimal dependencies, TypeScript support, and essential configurations.
 </Note>
 
-## Why PEST.js?
+## Framework Overview
 
-While Express.js provides an excellent foundation, setting up a production-ready application often requires significant configuration and boilerplate code. PEST.js provides a well-structured starting point with essential features pre-configured.
+PEST.js generates a complete Node.js project with:
+
+- Express.js application
+- TypeScript configuration
+- ESLint setup
+- Jest testing
+- Git repository initialization
+
+## Core Features
 
 <Stepper>
-  <StepperItem title="Feature-Based Architecture">
-    A modular structure that organizes code by features rather than technical layers, making it easier to:
-    - Scale applications
-    - Maintain code
-    - Add new features
-    - Work in teams
+  <StepperItem title="Minimal Dependencies">
+    Only essential packages included:
+    - express (web framework)
+    - cors (cross-origin requests)
+    - helmet (security headers)
+    - dotenv (environment variables)
   </StepperItem>
 
-  <StepperItem title="Enterprise Security">
-    Pre-configured security features including:
-    - Helmet for HTTP headers
-    - CORS configuration
-    - Rate limiting
+  <StepperItem title="TypeScript Support">
+    Full TypeScript configuration:
+    - Strict type checking
+    - Source maps
+    - Declaration files
   </StepperItem>
 
-  <StepperItem title="Developer Experience">
-    Ready-to-use development setup with:
-    - TypeScript configuration
-    - Development server with hot reload
-    - API documentation setup
-    - Testing configuration
+  <StepperItem title="Development Tools">
+    Ready-to-use development setup:
+    - Hot reload with nodemon
+    - ESLint for code quality
+    - Jest for testing
   </StepperItem>
 </Stepper>
 
-## Key Features
+## Project Structure
+
+Generated projects follow this structure:
+
+```typescript
+src/
+  ├── app.ts           # Main application
+  ├── config/          # Configuration
+  ├── features/        # Feature modules
+  ├── middleware/      # Custom middleware
+  ├── utils/           # Utilities
+  └── types/           # TypeScript types
+```
+
+## Quick Start
+
+```bash
+# Run the framework
+./pestjs
+
+# Follow prompts for project setup
+# Navigate to generated project
+cd your-project-name
+
+# Install dependencies
+npm install
+
+# Start development
+npm run dev
+```
+
+## Framework Architecture
 
 <Files items={[
   {
     type: "folder",
-    name: "Features",
+    name: "pest.js",
     isOpen: true,
     indicator: "add",
     children: [
       { 
         type: "folder", 
-        name: "Core", 
+        name: "core", 
         indicator: "add",
         children: [
-          { type: "file", name: "TypeScript Setup", indicator: "add" },
-          { type: "file", name: "Express.js Configuration", indicator: "add" },
-          { type: "file", name: "MongoDB Setup", indicator: "add" }
+          { type: "folder", name: "cli", indicator: "add" },
+          { type: "folder", name: "generators", indicator: "add" },
+          { type: "folder", name: "utils", indicator: "add" }
         ]
       },
-      { 
-        type: "folder", 
-        name: "Security", 
-        indicator: "add",
-        children: [
-          { type: "file", name: "Security Middleware", indicator: "add" },
-          { type: "file", name: "Authentication Boilerplate", indicator: "add" }
-        ]
-      },
-      { 
-        type: "folder", 
-        name: "DevOps", 
-        indicator: "add",
-        children: [
-          { type: "file", name: "Dockerfile", indicator: "add" },
-          { type: "file", name: "Docker Compose", indicator: "add" }
-        ]
-      }
+      { type: "file", name: "pestjs", indicator: "add" }
     ]
   }
 ]} />
 
-## Getting Started
-
-To use this template:
-
-```bash
-# Clone the repository
-git clone https://github.com/username/pestjs-template my-app
-
-# Navigate to project directory
-cd my-app
-
-# Install dependencies
-npm install
-
-# Start development server
-npm run dev
-```
-
-<Note type="note">
-  Check the README.md file for detailed setup instructions and available scripts.
-</Note>
-
-## Project Structure
-
-PEST.js follows a feature-based architecture that keeps your code organized and maintainable:
-
-```typescript
-src/
-  ├── features/          # Feature modules
-  │   ├── auth/         # Authentication feature
-  │   └── users/        # User management
-  ├── middleware/       # Custom middleware
-  ├── utils/           # Utility functions
-  ├── config/          # Configuration files
-  └── app.ts           # Application entry point
-```
-
 ## Use Cases
 
-This template is ideal for:
+- **API Development**: Quick Express.js setup
+- **Backend Services**: Minimal, focused architecture
+- **Learning Projects**: Clean TypeScript examples
+- **MVP Development**: Fast project initialization
 
-- **REST APIs**: Robust routing and middleware system
-- **Backend Services**: Security and scalability features
-- **MVP Projects**: Quick setup and development workflow
-- **Learning Projects**: Well-structured Express.js example
+## Technical Specifications
 
-## Performance Considerations
-
-<Note type="warning">
-The template includes best practices for:
-
-- Efficient routing setup
-- Database connection management
-- Error handling
-- Security configurations
-</Note>
-
-## Contributing
-
-This is an open-source template and contributions are welcome! Whether it's:
-
-- Bug fixes
-- Feature suggestions
-- Documentation improvements
-- Code contributions
-
-<Note type="danger">
-  Found a security vulnerability? Please create an issue on GitHub with the label 'security'.
-</Note>
+- **Runtime**: Node.js
+- **Framework**: Express.js
+- **Language**: TypeScript
+- **Testing**: Jest
+- **Linting**: ESLint
+- **Package Manager**: npm
 
 ## License
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+MIT License - see LICENSE file for details.

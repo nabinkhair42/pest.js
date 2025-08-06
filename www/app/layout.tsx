@@ -17,10 +17,10 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "PEST.js - Progressive Express Starter Template",
+  title: "PEST.js - CLI Framework",
   metadataBase: new URL("https://pestjs.vercel.app/"),
   description:
-    "PEST.js is an advanced template engine that generates production-ready Node.js applications with enterprise-grade architecture and modern development practices. It focuses on progressive enhancement, allowing your application to grow seamlessly from a simple API to a full-scale enterprise system.",
+    "Generate Node.js applications with Express.js, TypeScript, and essential configurations using our CLI tool.",
 };
 
 export default function RootLayout({

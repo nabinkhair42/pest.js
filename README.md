@@ -6,166 +6,45 @@
   <p><strong>Progressive • Elegant • Structured • TypeScript</strong></p>
 </div>
 
-## The Progressive Node.js Template Engine
-
-PEST.js is an advanced template engine that generates production-ready Node.js applications with enterprise-grade architecture and modern development practices. It focuses on progressive enhancement, allowing your application to grow seamlessly from a simple API to a full-scale enterprise system.
-
-## Core Features
-
-- 🏗️ **Progressive Architecture**: Scale from simple to complex without restructuring
-- 🔒 **Enterprise Security**: Industry-standard security practices built-in
-- 📦 **Intelligent Defaults**: Smart configurations that adapt to your needs
-- 🔍 **TypeScript-First**: Built for type safety and modern development
-- 🧪 **Testing Framework**: Comprehensive testing suite included
-- 📚 **Self-Documenting**: Automated API documentation generation
-- 🐳 **Container-Ready**: Containerization support from day one
-- 📝 **Observable**: Logging and monitoring built-in
-
-## Why PEST.js?
-
-- 🚀 **Start Small, Grow Big**: Perfect for both MVPs and enterprise applications
-- 🎯 **Production-First**: No need to restructure for production
-- 📦 **Zero-Config**: Works out of the box with smart defaults
-- 🔒 **Type-Safe**: Catch errors before they happen
-- 🏗️ **Feature-Based**: Organized for maintainability
-- 🧪 **Test-Driven**: Testing infrastructure ready to go
-- 📚 **Well Documented**: Clear, automated documentation
-- 🐳 **Cloud-Native**: Ready for modern deployment
-
 ## Overview
 
-This script creates a complete project structure with all necessary configuration files for a modern Node.js application. It sets up a feature-based architecture that follows best practices and includes essential tools and configurations.
+PEST.js is a **minimal, scalable framework** that generates production-ready Node.js applications. It focuses on **essential functionality** and **developer experience**, providing a clean foundation that grows with your project.
 
 ## Features
 
-- 🚀 Automated project scaffolding
-- 📁 Feature-based folder structure
-- ⚙️ Pre-configured TypeScript setup
-- 🔒 Environment configuration with validation
-- 🗃️ MongoDB/Mongoose integration
-- 🔑 Authentication boilerplate
-- 📝 Logging setup
-- 🧪 Testing infrastructure
-- 🐳 Docker configuration
-- 💅 Code formatting and linting setup
+- **Minimal Dependencies**: Only essential packages included
+- **TypeScript-First**: Built for modern development
+- **Clean Architecture**: Feature-based organization
+- **Testing Ready**: Jest configuration included
+- **Linting Setup**: ESLint with TypeScript support
+- **Git Integration**: Automatic repository initialization
 
-## Prerequisites
+## Quick Start
 
-- Bash shell
-- Basic command line knowledge
+### Prerequisites
 
-Here's the updated version of your instructions in a clean, professional format for a repository README:
+- Node.js v16 or higher
+- npm or yarn
+- Git
 
----
+### Installation
 
-## Usage
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/nabinkhair42/pest.js.git
+   cd pest.js
+   ```
 
-### 1. Download the Setup Script
+2. **Run the framework**
+   ```bash
+   ./pestjs
+   ```
 
-#### **Windows (PowerShell)**
-```powershell
-Invoke-WebRequest -Uri "https://raw.githubusercontent.com/nabinkhair42/mern-stater-kit/main/setup.sh" -OutFile "setup.sh"
-```
-Or, if `curl` is installed:
-```powershell
-curl.exe -O https://raw.githubusercontent.com/nabinkhair42/mern-stater-kit/main/setup.sh
-```
+3. **Follow the prompts**
+   - Enter project name
+   - Enter GitHub username
 
-#### **macOS & Linux (Terminal)**
-```bash
-curl -O https://raw.githubusercontent.com/nabinkhair42/mern-stater-kit/main/setup.sh
-```
-
-### 2. Make the Script Executable
-
-#### **macOS & Linux**
-```bash
-chmod +x setup.sh
-```
-
-#### **Windows (Git Bash, WSL, or PowerShell with Ubuntu Subsystem)**
-```bash
-chmod +x setup.sh
-```
-*(PowerShell does not require this step.)*
-
-### 3. Run the Script
-
-#### **macOS & Linux**
-```bash
-./setup.sh
-```
-
-#### **Windows (PowerShell)**
-```powershell
-bash setup.sh
-```
-*(Requires WSL, Git Bash, or a compatible shell.)*
-
-### 4. Enter the Project Name
-
-When prompted, enter your project name or press **Enter** to use the default name.
-
----
-
-## Generated Structure
-
-The script creates the following structure:
-
-```
-project-root/
-├───docs
-│   └───api
-├───scripts
-├───src
-│   ├───config
-│   ├───features
-│   │   ├───auth
-│   │   │   ├───controllers
-│   │   │   ├───models
-│   │   │   ├───routes
-│   │   │   ├───schemas
-│   │   │   └───services
-│   │   └───users
-│   │       ├───controllers
-│   │       ├───models
-│   │       ├───routes
-│   │       ├───schemas
-│   │       └───services
-│   ├───middleware
-│   ├───types
-│   └───utils
-└───tests
-    ├───fixtures
-    ├───integration
-    └───unit
-```
-
-## Generated Files
-
-The script creates and configures the following files:
-
-### Core Configuration
-- `package.json` - Project dependencies and scripts
-- `tsconfig.json` - TypeScript configuration
-- `.env`, `.env.example`, `.env.test` - Environment configurations
-- `Dockerfile` and `docker-compose.yml` - Docker setup
-
-### Development Tools
-- `.eslintrc.js` - ESLint configuration
-- `.prettierrc` - Prettier configuration
-- `.gitignore` - Git ignore rules
-- `jest.config.js` - Jest testing configuration
-
-### Application Files
-- `src/app.ts` - Application entry point
-- `src/config/` - Configuration files for database, environment, etc.
-- Feature modules with MVC structure
-- Utility scripts for database seeding and documentation generation
-
-## Post-Setup Steps
-
-After running the script:
+### Post-Setup Steps
 
 1. Navigate to your project directory:
    ```bash
@@ -177,26 +56,102 @@ After running the script:
    npm install
    ```
 
-3. Update the `.env` file with your configuration
-
-4. Start development:
+3. Start development:
    ```bash
    npm run dev
    ```
 
-## Available Scripts
+## Project Structure
 
-The generated project includes several npm scripts:
+```
+pest.js/
+├── core/                    # Framework core
+│   ├── cli/                # CLI interface
+│   │   └── main.sh         # Main CLI logic
+│   ├── generators/          # Code generators
+│   │   ├── package.sh      # Package.json generator
+│   │   ├── config.sh       # Config files generator
+│   │   └── app.sh          # App file generator
+│   ├── utils/              # Utilities
+│   │   └── helpers.sh      # Helper functions
+│   └── templates/          # Project templates
+├── www/                    # Documentation site
+├── public/                 # Static assets
+├── scripts/                # Build scripts
+├── docs/                   # Framework docs
+└── pestjs                  # CLI entry point
+```
+
+## Generated Project Structure
+
+```
+your-project/
+├── src/
+│   ├── config/            # Configuration
+│   ├── features/          # Feature modules
+│   │   ├── auth/
+│   │   └── users/
+│   ├── middleware/        # Custom middleware
+│   ├── utils/            # Utilities
+│   └── types/            # TypeScript types
+├── tests/
+│   ├── unit/
+│   └── integration/
+├── scripts/              # Utility scripts
+├── docs/                 # Documentation
+└── [config files]
+```
+
+## Available Scripts
 
 - `npm run dev` - Start development server
 - `npm run build` - Build for production
 - `npm start` - Start production server
-- `npm run lint` - Run ESLint
-- `npm run format` - Run Prettier
 - `npm test` - Run tests
-- `npm run seed` - Run database seeding
-- `npm run docs` - Generate API documentation
+- `npm run lint` - Run ESLint
+
+## Framework Architecture
+
+### Core Components
+
+1. **CLI Entry Point** (`pestjs`)
+   - Minimal, focused interface
+   - Essential project setup
+
+2. **Modular Generators** (`core/generators/`)
+   - `package.sh` - Package.json generation
+   - `config.sh` - Configuration files
+   - `app.sh` - Application setup
+
+3. **Utilities** (`core/utils/`)
+   - `helpers.sh` - Essential helper functions
+   - Validation and file operations
+
+### Design Principles
+
+- **Minimal Dependencies**: Only essential packages
+- **Modular Structure**: Focused, single-purpose files
+- **Developer Experience**: Clean, intuitive interface
+- **Scalable Foundation**: Easy to extend and customize
+
+## Dependencies
+
+### Core Dependencies
+- `express` - Web framework
+- `cors` - Cross-origin resource sharing
+- `helmet` - Security headers
+- `dotenv` - Environment variables
+
+### Development Dependencies
+- `typescript` - Type safety
+- `jest` - Testing framework
+- `eslint` - Code linting
+- `nodemon` - Development server
 
 ## Contributing
 
-Feel free to submit issues and enhancement requests to our [GitHub repository](https://github.com/nabinkhair42/pest.js)!
+We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) for details.
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.

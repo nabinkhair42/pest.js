@@ -1,0 +1,77 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    name: Create Release
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "18"
+          cache: "npm"
+          cache-dependency-path: "www/package-lock.json"
+
+      - name: Install dependencies
+        run: |
+          cd www
+          npm ci
+
+      - name: Run tests
+        run: |
+          cd www
+          npm test
+          npm run lint
+
+      - name: Test CLI framework
+        run: |
+          chmod +x pestjs
+          chmod +x core/cli/main.sh
+          chmod +x core/generators/*.sh
+          chmod +x core/utils/*.sh
+          echo -e "test-release\ntest-user" | ./pestjs
+          cd test-release
+          npm install
+          npm run build
+          cd ..
+          rm -rf test-release
+
+      - name: Create Release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          body: |
+            ## PEST.js Framework Release
+
+            ### Changes
+            - CLI framework improvements
+            - Enhanced project generation
+            - Updated documentation
+
+            ### Installation
+            ```bash
+            git clone https://github.com/nabinkhair42/pest.js.git
+            cd pest.js
+            chmod +x pestjs
+            ./pestjs
+            ```
+
+            ### Quick Start
+            1. Run `./pestjs`
+            2. Enter project details
+            3. Navigate to generated project
+            4. Run `npm install && npm run dev`
+          draft: false
+          prerelease: false

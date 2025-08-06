@@ -8,12 +8,36 @@ export function Footer() {
         <div className="flex items-center gap-3">
           <MainLogo />
           <p className="text-center">
-            Under Development by <Link href="https://github.com/nabinkhair42" className="underline underline-offset-2">nabinkhair</Link>
+            Built with ❤️ by{" "}
+            <Link
+              href="https://github.com/nabinkhair42"
+              className="underline underline-offset-2 hover:text-foreground transition-colors"
+            >
+              nabinkhair
+            </Link>
           </p>
+        </div>
+        <div className="flex items-center gap-4 text-xs">
+          <Link
+            href="/docs"
+            className="hover:text-foreground transition-colors"
+          >
+            Documentation
+          </Link>
+          <Link
+            href="/blog"
+            className="hover:text-foreground transition-colors"
+          >
+            Blog
+          </Link>
+          <Link
+            href="https://github.com/nabinkhair42/pest.js"
+            className="hover:text-foreground transition-colors"
+          >
+            GitHub
+          </Link>
         </div>
       </div>
     </footer>
   );
 }
-
-

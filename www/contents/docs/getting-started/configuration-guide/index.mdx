@@ -1,22 +1,17 @@
 ---
 title: Configuration
-description: Environment and application configuration
+description: Essential configuration files and settings
 ---
 
 ## Environment Variables
 
 <Note type="warning">
-  Configure your application by setting environment variables in the .env file
+  Basic environment configuration in .env file
 </Note>
 
 ```bash:.env showLineNumbers
 NODE_ENV=development
 PORT=3000
-MONGODB_URI=mongodb://localhost:27017/your_database
-JWT_SECRET=your_jwt_secret
-RATE_LIMIT_WINDOW_MS=900000
-RATE_LIMIT_MAX=100
-LOGS_DIRECTORY=logs
 ```
 
 ## Configuration Files
@@ -28,22 +23,81 @@ LOGS_DIRECTORY=logs
     isOpen: true,
     indicator: "add",
     children: [
-      { type: "file", name: "env.ts", indicator: "add" },
-      { type: "file", name: "database.ts", indicator: "add" },
-      { type: "file", name: "app.ts", indicator: "add" }
+      { type: "file", name: "tsconfig.json", indicator: "add" },
+      { type: "file", name: ".eslintrc.json", indicator: "add" },
+      { type: "file", name: ".gitignore", indicator: "add" },
+      { type: "file", name: "package.json", indicator: "add" }
     ]
   }
 ]} />
 
-## Environment Validation
+## TypeScript Configuration
 
-Environment variables are validated using Zod:
-
-```typescript:env.ts
-const envSchema = z.object({
-  NODE_ENV: z.enum(['development', 'production', 'test']),
-  PORT: z.string(),
-  MONGODB_URI: z.string(),
-  // ... other validations
-});
+```json:tsconfig.json
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "commonjs",
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "sourceMap": true
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist", "tests"]
+}
 ```
+
+## ESLint Configuration
+
+```json:.eslintrc.json
+{
+  "parser": "@typescript-eslint/parser",
+  "extends": ["plugin:@typescript-eslint/recommended"],
+  "parserOptions": {
+    "ecmaVersion": 2022,
+    "sourceType": "module"
+  },
+  "rules": {
+    "@typescript-eslint/no-unused-vars": ["error", { "argsIgnorePattern": "^_" }]
+  }
+}
+```
+
+## Git Configuration
+
+```gitignore:.gitignore
+node_modules/
+dist/
+.env
+*.log
+coverage/
+.DS_Store
+```
+
+## Package.json Scripts
+
+```json:package.json
+{
+  "scripts": {
+    "start": "node dist/app.js",
+    "dev": "nodemon --exec ts-node src/app.ts",
+    "build": "tsc",
+    "test": "jest",
+    "lint": "eslint . --ext .ts"
+  }
+}
+```
+
+## Configuration Summary
+
+- **TypeScript**: Strict type checking and compilation
+- **ESLint**: Code quality and consistency
+- **Environment**: Basic configuration variables
+- **Git**: Essential ignore patterns
+- **Scripts**: Development and production commands

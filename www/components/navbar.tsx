@@ -29,7 +29,7 @@ export function Navbar() {
           <SheetLeftbar />
           <div className="flex items-center gap-6">
             <div className="sm:flex items-center gap-2">
-              <MainLogo /> 
+              <MainLogo />
             </div>
             <div className="md:flex hidden items-center gap-4 text-sm font-medium text-muted-foreground">
               <NavMenu />
@@ -48,7 +48,7 @@ export function Navbar() {
                 <FaGithub className="h-[1.1rem] w-[1.1rem]" />
               </Link>
               <Link
-                href="#"
+                href="https://x.com/khairnabin"
                 className={buttonVariants({
                   variant: "ghost",
                   size: "icon",
@@ -64,7 +64,6 @@ export function Navbar() {
     </nav>
   );
 }
-
 
 export function NavMenu({ isSheet = false }) {
   return (

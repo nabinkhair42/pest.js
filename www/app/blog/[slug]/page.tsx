@@ -1,12 +1,12 @@
 import { Typography } from "@/components/typography";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { buttonVariants } from "@/components/ui/button";
 import { Author, getAllBlogStaticPaths, getBlogForSlug } from "@/lib/markdown";
-import { ArrowLeftIcon } from "lucide-react";
+import { formatDate } from "@/lib/utils";
+import { ChevronLeftIcon } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { formatDate } from "@/lib/utils";
-import Image from "next/image";
 
 type PageProps = {
   params: Promise<{ slug: string }>;
@@ -48,7 +48,7 @@ export default async function BlogPage(props: PageProps) {
         })}
         href="/blog"
       >
-        <ArrowLeftIcon className="w-4 h-4 mr-1.5" /> Back to blog
+        <ChevronLeftIcon className="w-4 h-4 mr-1" /> Back to blog
       </Link>
       <div className="flex flex-col gap-3 pb-7 w-full mb-2">
         <p className="text-muted-foreground text-sm">

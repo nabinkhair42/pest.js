@@ -1,73 +1,77 @@
 ---
 title: Core Principles
-description: The foundational principles behind PEST.js and its architecture.
+description: Framework architecture and design decisions
 ---
 
 <Note type="success">
-  PEST.js is built on core principles that ensure scalability, maintainability, and security for backend applications.
+  PEST.js is designed for simplicity, speed, and essential functionality.
 </Note>
 
-## Core Principles
+## Framework Architecture
 
 <Stepper>
-  <StepperItem title="Modularity">
-    PEST.js follows a **feature-based modular structure**, separating concerns into well-defined components:
-    
-    <Files items={[
-      {
-        type: "folder",
-        name: "features",
-        isOpen: true,
-        indicator: "add",
-        children: [
-          { type: "folder", name: "controllers", indicator: "add" },
-          { type: "folder", name: "services", indicator: "add" },
-          { type: "folder", name: "models", indicator: "add" }
-        ]
-      }
-    ]} />
+  <StepperItem title="CLI Interface">
+    Simple command-line interface:
+    ```bash
+    ./pestjs
+    ```
+    Prompts for project name and GitHub username
   </StepperItem>
 
-  <StepperItem title="Type Safety">
-    With a **TypeScript-first approach**, PEST.js leverages strong typing for:
-    - Better code quality
-    - Fewer runtime errors
-    - Enhanced developer experience
-    - Improved maintainability
+  <StepperItem title="File Generation">
+    Creates essential project files:
+    - package.json with minimal dependencies
+    - tsconfig.json for TypeScript
+    - .eslintrc.json for code quality
+    - src/app.ts for Express application
   </StepperItem>
 
-  <StepperItem title="Security by Default">
-    <Note type="warning">
-      Security is a top priority. PEST.js includes:
-      - Helmet for HTTP headers
-      - CORS configuration
-      - Rate limiting
-      - Input validation using Zod
-    </Note>
+  <StepperItem title="Project Structure">
+    Generates organized folder structure:
+    ```
+    src/
+    ├── app.ts
+    ├── config/
+    ├── features/
+    ├── middleware/
+    └── utils/
+    ```
   </StepperItem>
 
-  <StepperItem title="Scalability">
-    Designed to scale from **small projects to large enterprise applications** with:
-    - Modular architecture
-    - Efficient routing
-    - Database optimization
-    - Caching support
+  <StepperItem title="Git Integration">
+    Automatically initializes git repository:
+    ```bash
+    git init
+    git add .
+    git commit -m "Initial commit: PEST.js project"
+    ```
   </StepperItem>
 </Stepper>
 
-## Production Readiness
+## Technical Decisions
 
 <Files items={[
   {
     type: "folder",
-    name: "Production Features",
+    name: "Framework Design",
     isOpen: true,
     indicator: "add",
     children: [
-      { type: "file", name: "Structured Logging", indicator: "add" },
-      { type: "file", name: "Error Handling", indicator: "add" },
-      { type: "file", name: "Monitoring", indicator: "add" },
-      { type: "file", name: "Docker Support", indicator: "add" }
+      { type: "file", name: "Minimal Dependencies", indicator: "add" },
+      { type: "file", name: "TypeScript First", indicator: "add" },
+      { type: "file", name: "Essential Configs", indicator: "add" },
+      { type: "file", name: "Clean Structure", indicator: "add" }
     ]
   }
 ]} />
+
+## Dependencies Strategy
+
+- **Express.js**: Core web framework
+- **TypeScript**: Type safety and modern development
+- **Jest**: Testing framework
+- **ESLint**: Code quality
+- **Nodemon**: Development server
+- **Helmet**: Security headers
+- **CORS**: Cross-origin requests
+- **Dotenv**: Environment management

@@ -1,46 +1,41 @@
 # Contributing to PEST.js
 
-We love your input! We want to make contributing to PEST.js as easy and transparent as possible, whether it's:
+We welcome contributions! This document provides guidelines for contributing to the project.
 
-- Reporting a bug
-- Discussing the current state of the code
-- Submitting a fix
-- Proposing new features
-- Becoming a maintainer
+## How to Contribute
 
-## We Develop with Github
-We use GitHub to host code, to track issues and feature requests, as well as accept pull requests.
+### Reporting Issues
 
-## We Use [Github Flow](https://guides.github.com/introduction/flow/index.html)
-Pull requests are the best way to propose changes to the codebase. We actively welcome your pull requests:
+- Use the GitHub issue tracker to report bugs
+- Provide detailed steps to reproduce the issue
+- Include your environment details (OS, Node.js version, etc.)
+- Describe expected vs actual behavior
 
-1. Fork the repo and create your branch from `main`.
-2. If you've added code that should be tested, add tests.
-3. If you've changed APIs, update the documentation.
-4. Ensure the test suite passes.
-5. Make sure your code lints.
-6. Issue that pull request!
+### Submitting Changes
 
-## Any contributions you make will be under the MIT Software License
-In short, when you submit code changes, your submissions are understood to be under the same [MIT License](http://choosealicense.com/licenses/mit/) that covers the project. Feel free to contact the maintainers if that's a concern.
+1. Fork the repository
+2. Create a feature branch from `main`
+3. Make your changes
+4. Add tests for new functionality
+5. Update documentation if needed
+6. Ensure all tests pass
+7. Submit a pull request
 
-## Report bugs using Github's [issue tracker](https://github.com/nabinkhair42/mern-stater-kit/issues)
-We use GitHub issues to track public bugs. Report a bug by [opening a new issue](https://github.com/nabinkhair42/mern-stater-kit/issues/new); it's that easy!
+### Code Standards
 
-## Write bug reports with detail, background, and sample code
+- Follow the existing code style
+- Write clear, descriptive commit messages
+- Add tests for new features
+- Update documentation for API changes
+- Ensure your code passes linting
 
-**Great Bug Reports** tend to have:
+## Development Setup
 
-- A quick summary and/or background
-- Steps to reproduce
-  - Be specific!
-  - Give sample code if you can.
-- What you expected would happen
-- What actually happens
-- Notes (possibly including why you think this might be happening, or stuff you tried that didn't work)
+1. Clone the repository
+2. Install dependencies: `npm install`
+3. Run tests: `npm test`
+4. Start development server: `npm run dev`
 
 ## License
-By contributing, you agree that your contributions will be licensed under its MIT License.
 
-## References
-This document was adapted from the open-source contribution guidelines for [Facebook's Draft](https://github.com/facebook/draft-js/blob/a9316a723f9e918afde44dea68b5f9f39b7d9b00/CONTRIBUTING.md). 
+By contributing, you agree that your contributions will be licensed under the MIT License.

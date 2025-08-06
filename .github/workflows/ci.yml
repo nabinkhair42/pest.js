@@ -1,32 +1,141 @@
-name: PEST.js CI
+name: Code Quality & PR Checks
 
 on:
   push:
-    branches: [ main ]
+    branches: [main, develop]
   pull_request:
-    branches: [ main ]
+    branches: [main]
 
 jobs:
-  validate:
+  code-quality:
     runs-on: ubuntu-latest
+    name: Code Quality Checks
 
     steps:
-    - uses: actions/checkout@v3
-    
-    - name: Check script permissions
-      run: |
-        chmod +x setup.sh
-        
-    - name: Validate script
-      run: |
-        # Test if script can create a test project
-        ./setup.sh <<< "test-project"
-        
-    - name: Verify generated structure
-      run: |
-        cd test-project
-        # Check if essential files exist
-        test -f package.json
-        test -f tsconfig.json
-        test -d src
-        test -d tests 
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "18"
+          cache: "npm"
+          cache-dependency-path: "www/package-lock.json"
+
+      - name: Install dependencies
+        run: |
+          cd www
+          npm ci
+
+      - name: Run tests
+        run: |
+          cd www
+          npm test
+
+      - name: Lint code
+        run: |
+          cd www
+          npm run lint
+
+      - name: Test CLI framework
+        run: |
+          chmod +x pestjs
+          chmod +x core/cli/main.sh
+          chmod +x core/generators/*.sh
+          chmod +x core/utils/*.sh
+          echo -e "test-project\ntest-user" | ./pestjs
+
+      - name: Verify generated project structure
+        run: |
+          cd test-project
+          test -f package.json
+          test -f tsconfig.json
+          test -f .eslintrc.json
+          test -f .gitignore
+          test -f .env
+          test -f .env.example
+          test -d src
+          test -d tests
+          test -d src/features
+          test -d src/config
+          test -d src/middleware
+          test -d src/utils
+          test -d src/types
+
+      - name: Test generated project
+        run: |
+          cd test-project
+          npm install
+          npm run build
+          npm test
+
+      - name: Cleanup test project
+        run: |
+          rm -rf test-project
+
+  pr-validation:
+    runs-on: ubuntu-latest
+    name: PR Validation
+    if: github.event_name == 'pull_request'
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Check PR title format
+        run: |
+          if [[ ! "${{ github.event.pull_request.title }}" =~ ^(feat|fix|docs|style|refactor|test|chore)(\(.+\))?: ]]; then
+            echo "PR title should follow conventional commits format: type(scope): description"
+            echo "Examples: feat: add new feature, fix: resolve bug, docs: update readme"
+            exit 1
+          fi
+
+      - name: Check for merge conflicts
+        run: |
+          git fetch origin main
+          if git merge-tree $(git merge-base HEAD origin/main) HEAD origin/main | grep -q "<<<<<<<"; then
+            echo "Merge conflicts detected"
+            exit 1
+          fi
+
+      - name: Check file size limits
+        run: |
+          find . -type f -size +1M -not -path "./node_modules/*" -not -path "./.git/*" | while read file; do
+            echo "Large file detected: $file"
+          done
+
+      - name: Validate markdown files
+        run: |
+          find . -name "*.md" -exec grep -l "http" {} \; | xargs -I {} grep -o "http[^ ]*" {} | while read url; do
+            if curl --output /dev/null --silent --head --fail "$url"; then
+              echo "Link accessible: $url"
+            else
+              echo "Broken link: $url"
+              exit 1
+            fi
+          done
+
+  code-review:
+    runs-on: ubuntu-latest
+    name: Code Review Checks
+    if: github.event_name == 'pull_request'
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Check for TODO comments
+        run: |
+          if grep -r "TODO" . --exclude-dir=node_modules --exclude-dir=.git; then
+            echo "TODO comments found in code - please address before merging"
+          fi
+
+      - name: Check for console.log statements
+        run: |
+          if find . -name "*.ts" -o -name "*.tsx" -o -name "*.js" -o -name "*.jsx" | xargs grep -l "console\.log" | grep -v "test"; then
+            echo "console.log statements found in production code - please remove before merging"
+          fi
+
+      - name: Validate shell scripts
+        run: |
+          find . -name "*.sh" -exec bash -n {} \;
