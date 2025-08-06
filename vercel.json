@@ -1,0 +1,11 @@
+{
+  "buildCommand": "cd www && npm ci --legacy-peer-deps && npm run build",
+  "outputDirectory": "www/.next",
+  "installCommand": "cd www && npm ci --legacy-peer-deps",
+  "framework": "nextjs",
+  "functions": {
+    "www/app/**/*.tsx": {
+      "runtime": "nodejs18.x"
+    }
+  }
+} 
