@@ -14,7 +14,7 @@ export default function Image({
   if (!src) return null;
   return (
     <NextImage
-      src={src}
+      src={src as string}
       alt={alt}
       width={width as Width}
       height={height as Height}
