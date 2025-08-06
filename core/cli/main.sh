@@ -1,8 +1,6 @@
 #!/bin/bash
-
 # PEST.js - Minimal CLI
 # Progressive Express Starter Template
-
 set -e
 
 # Colors
@@ -29,60 +27,48 @@ show_banner() {
 # Validate environment
 validate_env() {
   print_info "Validating environment..."
-  
   if ! command -v node &> /dev/null; then
     print_error "Node.js is required"
     exit 1
   fi
-  
   if ! command -v npm &> /dev/null; then
     print_error "npm is required"
     exit 1
   fi
-  
   print_success "Environment validated"
 }
 
 # Get project details
 get_project_details() {
   print_info "Collecting project details..."
-  
   read -p "Project name (default: pestjs-app): " PROJECT_NAME
   PROJECT_NAME=${PROJECT_NAME:-pestjs-app}
-  
   read -p "GitHub username (default: your-username): " GITHUB_USERNAME
   GITHUB_USERNAME=${GITHUB_USERNAME:-your-username}
-  
   print_success "Project details collected"
 }
 
 # Create project structure
 create_structure() {
   print_info "Creating project structure..."
-  
   mkdir -p "$PROJECT_NAME"
   cd "$PROJECT_NAME"
-  
-  # Core directories
   mkdir -p src/{config,features,middleware,utils,types}
   mkdir -p tests/{unit,integration}
   mkdir -p scripts docs
-  
-  # Feature structure
   mkdir -p src/features/{auth,users}/{controllers,models,routes,services,schemas}
-  
   print_success "Project structure created"
 }
 
 # Generate essential files
 generate_files() {
   print_info "Generating project files..."
-  
-  generate_package_json
-  generate_config_files
-  generate_app_file
+  generate_package_json "$PROJECT_NAME" "$GITHUB_USERNAME"
+  generate_tsconfig
+  generate_eslint
+  generate_gitignore
+  generate_app_file "$PROJECT_NAME"
   generate_env_files
-  
   print_success "Project files generated"
 }
 
@@ -130,7 +116,7 @@ EOF
 }
 
 # Generate config files
-generate_config_files() {
+generate_tsconfig() {
   # TypeScript config
   cat > tsconfig.json << 'EOF'
 {
@@ -151,7 +137,10 @@ generate_config_files() {
   "exclude": ["node_modules", "dist", "tests"]
 }
 EOF
+}
 
+# Generate ESLint config
+generate_eslint() {
   # ESLint config
   cat > .eslintrc.json << 'EOF'
 {
@@ -166,7 +155,10 @@ EOF
   }
 }
 EOF
+}
 
+# Generate Gitignore
+generate_gitignore() {
   # Gitignore
   cat > .gitignore << 'EOF'
 node_modules/
@@ -232,11 +224,11 @@ EOF
 # Initialize git
 init_git() {
   print_info "Initializing git repository..."
-  
+  git config user.email "pestjs@example.com"
+  git config user.name "PEST.js CLI"
   git init
   git add .
   git commit -m "Initial commit: PEST.js project"
-  
   print_success "Git repository initialized"
 }
 
@@ -263,7 +255,6 @@ main() {
   show_next_steps
 }
 
-# Run main if script is executed directly
 if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
   main "$@"
 fi 
