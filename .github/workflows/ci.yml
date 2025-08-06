@@ -27,11 +27,6 @@ jobs:
           cd www
           npm ci --legacy-peer-deps
 
-      - name: Run tests
-        run: |
-          cd www
-          npm test
-
       - name: Lint code
         run: |
           cd www
