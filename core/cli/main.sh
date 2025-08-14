@@ -272,43 +272,7 @@ EOF
 }
 
 
-# Generate app file
-generate_app_file() {
-  cat > src/app.ts << 'EOF'
-import express from 'express';
-import cors from 'cors';
-import helmet from 'helmet';
 
-const app = express();
-
-// Middleware
-app.use(helmet());
-app.use(cors());
-app.use(express.json());
-
-// Routes
-app.get('/', (_, res) => {
-  res.json({
-    message: 'Welcome to PROJECT_NAME API',
-    version: '1.0.0'
-  });
-});
-
-app.get('/health', (_, res) => {
-  res.json({ status: 'ok' });
-});
-
-// Start server
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
-
-export default app;
-EOF
-
-  sed -i "s/PROJECT_NAME/$PROJECT_NAME/g" src/app.ts
-}
 
 # Generate environment files
 generate_env_files() {
