@@ -6,7 +6,7 @@
 generate_app_file() {
   local project_name="$1"
   
-  cat > src/app.ts << EOF
+  cat > src/app.ts << 'EOF'
 import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
@@ -21,8 +21,8 @@ app.use(express.json());
 // Routes
 app.get('/', (_, res) => {
   res.json({
-    message: 'Welcome to $project_name API',
-    version: '1.0.0'
+    message: 'Welcome to PROJECT_NAME API',
+    version: '1.0.0',
   });
 });
 
@@ -33,11 +33,14 @@ app.get('/health', (_, res) => {
 // Start server
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-  console.log(\`Server running on port \${PORT}\`);
+  console.log(`Server running on port ${PORT}`);
 });
 
 export default app;
 EOF
+
+  # Replace placeholders
+  sed -i "s/PROJECT_NAME/$project_name/g" src/app.ts
 }
 
 generate_test_file() {

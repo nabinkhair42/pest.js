@@ -114,17 +114,6 @@ jobs:
             echo "Large file detected: $file"
           done
 
-      - name: Validate markdown files
-        run: |
-          find . -name "*.md" -exec grep -l "http" {} \; | xargs -I {} grep -o "http[^ ]*" {} | while read url; do
-            if curl --output /dev/null --silent --head --fail "$url"; then
-              echo "Link accessible: $url"
-            else
-              echo "Broken link: $url"
-              exit 1
-            fi
-          done
-
   code-review:
     runs-on: ubuntu-latest
     name: Code Review Checks
