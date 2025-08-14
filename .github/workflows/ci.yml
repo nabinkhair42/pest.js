@@ -38,7 +38,7 @@ jobs:
           chmod +x core/cli/main.sh
           chmod +x core/generators/*.sh
           chmod +x core/utils/*.sh
-          echo -e "test-project\ntest-user" | ./pestjs
+          echo -e "test-project\ntest-user\ntest description" | ./pestjs
 
       - name: Verify generated project structure
         run: |
@@ -49,8 +49,13 @@ jobs:
           test -f .gitignore
           test -f .env
           test -f .env.example
+          test -f vercel.json
+          test -f .prettierrc
+          test -f .prettierignore
+          test -f jest.config.js
           test -d src
           test -d tests
+          test -d tests/unit
           test -d src/features
           test -d src/config
           test -d src/middleware
@@ -71,6 +76,8 @@ jobs:
         run: |
           cd test-project
           npm test -- --passWithNoTests
+          npm run lint
+          npm run format:check
 
       - name: Cleanup test project
         run: |
