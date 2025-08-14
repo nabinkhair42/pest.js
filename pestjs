@@ -14,5 +14,8 @@ source "$SCRIPT_DIR/core/generators/package.sh"
 source "$SCRIPT_DIR/core/generators/config.sh"
 source "$SCRIPT_DIR/core/generators/app.sh"
 
-# Run the main CLI
-exec "$SCRIPT_DIR/core/cli/main.sh" "$@" 
+# Source the main CLI functions
+source "$SCRIPT_DIR/core/cli/main.sh"
+
+# Run the main function
+main "$@" 

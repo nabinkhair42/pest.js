@@ -45,6 +45,8 @@ get_project_details() {
   PROJECT_NAME=${PROJECT_NAME:-pestjs-app}
   read -p "GitHub username (default: your-username): " GITHUB_USERNAME
   GITHUB_USERNAME=${GITHUB_USERNAME:-your-username}
+  read -p "Project description (default: PEST.js application): " PROJECT_DESCRIPTION
+  PROJECT_DESCRIPTION=${PROJECT_DESCRIPTION:-PEST.js application}
   print_success "Project details collected"
 }
 
@@ -63,12 +65,17 @@ create_structure() {
 # Generate essential files
 generate_files() {
   print_info "Generating project files..."
-  generate_package_json "$PROJECT_NAME" "$GITHUB_USERNAME"
+  generate_package_json "$PROJECT_NAME" "$PROJECT_DESCRIPTION" "$GITHUB_USERNAME"
   generate_tsconfig
   generate_eslint
   generate_gitignore
   generate_jest_config
+  generate_vercel_json
+  generate_prettier_config
+  generate_prettier_ignore
+  generate_husky_config
   generate_app_file "$PROJECT_NAME"
+  generate_test_file
   generate_env_files
   print_success "Project files generated"
 }
@@ -79,7 +86,7 @@ generate_package_json() {
 {
   "name": "PROJECT_NAME",
   "version": "1.0.0",
-  "description": "PEST.js application",
+  "description": "PROJECT_DESCRIPTION",
   "main": "dist/app.js",
   "author": "GITHUB_USERNAME",
   "scripts": {
@@ -87,7 +94,11 @@ generate_package_json() {
     "dev": "nodemon --exec ts-node src/app.ts",
     "build": "tsc",
     "test": "jest",
-    "lint": "eslint . --ext .ts"
+    "lint": "eslint . --ext .ts",
+    "lint:fix": "eslint . --ext .ts --fix",
+    "format": "prettier --write \"src/**/*.ts\"",
+    "format:check": "prettier --check \"src/**/*.ts\"",
+    "prepare": "husky install"
   },
   "dependencies": {
     "express": "^4.18.2",
@@ -99,6 +110,9 @@ generate_package_json() {
     "@types/express": "^4.17.21",
     "@types/cors": "^2.8.17",
     "@types/node": "^20.11.5",
+    "prettier": "^3.6.2",
+    "husky": "^9.1.7",
+    "lint-staged": "^15.2.0",
     "typescript": "^5.0.0",
     "ts-node": "^10.9.2",
     "ts-jest": "^29.1.0",
@@ -108,12 +122,19 @@ generate_package_json() {
     "eslint": "^8.56.0",
     "@typescript-eslint/eslint-plugin": "^6.19.1",
     "@typescript-eslint/parser": "^6.19.1"
+  },
+  "lint-staged": {
+    "*.ts": [
+      "eslint --fix",
+      "prettier --write"
+    ]
   }
 }
 EOF
 
   # Replace placeholders
   sed -i "s/PROJECT_NAME/$PROJECT_NAME/g" package.json
+  sed -i "s/PROJECT_DESCRIPTION/$PROJECT_DESCRIPTION/g" package.json
   sed -i "s/GITHUB_USERNAME/$GITHUB_USERNAME/g" package.json
 }
 
@@ -172,6 +193,8 @@ coverage/
 EOF
 }
 
+
+
 # Generate Jest config
 generate_jest_config() {
   # Jest config
@@ -186,6 +209,68 @@ module.exports = {
 };
 EOF
 }
+
+# Generate vercel.json file in root:
+generate_vercel_json() {
+  cat > vercel.json << 'EOF'
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "src/app.ts",
+      "use": "@vercel/node",
+      "config": {
+        "maxDuration": 60,
+        "memory": 1024
+      }
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "src/app.ts",
+      "methods": ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+      "headers": {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Headers": "*"
+      }
+    }
+  ]
+}
+EOF
+}
+
+# Generate prettier config
+generate_prettier_config() {
+  cat > .prettierrc << 'EOF'
+{
+  "semi": true,
+  "trailingComma": "es5",
+  "singleQuote": true,
+  "printWidth": 80,
+  "tabWidth": 2,
+  "useTabs": false
+}
+EOF
+}
+
+# Generate prettier ignore
+generate_prettier_ignore() {
+  cat > .prettierignore << 'EOF'
+node_modules/
+dist/
+coverage/
+EOF
+}
+
+# Generate husky config
+generate_husky_config() {
+  mkdir -p .husky
+  cat > .husky/pre-commit << 'EOF'
+npx lint-staged
+EOF
+}
+
 
 # Generate app file
 generate_app_file() {
@@ -271,6 +356,13 @@ show_next_steps() {
   echo "1. cd $PROJECT_NAME"
   echo "2. npm install"
   echo "3. npm run dev"
+  echo "4. npm run lint"
+  echo "5. npm run lint:fix"
+  echo "6. npm run format"
+  echo "7. npm run format:check"
+  echo "8. npm run test"
+  echo "9. npm run prepare"
+  echo "10. npm run build"
   echo
   print_info "Happy coding! 🚀"
 }

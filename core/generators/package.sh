@@ -6,12 +6,13 @@
 generate_package_json() {
   local project_name="$1"
   local github_username="$2"
+  local project_description="$3"
   
   cat > package.json << EOF
 {
   "name": "$project_name",
   "version": "1.0.0",
-  "description": "PEST.js application",
+  "description": "$project_description",
   "main": "dist/app.js",
   "author": "$github_username",
   "scripts": {
@@ -19,7 +20,11 @@ generate_package_json() {
     "dev": "nodemon --exec ts-node src/app.ts",
     "build": "tsc",
     "test": "jest",
-    "lint": "eslint . --ext .ts"
+    "lint": "eslint . --ext .ts",
+    "lint:fix": "eslint . --ext .ts --fix",
+    "format": "prettier --write \"src/**/*.ts\"",
+    "format:check": "prettier --check \"src/**/*.ts\"",
+    "prepare": "husky install"
   },
   "dependencies": {
     "express": "^4.18.2",
@@ -39,7 +44,16 @@ generate_package_json() {
     "@types/jest": "^29.5.11",
     "eslint": "^8.56.0",
     "@typescript-eslint/eslint-plugin": "^6.19.1",
-    "@typescript-eslint/parser": "^6.19.1"
+    "@typescript-eslint/parser": "^6.19.1",
+    "prettier": "^3.6.2",
+    "husky": "^9.1.7",
+    "lint-staged": "^15.2.0"
+  },
+  "lint-staged": {
+    "*.ts": [
+      "eslint --fix",
+      "prettier --write"
+    ]
   }
 }
 EOF

@@ -68,17 +68,67 @@ generate_jest_config() {
 module.exports = {
   preset: 'ts-jest',
   testEnvironment: 'node',
-  roots: ['<rootDir>/src'],
-  testMatch: ['**/__tests__/**/*.ts', '**/?(*.)+(spec|test).ts'],
-  transform: {
-    '^.+\\.ts$': 'ts-jest',
-  },
-  collectCoverageFrom: [
-    'src/**/*.ts',
-    '!src/**/*.d.ts',
-  ],
-  coverageDirectory: 'coverage',
-  coverageReporters: ['text', 'lcov'],
+  testMatch: ['**/*.test.ts'],
+  moduleNameMapper: {
+    '^src/(.*)$': '<rootDir>/src/$1'
+  }
 };
+EOF
+}
+
+generate_prettier_config() {
+  cat > .prettierrc << 'EOF'
+{
+  "semi": true,
+  "trailingComma": "es5",
+  "singleQuote": true,
+  "printWidth": 80,
+  "tabWidth": 2,
+  "useTabs": false
+}
+EOF
+}
+
+generate_prettier_ignore() {
+  cat > .prettierignore << 'EOF'
+node_modules/
+dist/
+coverage/
+EOF
+}
+
+generate_husky_config() {
+  mkdir -p .husky
+  cat > .husky/pre-commit << 'EOF'
+npx lint-staged
+EOF
+}
+
+generate_vercel_json() {
+  cat > vercel.json << 'EOF'
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "src/app.ts",
+      "use": "@vercel/node",
+      "config": {
+        "maxDuration": 60,
+        "memory": 1024
+      }
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "src/app.ts",
+      "methods": ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+      "headers": {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Headers": "*"
+      }
+    }
+  ]
+}
 EOF
 } 
