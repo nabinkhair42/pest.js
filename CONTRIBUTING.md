@@ -6,7 +6,7 @@ We welcome contributions! This document provides guidelines for contributing to 
 
 ### Reporting Issues
 
-- Use the GitHub issue tracker to report bugs
+- Use the [GitHub issue tracker](https://github.com/nabinkhair42/pest.js/issues) to report bugs
 - Provide detailed steps to reproduce the issue
 - Include your environment details (OS, Node.js version, etc.)
 - Describe expected vs actual behavior
@@ -40,7 +40,7 @@ We welcome contributions! This document provides guidelines for contributing to 
 ## Project Structure
 
 - `packages/cli/` - The CLI package (published as `pest-js-app`)
-- `www/` - Documentation website
+- `www/` - Documentation website (fumadocs)
 
 ## Useful Commands
 

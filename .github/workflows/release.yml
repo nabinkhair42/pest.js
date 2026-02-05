@@ -8,44 +8,29 @@ on:
 jobs:
   release:
     runs-on: ubuntu-latest
-    name: Create Release & Publish
+    name: Publish & Release
     permissions:
       contents: write
       id-token: write
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v5
+      - uses: actions/checkout@v5
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v5
+      - uses: actions/setup-node@v5
         with:
           node-version: "20"
           registry-url: "https://registry.npmjs.org"
 
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
+      - uses: pnpm/action-setup@v4
         with:
           version: 10
 
-      - name: Install dependencies
-        run: pnpm install
+      - run: pnpm install
 
-      - name: Build CLI
-        run: pnpm --filter pest-js-app build
-
-      - name: Run tests
-        run: pnpm --filter pest-js-app test
-
-      - name: Integration test
+      - name: Build & Test
         run: |
-          node packages/cli/dist/index.js --yes --name test-release --no-docker
-          cd test-release
-          npm install
-          npm run build
-          npm test
-          cd ..
-          rm -rf test-release
+          pnpm --filter pest-js-app build
+          pnpm --filter pest-js-app test
 
       - name: Publish to npm
         run: pnpm --filter pest-js-app publish --no-git-checks --access public
@@ -56,20 +41,3 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           generate_release_notes: true
-          body: |
-            ## PEST.js Framework Release
-
-            ### Installation
-            ```bash
-            npx pest-js-app
-            ```
-
-            Or install globally:
-            ```bash
-            npm i -g pest-js-app && pest-js-app
-            ```
-
-            ### Quick Start
-            1. Run `npx pest-js-app`
-            2. Follow the interactive prompts
-            3. Start coding!

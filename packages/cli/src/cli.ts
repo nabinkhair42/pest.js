@@ -4,6 +4,7 @@ import { execSync } from "node:child_process";
 import type { ProjectConfig, DatabaseORM, DatabaseProvider } from "./types.js";
 import { VERSION, BANNER } from "./constants.js";
 import { generateProject } from "./generators/index.js";
+import { getDependencies } from "./generators/package-json.js";
 import { gitInit, getGitUser } from "./utils/git.js";
 import { validateProjectName } from "./utils/validation.js";
 
@@ -116,9 +117,17 @@ export async function runCli(args: CliArgs): Promise<void> {
 
   // Install dependencies
   if (config.install) {
+    const { deps, devDeps } = getDependencies(config);
     s.start("Installing dependencies");
     try {
-      execSync("npm install", { cwd: projectDir, stdio: "ignore" });
+      execSync(`npm install ${deps.join(" ")}`, {
+        cwd: projectDir,
+        stdio: "ignore",
+      });
+      execSync(`npm install -D ${devDeps.join(" ")}`, {
+        cwd: projectDir,
+        stdio: "ignore",
+      });
       s.stop("Dependencies installed");
     } catch {
       s.stop("Failed to install dependencies - run 'npm install' manually");

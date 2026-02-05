@@ -104,7 +104,7 @@ my-api/
 
 ## Documentation
 
-Full docs at [pest.js docs](https://pestjs.vercel.app/docs).
+Full docs at [pestjs.vercel.app/docs](https://pestjs.vercel.app/docs).
 
 ## Contributing
 
@@ -113,3 +113,9 @@ Contributions welcome. See [CONTRIBUTING.md](CONTRIBUTING.md).
 ## License
 
 MIT
+
+## Star History
+
+<a href="https://starchart.cc/nabinkhair42/pest.js">
+  <img src="https://starchart.cc/nabinkhair42/pest.js.svg?variant=adaptive" alt="Star History Chart" width="100%" />
+</a>

@@ -1,69 +1,60 @@
-export const VERSION = "3.0.0";
+export const VERSION = "3.1.0";
 
-export const DEPS = {
-  express: "^5.1.0",
-  cors: "^2.8.5",
-  helmet: "^8.0.0",
-  dotenv: "^16.4.1",
-} as const;
+export const DEPS = [
+  "express",
+  "cors",
+  "helmet",
+  "dotenv",
+];
 
-export const DEV_DEPS = {
-  "@types/express": "^5.0.6",
-  "@types/cors": "^2.8.17",
-  "@types/node": "^20.11.5",
-  typescript: "^5.7.0",
-  "ts-node": "^10.9.2",
-  nodemon: "^3.0.3",
-  jest: "^29.7.0",
-  "ts-jest": "^29.1.0",
-  "@types/jest": "^29.5.11",
-  supertest: "^7.1.0",
-  "@types/supertest": "^6.0.2",
-  eslint: "^9.35.0",
-  "typescript-eslint": "^8.33.0",
-  prettier: "^3.6.2",
-  husky: "^9.1.7",
-  "lint-staged": "^15.2.0",
-} as const;
+export const DEV_DEPS = [
+  "@types/express",
+  "@types/cors",
+  "@types/node",
+  "typescript",
+  "tsx",
+  "jest",
+  "ts-jest",
+  "@types/jest",
+  "supertest",
+  "@types/supertest",
+  "eslint",
+  "typescript-eslint",
+  "prettier",
+  "husky",
+  "lint-staged",
+];
 
 export const DB_DEPS = {
   prisma: {
-    dependencies: {
-      "@prisma/client": "^6.9.0",
-    },
-    devDependencies: {
-      prisma: "^6.9.0",
-    },
+    dependencies: ["@prisma/client"],
+    devDependencies: ["prisma"],
   },
   drizzle: {
     base: {
-      dependencies: {
-        "drizzle-orm": "^0.44.0",
-      },
-      devDependencies: {
-        "drizzle-kit": "^0.31.0",
-      },
+      dependencies: ["drizzle-orm"],
+      devDependencies: ["drizzle-kit"],
     },
     drivers: {
-      postgresql: { dependencies: { postgres: "^3.4.5" } },
-      mysql: { dependencies: { mysql2: "^3.12.0" } },
-      sqlite: { dependencies: { "better-sqlite3": "^11.8.0" }, devDependencies: { "@types/better-sqlite3": "^7.6.12" } },
+      postgresql: { dependencies: ["postgres"] },
+      mysql: { dependencies: ["mysql2"] },
+      sqlite: {
+        dependencies: ["better-sqlite3"],
+        devDependencies: ["@types/better-sqlite3"],
+      },
     },
   },
   typeorm: {
     base: {
-      dependencies: {
-        typeorm: "^0.3.22",
-        "reflect-metadata": "^0.2.2",
-      },
+      dependencies: ["typeorm", "reflect-metadata"],
     },
     drivers: {
-      postgresql: { dependencies: { pg: "^8.13.3" } },
-      mysql: { dependencies: { mysql2: "^3.12.0" } },
-      sqlite: { dependencies: { "better-sqlite3": "^11.8.0" } },
+      postgresql: { dependencies: ["pg"] },
+      mysql: { dependencies: ["mysql2"] },
+      sqlite: { dependencies: ["better-sqlite3"] },
     },
   },
-} as const;
+};
 
 export const DATABASE_URLS: Record<string, Record<string, string>> = {
   postgresql: {

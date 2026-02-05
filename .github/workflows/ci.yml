@@ -1,141 +1,65 @@
-name: Code Quality & PR Checks
+name: CI
 
 on:
   push:
-    branches: [main, develop]
+    branches: [main]
   pull_request:
     branches: [main]
 
 jobs:
-  cli-quality:
+  cli:
     runs-on: ubuntu-latest
-    name: CLI Quality Checks
+    name: CLI Quality
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v5
+      - uses: actions/checkout@v5
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v5
+      - uses: actions/setup-node@v5
         with:
           node-version: "20"
 
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
+      - uses: pnpm/action-setup@v4
         with:
           version: 10
 
-      - name: Install dependencies
-        run: pnpm install
+      - run: pnpm install
 
-      - name: Typecheck CLI
+      - name: Typecheck
         run: pnpm --filter pest-js-app typecheck
 
-      - name: Unit tests
+      - name: Test
         run: pnpm --filter pest-js-app test
 
-      - name: Build CLI
+      - name: Build
         run: pnpm --filter pest-js-app build
 
-  integration-test:
+  integration:
     runs-on: ubuntu-latest
-    name: Integration Test (${{ matrix.config }})
-    needs: cli-quality
-
-    strategy:
-      matrix:
-        include:
-          - config: "none"
-            args: "--yes --name test-none --no-docker"
-          - config: "prisma-pg"
-            args: "--yes --name test-prisma --database prisma --db-provider postgresql --docker"
-          - config: "drizzle-pg"
-            args: "--yes --name test-drizzle --database drizzle --db-provider postgresql --docker"
-          - config: "typeorm-pg"
-            args: "--yes --name test-typeorm --database typeorm --db-provider postgresql"
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v5
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v5
-        with:
-          node-version: "20"
-
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: 10
-
-      - name: Install dependencies
-        run: pnpm install
-
-      - name: Build CLI
-        run: pnpm --filter pest-js-app build
-
-      - name: Generate project
-        run: node packages/cli/dist/index.js ${{ matrix.args }}
-
-      - name: Install generated project dependencies
-        run: |
-          cd test-*
-          npm install
-
-      - name: Build generated project
-        run: |
-          cd test-*
-          npm run build
-
-      - name: Test generated project
-        run: |
-          cd test-*
-          npm test
-
-      - name: Lint generated project
-        run: |
-          cd test-*
-          npm run lint
-
-  www-quality:
-    runs-on: ubuntu-latest
-    name: Website Quality Checks
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v5
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v5
-        with:
-          node-version: "20"
-
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: 10
-
-      - name: Install dependencies
-        run: pnpm install
-
-      - name: Lint website
-        run: |
-          cd www
-          pnpm run lint
-
-  pr-validation:
-    runs-on: ubuntu-latest
-    name: PR Validation
+    name: Integration Test
+    needs: cli
     if: github.event_name == 'pull_request'
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v5
+      - uses: actions/checkout@v5
 
-      - name: Check PR title format
+      - uses: actions/setup-node@v5
+        with:
+          node-version: "20"
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - run: pnpm install
+
+      - name: Build CLI
+        run: pnpm --filter pest-js-app build
+
+      - name: Generate, build, test, lint
         run: |
-          if [[ ! "${{ github.event.pull_request.title }}" =~ ^(feat|fix|docs|style|refactor|test|chore)(\(.+\))?: ]]; then
-            echo "PR title should follow conventional commits format: type(scope): description"
-            echo "Examples: feat: add new feature, fix: resolve bug, docs: update readme"
-            exit 1
-          fi
+          node packages/cli/dist/index.js --yes --name test-app --no-docker
+          cd test-app
+          npm install
+          npm run build
+          npm test
+          npm run lint

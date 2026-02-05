@@ -4,13 +4,14 @@
 
 | Version | Supported          |
 | ------- | ------------------ |
-| 1.0.x   | :white_check_mark: |
+| 3.0.x   | :white_check_mark: |
+| < 3.0   | :x:                |
 
 ## Reporting Vulnerabilities
 
 **Do not report security vulnerabilities through public GitHub issues.**
 
-Report vulnerabilities via email to the project maintainers.
+Email the maintainers directly at [nabinkhair42@gmail.com](mailto:nabinkhair42@gmail.com).
 
 Include:
 

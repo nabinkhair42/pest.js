@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
-import { generatePackageJson } from "./package-json.js";
+import { generatePackageJson, getDependencies } from "./package-json.js";
 import { readFileSync, rmSync, mkdirSync } from "node:fs";
 import { join } from "node:path";
 import { tmpdir } from "node:os";
@@ -31,7 +31,7 @@ describe("generatePackageJson", () => {
     rmSync(projectDir, { recursive: true, force: true });
   });
 
-  it("should generate a valid package.json", () => {
+  it("should generate a valid package.json without dependencies", () => {
     const ctx: GeneratorContext = { config: makeConfig(), projectDir };
     generatePackageJson(ctx);
 
@@ -39,15 +39,13 @@ describe("generatePackageJson", () => {
     expect(pkg.name).toBe("test-app");
     expect(pkg.description).toBe("A test app");
     expect(pkg.author).toBe("tester");
-    expect(pkg.dependencies.express).toBeDefined();
-    expect(pkg.dependencies.helmet).toBeDefined();
-    expect(pkg.dependencies.cors).toBeDefined();
-    expect(pkg.devDependencies.typescript).toBeDefined();
-    expect(pkg.devDependencies.jest).toBeDefined();
     expect(pkg.scripts.build).toBe("tsc");
+    expect(pkg.scripts.dev).toBe("tsx watch src/server.ts");
+    expect(pkg.dependencies).toBeUndefined();
+    expect(pkg.devDependencies).toBeUndefined();
   });
 
-  it("should add prisma deps when database is prisma", () => {
+  it("should include db scripts for prisma", () => {
     const ctx: GeneratorContext = {
       config: makeConfig({ database: "prisma" }),
       projectDir,
@@ -55,12 +53,11 @@ describe("generatePackageJson", () => {
     generatePackageJson(ctx);
 
     const pkg = JSON.parse(readFileSync(join(projectDir, "package.json"), "utf-8"));
-    expect(pkg.dependencies["@prisma/client"]).toBeDefined();
-    expect(pkg.devDependencies.prisma).toBeDefined();
     expect(pkg.scripts["db:migrate"]).toBeDefined();
+    expect(pkg.scripts["db:studio"]).toBeDefined();
   });
 
-  it("should add drizzle deps when database is drizzle", () => {
+  it("should include db scripts for drizzle", () => {
     const ctx: GeneratorContext = {
       config: makeConfig({ database: "drizzle", dbProvider: "postgresql" }),
       projectDir,
@@ -68,12 +65,11 @@ describe("generatePackageJson", () => {
     generatePackageJson(ctx);
 
     const pkg = JSON.parse(readFileSync(join(projectDir, "package.json"), "utf-8"));
-    expect(pkg.dependencies["drizzle-orm"]).toBeDefined();
-    expect(pkg.devDependencies["drizzle-kit"]).toBeDefined();
-    expect(pkg.dependencies.postgres).toBeDefined();
+    expect(pkg.scripts["db:migrate"]).toBeDefined();
+    expect(pkg.scripts["db:studio"]).toBeDefined();
   });
 
-  it("should add typeorm deps when database is typeorm", () => {
+  it("should include db scripts for typeorm", () => {
     const ctx: GeneratorContext = {
       config: makeConfig({ database: "typeorm", dbProvider: "mysql" }),
       projectDir,
@@ -81,8 +77,52 @@ describe("generatePackageJson", () => {
     generatePackageJson(ctx);
 
     const pkg = JSON.parse(readFileSync(join(projectDir, "package.json"), "utf-8"));
-    expect(pkg.dependencies.typeorm).toBeDefined();
-    expect(pkg.dependencies["reflect-metadata"]).toBeDefined();
-    expect(pkg.dependencies.mysql2).toBeDefined();
+    expect(pkg.scripts["db:migrate"]).toBeDefined();
+    expect(pkg.scripts["db:generate"]).toBeDefined();
+  });
+});
+
+describe("getDependencies", () => {
+  it("should return base deps for no database", () => {
+    const { deps, devDeps } = getDependencies(makeConfig());
+    expect(deps).toContain("express");
+    expect(deps).toContain("cors");
+    expect(deps).toContain("helmet");
+    expect(deps).toContain("dotenv");
+    expect(devDeps).toContain("typescript");
+    expect(devDeps).toContain("tsx");
+    expect(devDeps).toContain("jest");
+  });
+
+  it("should add prisma deps", () => {
+    const { deps, devDeps } = getDependencies(makeConfig({ database: "prisma" }));
+    expect(deps).toContain("@prisma/client");
+    expect(devDeps).toContain("prisma");
+  });
+
+  it("should add drizzle deps with driver", () => {
+    const { deps, devDeps } = getDependencies(
+      makeConfig({ database: "drizzle", dbProvider: "postgresql" }),
+    );
+    expect(deps).toContain("drizzle-orm");
+    expect(deps).toContain("postgres");
+    expect(devDeps).toContain("drizzle-kit");
+  });
+
+  it("should add drizzle sqlite devDeps", () => {
+    const { deps, devDeps } = getDependencies(
+      makeConfig({ database: "drizzle", dbProvider: "sqlite" }),
+    );
+    expect(deps).toContain("better-sqlite3");
+    expect(devDeps).toContain("@types/better-sqlite3");
+  });
+
+  it("should add typeorm deps with driver", () => {
+    const { deps } = getDependencies(
+      makeConfig({ database: "typeorm", dbProvider: "mysql" }),
+    );
+    expect(deps).toContain("typeorm");
+    expect(deps).toContain("reflect-metadata");
+    expect(deps).toContain("mysql2");
   });
 });
