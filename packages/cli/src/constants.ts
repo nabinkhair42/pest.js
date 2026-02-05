@@ -1,10 +1,13 @@
-export const VERSION = "3.1.1";
+export const VERSION = "3.2.0";
 
 export const DEPS = [
   "express",
   "cors",
   "helmet",
   "dotenv",
+  "pino",
+  "pino-http",
+  "zod",
 ];
 
 export const DEV_DEPS = [
@@ -19,16 +22,18 @@ export const DEV_DEPS = [
   "supertest",
   "@types/supertest",
   "eslint",
+  "@eslint/js",
   "typescript-eslint",
   "prettier",
   "husky",
   "lint-staged",
+  "pino-pretty",
 ];
 
 export const DB_DEPS = {
   prisma: {
-    dependencies: ["@prisma/client"],
-    devDependencies: ["prisma"],
+    dependencies: ["@prisma/client@^6"],
+    devDependencies: ["prisma@^6"],
   },
   drizzle: {
     base: {

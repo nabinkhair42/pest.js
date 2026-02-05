@@ -55,11 +55,12 @@ export const AppDataSource = new DataSource({
     projectDir,
     "src/db/index.ts",
     `import { AppDataSource } from "./data-source.js";
+import { logger } from "../lib/logger.js";
 
 export async function initializeDatabase(): Promise<void> {
   if (!AppDataSource.isInitialized) {
     await AppDataSource.initialize();
-    console.log("Database connection established");
+    logger.info("Database connection established");
   }
 }
 
@@ -68,6 +69,10 @@ export { AppDataSource };
   );
 
   // src/db/entities/user.ts - example entity
+  // Explicit column types are required because tsx (esbuild) does not
+  // support emitDecoratorMetadata, so TypeORM cannot infer types.
+  // SQLite uses "datetime" instead of "timestamp".
+  const dateType = config.dbProvider === "sqlite" ? "datetime" : "timestamp";
   writeFile(
     projectDir,
     "src/db/entities/user.ts",
@@ -75,16 +80,16 @@ export { AppDataSource };
 
 @Entity()
 export class User {
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn("increment")
   id!: number;
 
-  @Column()
+  @Column("varchar")
   name!: string;
 
-  @Column({ unique: true })
+  @Column("varchar", { unique: true })
   email!: string;
 
-  @CreateDateColumn()
+  @CreateDateColumn({ type: "${dateType}" })
   createdAt!: Date;
 }
 `

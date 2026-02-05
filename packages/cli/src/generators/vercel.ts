@@ -6,7 +6,7 @@ export function generateVercel(ctx: GeneratorContext): void {
     version: 2,
     builds: [
       {
-        src: "src/app.ts",
+        src: "dist/server.js",
         use: "@vercel/node",
         config: {
           maxDuration: 60,
@@ -17,7 +17,7 @@ export function generateVercel(ctx: GeneratorContext): void {
     routes: [
       {
         src: "/(.*)",
-        dest: "src/app.ts",
+        dest: "dist/server.js",
         methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
         headers: {
           "Access-Control-Allow-Origin": "*",

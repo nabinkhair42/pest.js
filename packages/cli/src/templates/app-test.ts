@@ -21,7 +21,7 @@ describe("App", () => {
   it("should return 404 for unknown routes", async () => {
     const res = await request(app).get("/unknown-route");
     expect(res.status).toBe(404);
-    expect(res.body).toHaveProperty("error", "Not Found");
+    expect(res.body).toHaveProperty("error", "Route not found");
   });
 });
 `;

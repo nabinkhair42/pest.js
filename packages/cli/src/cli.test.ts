@@ -27,6 +27,12 @@ describe("parseArgs", () => {
     expect(parseArgs(["--no-docker"]).docker).toBe(false);
   });
 
+  it("should parse --package-manager", () => {
+    expect(parseArgs(["--package-manager", "pnpm"]).packageManager).toBe("pnpm");
+    expect(parseArgs(["--package-manager", "yarn"]).packageManager).toBe("yarn");
+    expect(parseArgs(["--package-manager", "npm"]).packageManager).toBe("npm");
+  });
+
   it("should combine multiple flags", () => {
     const args = parseArgs([
       "--yes",
@@ -37,6 +43,8 @@ describe("parseArgs", () => {
       "--db-provider",
       "mysql",
       "--docker",
+      "--package-manager",
+      "pnpm",
     ]);
 
     expect(args.yes).toBe(true);
@@ -44,9 +52,14 @@ describe("parseArgs", () => {
     expect(args.database).toBe("drizzle");
     expect(args.dbProvider).toBe("mysql");
     expect(args.docker).toBe(true);
+    expect(args.packageManager).toBe("pnpm");
   });
 
   it("should default to non-yes mode", () => {
     expect(parseArgs([]).yes).toBe(false);
+  });
+
+  it("should not set packageManager when not provided", () => {
+    expect(parseArgs([]).packageManager).toBeUndefined();
   });
 });

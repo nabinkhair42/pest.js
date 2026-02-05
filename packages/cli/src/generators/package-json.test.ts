@@ -15,6 +15,7 @@ function makeConfig(overrides: Partial<ProjectConfig> = {}): ProjectConfig {
     docker: false,
     git: false,
     install: false,
+    packageManager: "npm",
     ...overrides,
   };
 }
@@ -94,10 +95,18 @@ describe("getDependencies", () => {
     expect(devDeps).toContain("jest");
   });
 
+  it("should include pino and zod in base deps", () => {
+    const { deps, devDeps } = getDependencies(makeConfig());
+    expect(deps).toContain("pino");
+    expect(deps).toContain("pino-http");
+    expect(deps).toContain("zod");
+    expect(devDeps).toContain("pino-pretty");
+  });
+
   it("should add prisma deps", () => {
     const { deps, devDeps } = getDependencies(makeConfig({ database: "prisma" }));
-    expect(deps).toContain("@prisma/client");
-    expect(devDeps).toContain("prisma");
+    expect(deps).toContain("@prisma/client@^6");
+    expect(devDeps).toContain("prisma@^6");
   });
 
   it("should add drizzle deps with driver", () => {

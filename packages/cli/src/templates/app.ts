@@ -1,39 +1,49 @@
 import type { ProjectConfig } from "../types.js";
 
 export function appTemplate(config: ProjectConfig): string {
-  return `import express from "express";
-import cors from "cors";
-import helmet from "helmet";
-import { healthRouter } from "./routes/health.js";
-import { errorHandler } from "./middleware/error-handler.js";
-import { env } from "./config/env.js";
+  const lines: string[] = [];
 
-const app = express();
+  lines.push('import express from "express";');
+  lines.push('import cors from "cors";');
+  lines.push('import helmet from "helmet";');
+  lines.push('import pinoHttp from "pino-http";');
+  lines.push('import { healthRouter } from "./routes/health.js";');
+  lines.push('import { exampleRouter } from "./routes/example.js";');
+  lines.push('import { errorHandler } from "./middleware/error-handler.js";');
+  lines.push('import { NotFoundError } from "./lib/errors.js";');
+  lines.push('import { logger } from "./lib/logger.js";');
+  lines.push('import { env } from "./config/env.js";');
+  lines.push("");
+  lines.push("const app = express();");
+  lines.push("");
+  lines.push("// Middleware");
+  lines.push("app.use(helmet());");
+  lines.push("app.use(cors());");
+  lines.push("app.use(express.json());");
+  lines.push("app.use(pinoHttp({ logger }));");
+  lines.push("");
+  lines.push("// Routes");
+  lines.push('app.get("/", (_req, res) => {');
+  lines.push("  res.json({");
+  lines.push(`    message: "Welcome to ${config.name} API",`);
+  lines.push('    version: "1.0.0",');
+  lines.push("    environment: env.NODE_ENV,");
+  lines.push("  });");
+  lines.push("});");
+  lines.push("");
+  lines.push('app.use("/health", healthRouter);');
+  lines.push('app.use("/api/examples", exampleRouter);');
+  lines.push("");
+  lines.push("// 404 handler");
+  lines.push('app.all("*path", (_req, _res) => {');
+  lines.push('  throw new NotFoundError("Route not found");');
+  lines.push("});");
+  lines.push("");
+  lines.push("// Error handler");
+  lines.push("app.use(errorHandler);");
+  lines.push("");
+  lines.push("export default app;");
+  lines.push("");
 
-// Middleware
-app.use(helmet());
-app.use(cors());
-app.use(express.json());
-
-// Routes
-app.get("/", (_req, res) => {
-  res.json({
-    message: "Welcome to ${config.name} API",
-    version: "1.0.0",
-    environment: env.NODE_ENV,
-  });
-});
-
-app.use("/health", healthRouter);
-
-// 404 handler
-app.all("*path", (_req, res) => {
-  res.status(404).json({ error: "Not Found" });
-});
-
-// Error handler
-app.use(errorHandler);
-
-export default app;
-`;
+  return lines.join("\n");
 }

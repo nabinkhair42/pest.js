@@ -1,5 +1,13 @@
 import type { ProjectConfig } from "../types.js";
 
+function getDockerDatabaseUrl(config: ProjectConfig): string {
+  if (config.dbProvider === "postgresql") {
+    const schema = config.database === "prisma" ? "?schema=public" : "";
+    return `postgresql://user:password@db:5432/mydb${schema}`;
+  }
+  return "mysql://user:password@db:3306/mydb";
+}
+
 export function dockerComposeTemplate(config: ProjectConfig): string {
   const lines: string[] = [];
 
@@ -15,6 +23,9 @@ export function dockerComposeTemplate(config: ProjectConfig): string {
     config.database !== "none" && config.dbProvider !== "sqlite";
 
   if (needsDb) {
+    const dbUrl = getDockerDatabaseUrl(config);
+    lines.push(`    environment:`);
+    lines.push(`      DATABASE_URL: "${dbUrl}"`);
     lines.push(`    depends_on:`);
     lines.push(`      db:`);
     lines.push(`        condition: service_healthy`);

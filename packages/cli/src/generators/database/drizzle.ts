@@ -60,8 +60,8 @@ import mysql from "mysql2/promise";
 import * as schema from "./schema.js";
 import { env } from "../config/env.js";
 
-const connection = await mysql.createConnection(env.DATABASE_URL);
-export const db = drizzle(connection, { schema, mode: "default" });
+const pool = mysql.createPool(env.DATABASE_URL);
+export const db = drizzle(pool, { schema, mode: "default" });
 `
     );
   } else {

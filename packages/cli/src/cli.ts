@@ -1,7 +1,7 @@
 import * as p from "@clack/prompts";
 import { resolve } from "node:path";
-import { execSync, spawn } from "node:child_process";
-import type { ProjectConfig, DatabaseORM, DatabaseProvider } from "./types.js";
+import { spawn } from "node:child_process";
+import type { ProjectConfig, DatabaseORM, DatabaseProvider, PackageManager } from "./types.js";
 import { VERSION, BANNER } from "./constants.js";
 import { generateProject } from "./generators/index.js";
 import { getDependencies } from "./generators/package-json.js";
@@ -14,6 +14,7 @@ interface CliArgs {
   database?: DatabaseORM;
   dbProvider?: DatabaseProvider;
   docker?: boolean;
+  packageManager?: PackageManager;
 }
 
 export function parseArgs(argv: string[]): CliArgs {
@@ -33,6 +34,8 @@ export function parseArgs(argv: string[]): CliArgs {
       args.docker = true;
     } else if (arg === "--no-docker") {
       args.docker = false;
+    } else if (arg === "--package-manager" && argv[i + 1]) {
+      args.packageManager = argv[++i] as PackageManager;
     } else if (arg === "--version" || arg === "-v") {
       console.log(`pest-js-app v${VERSION}`);
       process.exit(0);
@@ -54,20 +57,33 @@ ${BANNER}
     npx pest-js-app [options]
 
   Options:
-    --name <name>         Project name (kebab-case)
-    --database <orm>      Database ORM: prisma | drizzle | typeorm | none
-    --db-provider <db>    Database provider: postgresql | mysql | sqlite
-    --docker              Enable Docker support
-    --no-docker           Disable Docker support
-    -y, --yes             Use defaults for all prompts (non-interactive)
-    -v, --version         Show version
-    -h, --help            Show help
+    --name <name>              Project name (kebab-case)
+    --database <orm>           Database ORM: prisma | drizzle | typeorm | none
+    --db-provider <db>         Database provider: postgresql | mysql | sqlite
+    --docker                   Enable Docker support
+    --no-docker                Disable Docker support
+    --package-manager <pm>     Package manager: npm | pnpm | yarn
+    -y, --yes                  Use defaults for all prompts (non-interactive)
+    -v, --version              Show version
+    -h, --help                 Show help
 
   Examples:
     npx pest-js-app
     npx pest-js-app --yes --name my-api
     npx pest-js-app --name my-api --database prisma --db-provider postgresql --docker
+    npx pest-js-app --yes --name my-api --package-manager pnpm
 `);
+}
+
+function getInstallArgs(pm: PackageManager, deps: string[], dev: boolean): { cmd: string; args: string[] } {
+  switch (pm) {
+    case "pnpm":
+      return { cmd: "pnpm", args: ["add", ...(dev ? ["-D"] : []), ...deps] };
+    case "yarn":
+      return { cmd: "yarn", args: ["add", ...(dev ? ["-D"] : []), ...deps] };
+    default:
+      return { cmd: "npm", args: ["install", ...(dev ? ["-D"] : []), ...deps] };
+  }
 }
 
 function runCommand(cmd: string, args: string[], cwd: string): Promise<void> {
@@ -93,6 +109,7 @@ export async function runCli(args: CliArgs): Promise<void> {
       docker: args.docker ?? (args.database !== undefined && args.database !== "none"),
       git: true,
       install: true,
+      packageManager: args.packageManager || "npm",
     };
   } else {
     config = await collectInteractiveConfig(args);
@@ -126,28 +143,32 @@ export async function runCli(args: CliArgs): Promise<void> {
   // Install dependencies
   if (config.install) {
     const { deps, devDeps } = getDependencies(config);
+    const pm = config.packageManager;
     s.start("Installing dependencies");
     try {
-      await runCommand("npm", ["install", ...deps], projectDir);
+      const prodCmd = getInstallArgs(pm, deps, false);
+      await runCommand(prodCmd.cmd, prodCmd.args, projectDir);
       s.message("Installing dev dependencies");
-      await runCommand("npm", ["install", "-D", ...devDeps], projectDir);
+      const devCmd = getInstallArgs(pm, devDeps, true);
+      await runCommand(devCmd.cmd, devCmd.args, projectDir);
       s.stop("Dependencies installed");
     } catch {
-      s.stop("Failed to install dependencies - run 'npm install' manually");
+      s.stop(`Failed to install dependencies - run '${pm} install' manually`);
     }
   }
 
   // Show next steps
+  const pmRun = config.packageManager === "npm" ? "npm run" : config.packageManager;
   const nextSteps = [
     `cd ${config.name}`,
-    ...(!config.install ? ["npm install"] : []),
-    "npm run dev",
+    ...(!config.install ? [`${config.packageManager} install`] : []),
+    `${pmRun} dev`,
   ];
 
   if (config.database === "prisma") {
     nextSteps.push("npx prisma migrate dev --name init");
   } else if (config.database === "drizzle") {
-    nextSteps.push("npm run db:push");
+    nextSteps.push(`${pmRun} db:push`);
   }
 
   p.note(nextSteps.join("\n"), "Next steps");
@@ -237,6 +258,20 @@ async function collectInteractiveConfig(args: CliArgs): Promise<ProjectConfig> {
     process.exit(0);
   }
 
+  const packageManager = await p.select({
+    message: "Package manager",
+    options: [
+      { value: "npm" as const, label: "npm", hint: "Default" },
+      { value: "pnpm" as const, label: "pnpm", hint: "Fast, disk efficient" },
+      { value: "yarn" as const, label: "yarn", hint: "Reliable, feature rich" },
+    ],
+  });
+
+  if (p.isCancel(packageManager)) {
+    p.cancel("Operation cancelled.");
+    process.exit(0);
+  }
+
   const git = await p.confirm({
     message: "Initialize git repository?",
     initialValue: true,
@@ -266,5 +301,6 @@ async function collectInteractiveConfig(args: CliArgs): Promise<ProjectConfig> {
     docker: docker as boolean,
     git: git as boolean,
     install: install as boolean,
+    packageManager: packageManager as PackageManager,
   };
 }

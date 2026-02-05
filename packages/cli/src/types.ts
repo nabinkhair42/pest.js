@@ -2,6 +2,8 @@ export type DatabaseORM = "prisma" | "drizzle" | "typeorm" | "none";
 
 export type DatabaseProvider = "postgresql" | "mysql" | "sqlite";
 
+export type PackageManager = "npm" | "pnpm" | "yarn";
+
 export interface ProjectConfig {
   name: string;
   description: string;
@@ -11,6 +13,7 @@ export interface ProjectConfig {
   docker: boolean;
   git: boolean;
   install: boolean;
+  packageManager: PackageManager;
 }
 
 export interface GeneratorContext {
