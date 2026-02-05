@@ -18,9 +18,14 @@ export function envConfigTemplate(config: ProjectConfig): string {
     lines.push("");
   }
 
+  lines.push("const rateLimitWindowMs = parseInt(process.env.RATE_LIMIT_WINDOW_MS || \"900000\", 10);");
+  lines.push("const rateLimitMax = parseInt(process.env.RATE_LIMIT_MAX || \"100\", 10);");
+  lines.push("");
   lines.push("export const env = {");
   lines.push('  NODE_ENV: process.env.NODE_ENV || "development",');
   lines.push("  PORT: port,");
+  lines.push("  RATE_LIMIT_WINDOW_MS: rateLimitWindowMs,");
+  lines.push("  RATE_LIMIT_MAX: rateLimitMax,");
 
   if (config.database !== "none") {
     lines.push("  DATABASE_URL: process.env.DATABASE_URL,");

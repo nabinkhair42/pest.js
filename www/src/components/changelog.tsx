@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { ArrowUpRight } from "lucide-react";
 
 import { cn } from "@/lib/utils";
@@ -43,9 +44,9 @@ const Changelog1 = ({
           </p>
         </div>
         <div className="space-y-16 md:mt-24 md:space-y-24">
-          {entries.map((entry, index) => (
+          {entries.map((entry) => (
             <div
-              key={index}
+              key={entry.version}
               className="relative flex flex-col gap-4 md:flex-row md:gap-16"
             >
               <div className="top-8 flex h-min w-64 shrink-0 items-center gap-4 md:sticky">
@@ -72,27 +73,35 @@ const Changelog1 = ({
                     ))}
                   </ul>
                 )}
-                {entry.image && (
+                {entry.image ? (
                   <>
-                    <img
+                    <Image
                       src={`${entry.image}.png`}
                       alt={`${entry.version} visual`}
+                      width={800}
+                      height={450}
                       className="mt-8 w-full rounded-lg object-cover dark:hidden"
                     />
-                    <img
+                    <Image
                       src={`${entry.image}-dark.png`}
                       alt={`${entry.version} visual dark`}
+                      width={800}
+                      height={450}
                       className="mt-8 w-full rounded-lg object-cover hidden dark:block"
                     />
                   </>
-                )}
-                {entry.button && (
+                ) : null}
+                {entry.button ? (
                   <Button variant="link" className="mt-4 self-end" asChild>
-                    <a href={entry.button.url} target="_blank">
+                    <a
+                      href={entry.button.url}
+                      target="_blank"
+                      rel="noreferrer noopener"
+                    >
                       {entry.button.text} <ArrowUpRight className="h-4 w-4" />
                     </a>
                   </Button>
-                )}
+                ) : null}
               </div>
             </div>
           ))}

@@ -4,6 +4,7 @@ import { DrizzleORM } from "@/components/icons/drizzle";
 import { Docker } from "@/components/icons/docker";
 import { TypeScript } from "@/components/icons/typescript";
 import { FeatureCard } from "@/components/feature-card";
+import { CopyCommand } from "@/components/copy-command";
 
 const features = [
   {
@@ -50,13 +51,11 @@ export default function HomePage() {
           >
             Get Started
           </Link>
-          <div className="inline-flex h-10 items-center gap-2 rounded-md border bg-fd-secondary px-4 font-mono text-sm text-fd-secondary-foreground">
-            npx pest-js-app
-          </div>
+          <CopyCommand command="npx pest-js-app" />
         </div>
 
         <div className="mx-auto grid max-w-xl gap-4 text-left sm:grid-cols-2">
-          {features.map((feature) => (
+          {features.map(feature => (
             <FeatureCard key={feature.title} {...feature} />
           ))}
         </div>

@@ -8,6 +8,7 @@ export const DEPS = [
   "pino",
   "pino-http",
   "zod",
+  "express-rate-limit",
 ];
 
 export const DEV_DEPS = [

@@ -3,79 +3,182 @@ title: Docker
 description: Dockerfile and docker-compose generation.
 ---
 
-When Docker support is enabled, PEST.js generates three files.
+When Docker support is enabled, PEST.js generates three files. The Dockerfile adapts to your chosen package manager.
 
 ## Dockerfile
 
-Multi-stage build for small production images:
+Multi-stage build for small production images. The install commands match your package manager:
 
-```dockerfile
-# Build stage
-FROM node:20-alpine AS builder
-WORKDIR /app
-COPY package*.json ./
-RUN npm ci
-COPY . .
-RUN npm run build
+<Tabs defaultValue="npm">
+  <TabsList>
+    <TabsTrigger value="npm"><NPM className="size-4" />npm</TabsTrigger>
+    <TabsTrigger value="pnpm"><Pnpm className="size-4" />pnpm</TabsTrigger>
+    <TabsTrigger value="yarn"><Yarn className="size-4" />yarn</TabsTrigger>
+  </TabsList>
+  <TabsContent value="npm">
+    ```dockerfile title="Dockerfile"
+    FROM node:20-alpine AS builder
+    WORKDIR /app
+    COPY package*.json ./
+    RUN npm ci
+    COPY . .
+    RUN npm run build
 
-# Production stage
-FROM node:20-alpine AS runner
-WORKDIR /app
-ENV NODE_ENV=production
-COPY package*.json ./
-RUN npm ci --omit=dev
-COPY --from=builder /app/dist ./dist
-EXPOSE 3000
-CMD ["node", "dist/server.js"]
-```
+    FROM node:20-alpine AS runner
+    WORKDIR /app
+    ENV NODE_ENV=production
+    COPY package*.json ./
+    RUN npm ci --omit=dev
+    COPY --from=builder /app/dist ./dist
+    EXPOSE 3000
+    CMD ["node", "dist/server.js"]
+    ```
+  </TabsContent>
+  <TabsContent value="pnpm">
+    ```dockerfile title="Dockerfile"
+    FROM node:20-alpine AS builder
+    RUN corepack enable
+    WORKDIR /app
+    COPY package.json pnpm-lock.yaml ./
+    RUN pnpm install --frozen-lockfile
+    COPY . .
+    RUN pnpm run build
 
-When using **Prisma**, a `prisma generate` step is added to the build stage and the generated client is copied to the production stage.
+    FROM node:20-alpine AS runner
+    RUN corepack enable
+    WORKDIR /app
+    ENV NODE_ENV=production
+    COPY package.json pnpm-lock.yaml ./
+    RUN pnpm install --frozen-lockfile --prod
+    COPY --from=builder /app/dist ./dist
+    EXPOSE 3000
+    CMD ["node", "dist/server.js"]
+    ```
+  </TabsContent>
+  <TabsContent value="yarn">
+    ```dockerfile title="Dockerfile"
+    FROM node:20-alpine AS builder
+    WORKDIR /app
+    COPY package.json yarn.lock ./
+    RUN yarn install --frozen-lockfile
+    COPY . .
+    RUN yarn build
+
+    FROM node:20-alpine AS runner
+    WORKDIR /app
+    ENV NODE_ENV=production
+    COPY package.json yarn.lock ./
+    RUN yarn install --frozen-lockfile --production
+    COPY --from=builder /app/dist ./dist
+    EXPOSE 3000
+    CMD ["node", "dist/server.js"]
+    ```
+  </TabsContent>
+</Tabs>
+
+<Callout>
+  When using **Prisma**, a `prisma generate` step is added to the build stage and the generated client is copied to the production stage.
+</Callout>
 
 ## docker-compose.yml
 
-Always includes an `app` service. When a database is selected (PostgreSQL or MySQL), a `db` service is added with health checks.
+Always includes an `app` service. When a database is selected (PostgreSQL or MySQL), a `db` service is added with health checks, and the `app` service gets a `DATABASE_URL` environment override that uses `db` as the hostname instead of `localhost`.
 
-### PostgreSQL example
+<Tabs defaultValue="postgresql">
+  <TabsList>
+    <TabsTrigger value="postgresql"><PostgreSQL className="size-4" />PostgreSQL</TabsTrigger>
+    <TabsTrigger value="mysql"><MySQL className="size-4" />MySQL</TabsTrigger>
+    <TabsTrigger value="sqlite"><SQLite className="size-4" />SQLite</TabsTrigger>
+  </TabsList>
+  <TabsContent value="postgresql">
+    ```yaml title="docker-compose.yml"
+    services:
+      app:
+        build: .
+        ports:
+          - "3000:3000"
+        env_file:
+          - .env
+        environment:
+          - DATABASE_URL=postgresql://user:password@db:5432/mydb
+        depends_on:
+          db:
+            condition: service_healthy
 
-```yaml
-services:
-  app:
-    build: .
-    ports:
-      - "3000:3000"
-    env_file:
-      - .env
-    depends_on:
       db:
-        condition: service_healthy
+        image: postgres:16-alpine
+        ports:
+          - "5432:5432"
+        environment:
+          POSTGRES_USER: user
+          POSTGRES_PASSWORD: password
+          POSTGRES_DB: mydb
+        volumes:
+          - db_data:/var/lib/postgresql/data
+        healthcheck:
+          test: ["CMD-SHELL", "pg_isready -U user -d mydb"]
+          interval: 5s
+          timeout: 5s
+          retries: 5
 
-  db:
-    image: postgres:16-alpine
-    ports:
-      - "5432:5432"
-    environment:
-      POSTGRES_USER: user
-      POSTGRES_PASSWORD: password
-      POSTGRES_DB: mydb
     volumes:
-      - db_data:/var/lib/postgresql/data
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U user -d mydb"]
-      interval: 5s
-      timeout: 5s
-      retries: 5
+      db_data:
+    ```
+  </TabsContent>
+  <TabsContent value="mysql">
+    ```yaml title="docker-compose.yml"
+    services:
+      app:
+        build: .
+        ports:
+          - "3000:3000"
+        env_file:
+          - .env
+        environment:
+          - DATABASE_URL=mysql://user:password@db:3306/mydb
+        depends_on:
+          db:
+            condition: service_healthy
 
-volumes:
-  db_data:
-```
+      db:
+        image: mysql:8
+        ports:
+          - "3306:3306"
+        environment:
+          MYSQL_ROOT_PASSWORD: password
+          MYSQL_USER: user
+          MYSQL_PASSWORD: password
+          MYSQL_DATABASE: mydb
+        volumes:
+          - db_data:/var/lib/mysql
+        healthcheck:
+          test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+          interval: 5s
+          timeout: 5s
+          retries: 5
 
-### SQLite
+    volumes:
+      db_data:
+    ```
+  </TabsContent>
+  <TabsContent value="sqlite">
+    No `db` service is added since SQLite is file-based. Only the `app` service is generated:
 
-No `db` service is added since SQLite is file-based. Only the `app` service is generated.
+    ```yaml title="docker-compose.yml"
+    services:
+      app:
+        build: .
+        ports:
+          - "3000:3000"
+        env_file:
+          - .env
+    ```
+  </TabsContent>
+</Tabs>
 
 ## .dockerignore
 
-```txt
+```txt title=".dockerignore"
 node_modules
 dist
 .env
@@ -87,7 +190,7 @@ coverage
 
 ## Running
 
-```bash
+```bash title="Terminal"
 docker compose up --build
 ```
 

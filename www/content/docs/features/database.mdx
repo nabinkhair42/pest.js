@@ -3,7 +3,7 @@ title: Database
 description: Prisma, Drizzle, and TypeORM support.
 ---
 
-PEST.js supports three database ORMs. Each generates its own config files, schema, and client setup.
+PEST.js supports three database ORMs. Each generates its own config files, schema, client setup, and a CRUD example route at `/api/examples`.
 
 ## Providers
 
@@ -13,79 +13,121 @@ All three ORMs support:
 - **MySQL**
 - **SQLite** — file-based, no server needed
 
-## Prisma
+## ORM setup
 
-Generates:
+<Tabs defaultValue="prisma">
+  <TabsList>
+    <TabsTrigger value="prisma"><Prisma className="size-4" />Prisma</TabsTrigger>
+    <TabsTrigger value="drizzle"><DrizzleORM className="size-4" />Drizzle</TabsTrigger>
+    <TabsTrigger value="typeorm"><TypeORM className="size-4" />TypeORM</TabsTrigger>
+  </TabsList>
+  <TabsContent value="prisma">
+    ### Generated files
 
-```txt
-prisma/schema.prisma        # Schema definition
-src/lib/prisma.ts            # Singleton client
-```
+    <Files>
+      <Folder name="prisma" defaultOpen>
+        <File name="schema.prisma" />
+      </Folder>
+      <Folder name="src" defaultOpen>
+        <Folder name="lib" defaultOpen>
+          <File name="prisma.ts" />
+        </Folder>
+        <Folder name="routes" defaultOpen>
+          <File name="example.ts" />
+        </Folder>
+      </Folder>
+    </Files>
 
-Scripts added:
+    ### Scripts
 
-| Script | Command |
-|--------|---------|
-| `db:generate` | `prisma generate` |
-| `db:migrate` | `prisma migrate dev` |
-| `db:push` | `prisma db push` |
-| `db:studio` | `prisma studio` |
+    | Script | Command |
+    |--------|---------|
+    | `db:generate` | `prisma generate` |
+    | `db:migrate` | `prisma migrate dev` |
+    | `db:push` | `prisma db push` |
+    | `db:studio` | `prisma studio` |
 
-After creating your project:
+    ### First migration
 
-```bash
-npx prisma migrate dev --name init
-```
+    ```bash title="Terminal"
+    npx prisma migrate dev --name init
+    ```
 
-## Drizzle
+    <Callout>
+      Prisma is pinned to `^6` to avoid breaking changes in v7.
+    </Callout>
+  </TabsContent>
+  <TabsContent value="drizzle">
+    ### Generated files
 
-Generates:
+    <Files>
+      <Folder name="src" defaultOpen>
+        <Folder name="db" defaultOpen>
+          <File name="schema.ts" />
+          <File name="index.ts" />
+        </Folder>
+        <Folder name="routes" defaultOpen>
+          <File name="example.ts" />
+        </Folder>
+      </Folder>
+      <File name="drizzle.config.ts" />
+    </Files>
 
-```txt
-drizzle.config.ts            # Drizzle Kit config
-src/db/schema.ts             # Table definitions
-src/db/index.ts              # Database client
-```
+    ### Scripts
 
-Scripts added:
+    | Script | Command |
+    |--------|---------|
+    | `db:generate` | `drizzle-kit generate` |
+    | `db:migrate` | `drizzle-kit migrate` |
+    | `db:push` | `drizzle-kit push` |
+    | `db:studio` | `drizzle-kit studio` |
 
-| Script | Command |
-|--------|---------|
-| `db:generate` | `drizzle-kit generate` |
-| `db:migrate` | `drizzle-kit migrate` |
-| `db:push` | `drizzle-kit push` |
-| `db:studio` | `drizzle-kit studio` |
+    ### Push schema
 
-After creating your project:
+    ```bash title="Terminal"
+    npm run db:push
+    ```
 
-```bash
-npm run db:push
-```
+    <Callout>
+      MySQL uses `$returningId()` instead of `.returning()` since MySQL doesn't support `RETURNING` clauses.
+    </Callout>
+  </TabsContent>
+  <TabsContent value="typeorm">
+    ### Generated files
 
-## TypeORM
+    <Files>
+      <Folder name="src" defaultOpen>
+        <Folder name="db" defaultOpen>
+          <File name="data-source.ts" />
+          <File name="index.ts" />
+          <Folder name="entities" defaultOpen>
+            <File name="user.ts" />
+          </Folder>
+        </Folder>
+        <Folder name="routes" defaultOpen>
+          <File name="example.ts" />
+        </Folder>
+      </Folder>
+    </Files>
 
-Generates:
+    TypeORM enables `experimentalDecorators` and `emitDecoratorMetadata` in tsconfig. Entity columns use explicit types (e.g. `@Column("varchar")`, `@PrimaryGeneratedColumn("increment")`) for compatibility with `tsx`/esbuild which doesn't emit decorator metadata.
 
-```txt
-src/db/data-source.ts        # DataSource config
-src/db/index.ts              # Connection helper
-src/db/entities/user.ts      # Example entity
-```
+    ### Scripts
 
-TypeORM enables `experimentalDecorators` and `emitDecoratorMetadata` in tsconfig.
+    | Script | Command |
+    |--------|---------|
+    | `db:migrate` | `typeorm migration:run` |
+    | `db:generate` | `typeorm migration:generate` |
 
-Scripts added:
-
-| Script | Command |
-|--------|---------|
-| `db:migrate` | `typeorm migration:run` |
-| `db:generate` | `typeorm migration:generate` |
+    <Callout>
+      SQLite uses `datetime` column type instead of `timestamp` since better-sqlite3 doesn't support the timestamp type.
+    </Callout>
+  </TabsContent>
+</Tabs>
 
 ## DATABASE_URL
 
-When a database is selected, `DATABASE_URL` is added to `.env` and `.env.example` with a default connection string.
-
-The `src/config/env.ts` file exports it as part of the typed `env` object.
+When a database is selected, `DATABASE_URL` is added to `.env` and `.env.example` with a default connection string. The `src/config/env.ts` file validates that it's set and exports it as part of the typed `env` object.
 
 | Provider | Example URL |
 |----------|-------------|

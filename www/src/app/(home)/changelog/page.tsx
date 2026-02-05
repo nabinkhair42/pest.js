@@ -3,6 +3,23 @@ import type { ChangelogEntry } from "@/components/changelog";
 
 const entries: ChangelogEntry[] = [
   {
+    version: "v3.3.0",
+    date: "5 February 2026",
+    title: "Rate limiting, docs rewrite & website polish",
+    description:
+      "Adds express-rate-limit middleware to generated projects, rewrites all documentation with fumadocs components, and polishes the website with icon tabs, copy-to-clipboard, and dark mode fixes.",
+    items: [
+      "Rate limiting with express-rate-limit — global limiter + per-route factory",
+      "Docs rewritten with fumadocs Tabs, Steps, Files, Callout, and CodeBlock components",
+      "Icon tab triggers for ORMs, databases, package managers, and Docker",
+      "Icon components with currentColor for automatic dark mode support",
+      "Copy-to-clipboard button for npx command on landing page",
+      "Pest icon in navbar branding",
+      "Best practices fixes — next/image, stable React keys, rel noreferrer, ternary conditionals",
+      "Removed duplicate cn utility, consolidated to lib/utils",
+    ],
+  },
+  {
     version: "v3.2.0",
     date: "5 February 2026",
     title: "Structured logging, validation, CRUD routes & bug fixes",

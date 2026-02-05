@@ -5,31 +5,46 @@ description: What is PEST.js and why use it.
 
 PEST.js is a CLI tool that scaffolds production-ready **Express 5 + TypeScript** projects.
 
-It sets up everything you need — routing, error handling, testing, linting, database, and Docker — so you can skip the boilerplate and start building.
+It sets up everything you need — routing, error handling, logging, validation, testing, linting, database, and Docker — so you can skip the boilerplate and start building.
 
 ## What you get
 
 - **Express 5** with native async error handling
 - **TypeScript** with strict mode
+- **Structured logging** with pino + pino-http
+- **Request validation** with zod middleware
+- **Rate limiting** with express-rate-limit (global + per-route)
+- **Custom error classes** — AppError, NotFoundError, ValidationError, UnauthorizedError
+- **CRUD example route** (`/api/examples`) wired to your chosen ORM
 - **Jest + Supertest** for testing
-- **ESLint** flat config + **Prettier**
+- **ESLint** flat config + **Prettier** + **Husky** pre-commit hooks
 - **Database ORM** — Prisma, Drizzle, or TypeORM
 - **Docker** with multi-stage builds and compose
 - **Vercel** deployment config
+- **Package manager choice** — npm, pnpm, or yarn
 
 ## Quick start
 
-```bash
+```bash title="Terminal"
 npx pest-js-app
 ```
 
-Follow the prompts to name your project, pick a database, and choose options. Or run it non-interactively:
+Follow the prompts to name your project, pick a database, choose a package manager, and select options. Or run it non-interactively:
 
-```bash
-npx pest-js-app --yes --name my-api --database prisma --db-provider postgresql --docker
-```
-
-<Cards>
-  <Card title="Getting Started" href="/docs/getting-started" />
-  <Card title="CLI Reference" href="/docs/cli" />
-</Cards>
+<Tabs items={["Minimal", "With database", "With pnpm"]}>
+  <Tab value="Minimal">
+    ```bash title="Terminal"
+    npx pest-js-app --yes --name my-api
+    ```
+  </Tab>
+  <Tab value="With database">
+    ```bash title="Terminal"
+    npx pest-js-app --yes --name my-api --database prisma --db-provider postgresql --docker
+    ```
+  </Tab>
+  <Tab value="With pnpm">
+    ```bash title="Terminal"
+    npx pest-js-app --yes --name my-api --package-manager pnpm
+    ```
+  </Tab>
+</Tabs>

@@ -10,51 +10,153 @@ description: Create your first PEST.js project.
 
 ## Create a project
 
-Run the CLI with npx:
+<Steps>
+  <Step>
+    ### Scaffold
 
-```bash
-npx pest-js-app
-```
+    Run the CLI with npx:
 
-You'll be prompted for:
+    ```bash title="Terminal"
+    npx pest-js-app
+    ```
 
-1. **Project name** — kebab-case (e.g. `my-api`)
-2. **Description**
-3. **Author** — auto-detected from git config
-4. **Database ORM** — Prisma, Drizzle, TypeORM, or None
-5. **Database provider** — PostgreSQL, MySQL, or SQLite (if ORM selected)
-6. **Docker support**
-7. **Git init**
-8. **Install dependencies**
+    You'll be prompted for:
 
-## Start developing
+    1. **Project name** — kebab-case (e.g. `my-api`)
+    2. **Description**
+    3. **Author** — auto-detected from git config
+    4. **Database ORM** — Prisma, Drizzle, TypeORM, or None
+    5. **Database provider** — PostgreSQL, MySQL, or SQLite (if ORM selected)
+    6. **Docker support**
+    7. **Package manager** — npm, pnpm, or yarn
+    8. **Git init**
+    9. **Install dependencies**
+  </Step>
+  <Step>
+    ### Start developing
 
-```bash
-cd my-api
-npm run dev
-```
+    <Tabs defaultValue="npm">
+      <TabsList>
+        <TabsTrigger value="npm"><NPM className="size-4" /> npm</TabsTrigger>
+        <TabsTrigger value="pnpm"><Pnpm className="size-4" /> pnpm</TabsTrigger>
+        <TabsTrigger value="yarn"><Yarn className="size-4" /> yarn</TabsTrigger>
+      </TabsList>
+      <TabsContent value="npm">
+        ```bash title="Terminal"
+        cd my-api
+        npm run dev
+        ```
+      </TabsContent>
+      <TabsContent value="pnpm">
+        ```bash title="Terminal"
+        cd my-api
+        pnpm dev
+        ```
+      </TabsContent>
+      <TabsContent value="yarn">
+        ```bash title="Terminal"
+        cd my-api
+        yarn dev
+        ```
+      </TabsContent>
+    </Tabs>
 
-The dev server starts on `http://localhost:3000` with hot reload via nodemon.
+    The dev server starts on `http://localhost:3000` with hot reload via `tsx watch`.
+  </Step>
+  <Step>
+    ### Build and run
 
-## Build and run
+    <Tabs defaultValue="npm">
+      <TabsList>
+        <TabsTrigger value="npm"><NPM className="size-4" /> npm</TabsTrigger>
+        <TabsTrigger value="pnpm"><Pnpm className="size-4" /> pnpm</TabsTrigger>
+        <TabsTrigger value="yarn"><Yarn className="size-4" /> yarn</TabsTrigger>
+      </TabsList>
+      <TabsContent value="npm">
+        ```bash title="Terminal"
+        npm run build
+        npm start
+        ```
+      </TabsContent>
+      <TabsContent value="pnpm">
+        ```bash title="Terminal"
+        pnpm build
+        pnpm start
+        ```
+      </TabsContent>
+      <TabsContent value="yarn">
+        ```bash title="Terminal"
+        yarn build
+        yarn start
+        ```
+      </TabsContent>
+    </Tabs>
+  </Step>
+</Steps>
 
-```bash
-npm run build
-npm start
-```
+## Routes
+
+Your project comes with these routes out of the box:
+
+| Route | Description |
+|-------|-------------|
+| `GET /` | Welcome message with API version and environment |
+| `GET /health` | Health check |
+| `GET /api/examples` | List all examples (CRUD) |
+| `POST /api/examples` | Create an example (validated with zod) |
+| `GET /api/examples/:id` | Get a single example |
+| `DELETE /api/examples/:id` | Delete an example |
 
 ## Run tests
 
-```bash
-npm test
-```
+<Tabs defaultValue="npm">
+  <TabsList>
+    <TabsTrigger value="npm"><NPM className="size-4" /> npm</TabsTrigger>
+    <TabsTrigger value="pnpm"><Pnpm className="size-4" /> pnpm</TabsTrigger>
+    <TabsTrigger value="yarn"><Yarn className="size-4" /> yarn</TabsTrigger>
+  </TabsList>
+  <TabsContent value="npm">
+    ```bash title="Terminal"
+    npm test
+    ```
+  </TabsContent>
+  <TabsContent value="pnpm">
+    ```bash title="Terminal"
+    pnpm test
+    ```
+  </TabsContent>
+  <TabsContent value="yarn">
+    ```bash title="Terminal"
+    yarn test
+    ```
+  </TabsContent>
+</Tabs>
 
-Tests use Jest with Supertest for HTTP assertions. The generated test file covers the root endpoint, health check, and 404 handling.
+Tests use Jest with Supertest for HTTP assertions. The generated tests cover the root endpoint, health check, 404 handling, and the example CRUD route (when no database is selected).
 
 ## Lint
 
-```bash
-npm run lint
-```
+<Tabs defaultValue="npm">
+  <TabsList>
+    <TabsTrigger value="npm"><NPM className="size-4" /> npm</TabsTrigger>
+    <TabsTrigger value="pnpm"><Pnpm className="size-4" /> pnpm</TabsTrigger>
+    <TabsTrigger value="yarn"><Yarn className="size-4" /> yarn</TabsTrigger>
+  </TabsList>
+  <TabsContent value="npm">
+    ```bash title="Terminal"
+    npm run lint
+    ```
+  </TabsContent>
+  <TabsContent value="pnpm">
+    ```bash title="Terminal"
+    pnpm lint
+    ```
+  </TabsContent>
+  <TabsContent value="yarn">
+    ```bash title="Terminal"
+    yarn lint
+    ```
+  </TabsContent>
+</Tabs>
 
-Uses ESLint flat config with TypeScript support.
+Uses ESLint flat config with TypeScript support. Husky runs `lint-staged` on pre-commit.

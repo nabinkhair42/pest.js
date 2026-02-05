@@ -5,29 +5,41 @@ description: What gets generated and where everything lives.
 
 ## Directory layout
 
-```txt
-my-api/
-├── src/
-│   ├── app.ts                  # Express app (routes, middleware)
-│   ├── server.ts               # Starts the server
-│   ├── config/
-│   │   └── env.ts              # Typed environment variables
-│   ├── routes/
-│   │   └── health.ts           # Health check endpoint
-│   └── middleware/
-│       └── error-handler.ts    # Global error handler
-├── tests/
-│   └── app.test.ts             # Supertest tests
-├── .env                        # Environment variables
-├── .env.example
-├── package.json
-├── tsconfig.json
-├── eslint.config.mjs           # ESLint flat config
-├── jest.config.js
-├── .prettierrc
-├── vercel.json
-└── .gitignore
-```
+<Files>
+  <Folder name="src" defaultOpen>
+    <Folder name="config" defaultOpen>
+      <File name="env.ts" />
+    </Folder>
+    <Folder name="lib" defaultOpen>
+      <File name="errors.ts" />
+      <File name="logger.ts" />
+    </Folder>
+    <Folder name="middleware" defaultOpen>
+      <File name="error-handler.ts" />
+      <File name="validate.ts" />
+      <File name="rate-limit.ts" />
+    </Folder>
+    <Folder name="routes" defaultOpen>
+      <File name="health.ts" />
+      <File name="example.ts" />
+    </Folder>
+    <File name="app.ts" />
+    <File name="server.ts" />
+  </Folder>
+  <Folder name="tests" defaultOpen>
+    <File name="app.test.ts" />
+    <File name="example.test.ts" />
+  </Folder>
+  <File name=".env" />
+  <File name=".env.example" />
+  <File name="package.json" />
+  <File name="tsconfig.json" />
+  <File name="eslint.config.mjs" />
+  <File name="jest.config.js" />
+  <File name=".prettierrc" />
+  <File name="vercel.json" />
+  <File name=".gitignore" />
+</Files>
 
 Additional files are added based on your choices (database, Docker).
 
@@ -35,45 +47,158 @@ Additional files are added based on your choices (database, Docker).
 
 ### `src/app.ts`
 
-The Express application. Sets up middleware (helmet, cors, json parsing), defines the root route, mounts the health router, handles 404s, and attaches the error handler.
+The Express application. Sets up middleware in this order:
+
+<Steps>
+  <Step>
+    ### helmet
+    Security headers
+  </Step>
+  <Step>
+    ### cors
+    Cross-origin requests
+  </Step>
+  <Step>
+    ### express.json
+    Body parsing
+  </Step>
+  <Step>
+    ### globalLimiter
+    Rate limiting (100 req / 15 min by default)
+  </Step>
+  <Step>
+    ### pinoHttp
+    Structured request logging
+  </Step>
+</Steps>
+
+Mounts the health router at `/health`, the example CRUD route at `/api/examples`, handles 404s with `NotFoundError`, and attaches the error handler.
 
 Exported separately from the server so tests can import it without starting a listener.
 
 ### `src/server.ts`
 
-Imports the app and calls `app.listen()`. This is the entry point for `npm start` and `npm run dev`.
+Imports the app and calls `app.listen()`. Uses `logger.info()` for startup messages. For TypeORM projects, wraps the listener in `initializeDatabase().then()`.
+
+This is the entry point for `npm start` and `npm run dev`.
 
 ### `src/config/env.ts`
 
-Loads `dotenv` and exports a typed `env` object:
+Loads `dotenv` and exports a validated `env` object:
 
-```ts
+```ts title="src/config/env.ts"
 export const env = {
   NODE_ENV: process.env.NODE_ENV || "development",
-  PORT: parseInt(process.env.PORT || "3000", 10),
-  DATABASE_URL: process.env.DATABASE_URL || "", // if database selected
+  PORT: port,                    // validated: 0–65535
+  RATE_LIMIT_WINDOW_MS: 900000,  // configurable via env
+  RATE_LIMIT_MAX: 100,           // configurable via env
+  DATABASE_URL: process.env.DATABASE_URL, // when database selected
 } as const;
+```
+
+<Callout>
+  `PORT` is validated to be a number between 0 and 65535. `DATABASE_URL` is required when a database is configured.
+</Callout>
+
+### `src/lib/errors.ts`
+
+Custom error classes for structured error handling:
+
+- **AppError** — base class with `statusCode` and `isOperational`
+- **NotFoundError** — 404
+- **ValidationError** — 400
+- **UnauthorizedError** — 401
+
+### `src/lib/logger.ts`
+
+Pino logger with `pino-pretty` formatting in development:
+
+```ts title="src/lib/logger.ts"
+import pino from "pino";
+
+export const logger = pino({
+  transport: process.env.NODE_ENV !== "production"
+    ? { target: "pino-pretty" }
+    : undefined,
+});
 ```
 
 ### `src/middleware/error-handler.ts`
 
-Express error middleware. Logs the error, returns the status code from the error object (or 500), and hides error details in production.
+Express error middleware. Handles:
+
+- **AppError** — returns the error's `statusCode` and `message`
+- **ZodError** — returns 400 with validation `.issues`
+- **Unknown errors** — returns 500, hides details in production
+
+Uses `logger` instead of `console.error`.
+
+### `src/middleware/validate.ts`
+
+Zod validation middleware for request body, query, and params:
+
+```ts title="src/middleware/validate.ts"
+import type { z } from "zod";
+
+export function validate(schema: z.ZodType) {
+  return (req, _res, next) => {
+    schema.parse({ body: req.body, query: req.query, params: req.params });
+    next();
+  };
+}
+```
+
+### `src/middleware/rate-limit.ts`
+
+Global rate limiter and a factory for per-route limiters:
+
+```ts title="src/middleware/rate-limit.ts"
+import rateLimit from "express-rate-limit";
+
+// Applied globally in app.ts
+export const globalLimiter = rateLimit({
+  windowMs: env.RATE_LIMIT_WINDOW_MS, // default: 15 minutes
+  limit: env.RATE_LIMIT_MAX,          // default: 100 requests
+});
+
+// Use for stricter per-route limits
+export function createLimiter(options: { windowMs: number; limit: number }) {
+  return rateLimit({ ...options, standardHeaders: true, legacyHeaders: false });
+}
+```
+
+Override defaults via `.env`:
+
+```bash title=".env"
+RATE_LIMIT_WINDOW_MS=60000   # 1 minute
+RATE_LIMIT_MAX=30            # 30 requests per window
+```
+
+### `src/routes/example.ts`
+
+A complete CRUD route at `/api/examples` demonstrating validation, error handling, and database usage. The implementation varies by ORM:
+
+- **No database** — in-memory array
+- **Prisma** — uses the Prisma client
+- **Drizzle** — uses drizzle-orm (with `$returningId()` for MySQL)
+- **TypeORM** — uses the TypeORM repository
 
 ### `tests/app.test.ts`
 
 Uses Supertest to make real HTTP requests against the app. Tests the root endpoint, health check, and 404 handling.
 
+### `tests/example.test.ts`
+
+Generated only when no database is selected. Tests the in-memory CRUD example route (create, list, get, delete, not-found).
+
 ## Scripts
 
 | Script | What it does |
 |--------|-------------|
-| `npm run dev` | Start with nodemon + ts-node |
-| `npm run build` | Compile TypeScript |
-| `npm start` | Run compiled JS |
+| `npm run dev` | Start with `tsx watch` (hot reload) |
+| `npm run build` | Compile TypeScript with `tsc` |
+| `npm start` | Run compiled JS (`node dist/server.js`) |
 | `npm test` | Run Jest tests |
 | `npm run lint` | ESLint check |
-| `npm run lint:fix` | ESLint autofix |
-| `npm run format` | Prettier write |
-| `npm run format:check` | Prettier check |
 
 Database scripts (`db:migrate`, `db:generate`, `db:push`, `db:studio`) are added when a database ORM is selected.

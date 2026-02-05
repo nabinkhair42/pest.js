@@ -10,6 +10,7 @@ export function appTemplate(config: ProjectConfig): string {
   lines.push('import { healthRouter } from "./routes/health.js";');
   lines.push('import { exampleRouter } from "./routes/example.js";');
   lines.push('import { errorHandler } from "./middleware/error-handler.js";');
+  lines.push('import { globalLimiter } from "./middleware/rate-limit.js";');
   lines.push('import { NotFoundError } from "./lib/errors.js";');
   lines.push('import { logger } from "./lib/logger.js";');
   lines.push('import { env } from "./config/env.js";');
@@ -20,6 +21,7 @@ export function appTemplate(config: ProjectConfig): string {
   lines.push("app.use(helmet());");
   lines.push("app.use(cors());");
   lines.push("app.use(express.json());");
+  lines.push("app.use(globalLimiter);");
   lines.push("app.use(pinoHttp({ logger }));");
   lines.push("");
   lines.push("// Routes");

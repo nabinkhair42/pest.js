@@ -11,6 +11,7 @@ import { loggerTemplate } from "../templates/logger.js";
 import { validateTemplate } from "../templates/validate.js";
 import { exampleRouteTemplate } from "../templates/example-route.js";
 import { exampleRouteTestTemplate } from "../templates/example-route-test.js";
+import { rateLimitTemplate } from "../templates/rate-limit.js";
 
 export function generateApp(ctx: GeneratorContext): void {
   const { config, projectDir } = ctx;
@@ -21,6 +22,7 @@ export function generateApp(ctx: GeneratorContext): void {
   writeFile(projectDir, "src/routes/example.ts", exampleRouteTemplate(config));
   writeFile(projectDir, "src/middleware/error-handler.ts", errorHandlerTemplate());
   writeFile(projectDir, "src/middleware/validate.ts", validateTemplate());
+  writeFile(projectDir, "src/middleware/rate-limit.ts", rateLimitTemplate());
   writeFile(projectDir, "src/config/env.ts", envConfigTemplate(config));
   writeFile(projectDir, "src/lib/errors.ts", errorsTemplate());
   writeFile(projectDir, "src/lib/logger.ts", loggerTemplate());

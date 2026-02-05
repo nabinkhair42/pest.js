@@ -5,15 +5,8 @@ description: All CLI options and flags.
 
 ## Usage
 
-```bash
+```bash title="Terminal"
 npx pest-js-app [options]
-```
-
-Or install globally:
-
-```bash
-npm i -g pest-js-app
-pest-js-app [options]
 ```
 
 ## Options
@@ -25,6 +18,7 @@ pest-js-app [options]
 | `--db-provider <db>` | `postgresql`, `mysql`, or `sqlite` |
 | `--docker` | Enable Docker support |
 | `--no-docker` | Disable Docker support |
+| `--package-manager <pm>` | `npm`, `pnpm`, or `yarn` |
 | `-y, --yes` | Use defaults, skip prompts |
 | `-v, --version` | Print version |
 | `-h, --help` | Print help |
@@ -33,12 +27,8 @@ pest-js-app [options]
 
 Use `--yes` to skip all prompts. Combine with other flags to customize:
 
-```bash
+```bash title="Terminal"
 npx pest-js-app --yes --name my-api
-```
-
-```bash
-npx pest-js-app --yes --name my-api --database prisma --db-provider postgresql --docker
 ```
 
 Defaults when using `--yes`:
@@ -51,25 +41,39 @@ Defaults when using `--yes`:
 | database | `none` |
 | db-provider | `postgresql` |
 | docker | `true` if database is set, `false` otherwise |
+| package-manager | `npm` |
 | git | `true` |
 | install | `true` |
 
 ## Examples
 
-Minimal project, no database:
+<Tabs items={["Minimal", "Prisma + Docker", "Drizzle + SQLite", "TypeORM + pnpm"]}>
+  <Tab value="Minimal">
+    No database, default settings:
 
-```bash
-npx pest-js-app --yes --name my-api
-```
+    ```bash title="Terminal"
+    npx pest-js-app --yes --name my-api
+    ```
+  </Tab>
+  <Tab value="Prisma + Docker">
+    Prisma with PostgreSQL and Docker:
 
-Prisma + PostgreSQL + Docker:
+    ```bash title="Terminal"
+    npx pest-js-app --yes --name my-api --database prisma --db-provider postgresql --docker
+    ```
+  </Tab>
+  <Tab value="Drizzle + SQLite">
+    Drizzle with SQLite, no Docker:
 
-```bash
-npx pest-js-app --yes --name my-api --database prisma --db-provider postgresql --docker
-```
+    ```bash title="Terminal"
+    npx pest-js-app --yes --name my-api --database drizzle --db-provider sqlite --no-docker
+    ```
+  </Tab>
+  <Tab value="TypeORM + pnpm">
+    TypeORM with MySQL and pnpm:
 
-Drizzle + SQLite, no Docker:
-
-```bash
-npx pest-js-app --yes --name my-api --database drizzle --db-provider sqlite --no-docker
-```
+    ```bash title="Terminal"
+    npx pest-js-app --yes --name my-api --database typeorm --db-provider mysql --package-manager pnpm
+    ```
+  </Tab>
+</Tabs>

@@ -51,6 +51,7 @@ describe("generateProject", () => {
     expect(existsSync(join(projectDir, "src/routes/example.ts"))).toBe(true);
     expect(existsSync(join(projectDir, "src/middleware/error-handler.ts"))).toBe(true);
     expect(existsSync(join(projectDir, "src/middleware/validate.ts"))).toBe(true);
+    expect(existsSync(join(projectDir, "src/middleware/rate-limit.ts"))).toBe(true);
     expect(existsSync(join(projectDir, "src/config/env.ts"))).toBe(true);
     expect(existsSync(join(projectDir, "src/lib/errors.ts"))).toBe(true);
     expect(existsSync(join(projectDir, "src/lib/logger.ts"))).toBe(true);
@@ -363,6 +364,36 @@ describe("generateProject", () => {
     const app = readFileSync(join(projectDir, "src/app.ts"), "utf-8");
     expect(app).toContain("pino-http");
     expect(app).toContain("pinoHttp");
+  });
+
+  it("should generate rate-limit middleware", () => {
+    const ctx: GeneratorContext = { config: makeConfig(), projectDir };
+    generateProject(ctx);
+
+    const rateLimit = readFileSync(join(projectDir, "src/middleware/rate-limit.ts"), "utf-8");
+    expect(rateLimit).toContain("express-rate-limit");
+    expect(rateLimit).toContain("globalLimiter");
+    expect(rateLimit).toContain("createLimiter");
+  });
+
+  it("should apply globalLimiter in app.ts", () => {
+    const ctx: GeneratorContext = { config: makeConfig(), projectDir };
+    generateProject(ctx);
+
+    const app = readFileSync(join(projectDir, "src/app.ts"), "utf-8");
+    expect(app).toContain("globalLimiter");
+    expect(app).toContain("rate-limit");
+  });
+
+  it("should include rate limit env vars in env config", () => {
+    const ctx: GeneratorContext = { config: makeConfig(), projectDir };
+    generateProject(ctx);
+
+    const envConfig = readFileSync(join(projectDir, "src/config/env.ts"), "utf-8");
+    expect(envConfig).toContain("RATE_LIMIT_WINDOW_MS");
+    expect(envConfig).toContain("RATE_LIMIT_MAX");
+    expect(envConfig).toContain("900000");
+    expect(envConfig).toContain("100");
   });
 
   it("should throw NotFoundError in 404 handler", () => {
