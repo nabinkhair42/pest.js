@@ -1,6 +1,6 @@
 import * as p from "@clack/prompts";
 import { resolve } from "node:path";
-import { execSync } from "node:child_process";
+import { execSync, spawn } from "node:child_process";
 import type { ProjectConfig, DatabaseORM, DatabaseProvider } from "./types.js";
 import { VERSION, BANNER } from "./constants.js";
 import { generateProject } from "./generators/index.js";
@@ -70,6 +70,14 @@ ${BANNER}
 `);
 }
 
+function runCommand(cmd: string, args: string[], cwd: string): Promise<void> {
+  return new Promise((resolve, reject) => {
+    const child = spawn(cmd, args, { cwd, stdio: "ignore" });
+    child.on("close", (code) => (code === 0 ? resolve() : reject(new Error(`Exit code ${code}`))));
+    child.on("error", reject);
+  });
+}
+
 export async function runCli(args: CliArgs): Promise<void> {
   p.intro(`${BANNER}\n  v${VERSION} - Progressive Express Starter Template`);
 
@@ -120,14 +128,9 @@ export async function runCli(args: CliArgs): Promise<void> {
     const { deps, devDeps } = getDependencies(config);
     s.start("Installing dependencies");
     try {
-      execSync(`npm install ${deps.join(" ")}`, {
-        cwd: projectDir,
-        stdio: "ignore",
-      });
-      execSync(`npm install -D ${devDeps.join(" ")}`, {
-        cwd: projectDir,
-        stdio: "ignore",
-      });
+      await runCommand("npm", ["install", ...deps], projectDir);
+      s.message("Installing dev dependencies");
+      await runCommand("npm", ["install", "-D", ...devDeps], projectDir);
       s.stop("Dependencies installed");
     } catch {
       s.stop("Failed to install dependencies - run 'npm install' manually");
