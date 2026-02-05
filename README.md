@@ -2,151 +2,119 @@
 
 <div align="center">
   <img src="/assets/pestjs-logo.png" alt="PEST.js Logo" width="200" height="200"/>
-  
+
   <p><strong>Progressive • Elegant • Structured • TypeScript</strong></p>
 </div>
 
 ## Overview
 
-PEST.js is a **minimal, scalable framework** that generates production-ready Node.js applications. It focuses on **essential functionality** and **developer experience**, providing a clean foundation that grows with your project.
+PEST.js is a **CLI scaffolding tool** that generates production-ready Node.js + Express 5 applications with TypeScript. Choose your database ORM, add Docker support, and start coding in seconds.
 
 ## Features
 
-- **Minimal Dependencies**: Only essential packages included
-- **TypeScript-First**: Built for modern development
-- **Clean Architecture**: Feature-based organization
-- **Testing Ready**: Jest configuration included
-- **Linting Setup**: ESLint with TypeScript support
-- **Git Integration**: Automatic repository initialization
+- **Express 5**: Latest Express with native async error handling
+- **TypeScript-First**: Strict TypeScript configuration out of the box
+- **Database Support**: Choose Prisma, Drizzle, or TypeORM with PostgreSQL, MySQL, or SQLite
+- **Docker Ready**: Optional Dockerfile and docker-compose with database services
+- **Testing Ready**: Jest + Supertest with real HTTP assertions
+- **Modern Linting**: ESLint flat config with TypeScript support
+- **Interactive CLI**: Beautiful prompts with non-interactive CI mode
+- **Vercel Ready**: Deployment configuration included
 
 ## Quick Start
 
-### Prerequisites
+### Using npx (recommended)
 
-- Node.js v16 or higher
-- npm or yarn
-- Git
-
-### Installation
-
-1. **Clone the repository**
-   ```bash
-   git clone https://github.com/nabinkhair42/pest.js.git
-   cd pest.js
-   ```
-
-2. **Run the framework**
-   ```bash
-   ./pestjs
-   ```
-
-3. **Follow the prompts**
-   - Enter project name
-   - Enter GitHub username
-
-### Post-Setup Steps
-
-1. Navigate to your project directory:
-   ```bash
-   cd your-project-name
-   ```
-
-2. Install dependencies:
-   ```bash
-   npm install
-   ```
-
-3. Start development:
-   ```bash
-   npm run dev
-   ```
-
-## Project Structure
-
+```bash
+npx pest-js
 ```
-pest.js/
-├── core/                    # Framework core
-│   ├── cli/                # CLI interface
-│   │   └── main.sh         # Main CLI logic
-│   ├── generators/          # Code generators
-│   │   ├── package.sh      # Package.json generator
-│   │   ├── config.sh       # Config files generator
-│   │   └── app.sh          # App file generator
-│   ├── utils/              # Utilities
-│   │   └── helpers.sh      # Helper functions
-│   └── templates/          # Project templates
-├── www/                    # Documentation site
-├── public/                 # Static assets
-├── scripts/                # Build scripts
-├── docs/                   # Framework docs
-└── pestjs                  # CLI entry point
+
+### Global install
+
+```bash
+npm i -g pest-js
+pest-js
 ```
+
+### Non-interactive mode (CI)
+
+```bash
+npx pest-js --yes --name my-api --database prisma --db-provider postgresql --docker
+```
+
+## CLI Options
+
+| Option | Description |
+|--------|-------------|
+| `--name <name>` | Project name (kebab-case) |
+| `--database <orm>` | `prisma` \| `drizzle` \| `typeorm` \| `none` |
+| `--db-provider <db>` | `postgresql` \| `mysql` \| `sqlite` |
+| `--docker` / `--no-docker` | Enable/disable Docker support |
+| `-y, --yes` | Use defaults (non-interactive) |
+| `-v, --version` | Show version |
+| `-h, --help` | Show help |
 
 ## Generated Project Structure
 
 ```
 your-project/
 ├── src/
-│   ├── config/            # Configuration
-│   ├── features/          # Feature modules
-│   │   ├── auth/
-│   │   └── users/
-│   ├── middleware/        # Custom middleware
-│   ├── utils/            # Utilities
-│   └── types/            # TypeScript types
+│   ├── app.ts                    # Express application
+│   ├── server.ts                 # Server entry point
+│   ├── config/
+│   │   └── env.ts                # Typed environment config
+│   ├── routes/
+│   │   └── health.ts             # Health check route
+│   ├── middleware/
+│   │   └── error-handler.ts      # Error handling middleware
+│   ├── db/                       # Database (if selected)
+│   │   ├── index.ts
+│   │   └── schema.ts             # or data-source.ts / entities/
+│   └── lib/
+│       └── prisma.ts             # Prisma client (if selected)
 ├── tests/
-│   ├── unit/
-│   └── integration/
-├── scripts/              # Utility scripts
-├── docs/                 # Documentation
-└── [config files]
+│   └── app.test.ts               # Supertest-based tests
+├── prisma/                       # Prisma schema (if selected)
+├── Dockerfile                    # Multi-stage build (if Docker)
+├── docker-compose.yml            # App + DB services (if Docker)
+└── [config files]                # tsconfig, eslint, prettier, jest, etc.
 ```
 
-## Available Scripts
+## Available Scripts (in generated project)
 
-- `npm run dev` - Start development server
-- `npm run build` - Build for production
-- `npm start` - Start production server
-- `npm test` - Run tests
-- `npm run lint` - Run ESLint
+| Script | Description |
+|--------|-------------|
+| `npm run dev` | Start development server with hot reload |
+| `npm run build` | Compile TypeScript to JavaScript |
+| `npm start` | Start production server |
+| `npm test` | Run tests with Jest |
+| `npm run lint` | Lint with ESLint |
+| `npm run format` | Format with Prettier |
+| `npm run db:migrate` | Run database migrations (if DB selected) |
+| `npm run db:studio` | Open database GUI (Prisma/Drizzle) |
 
-## Framework Architecture
+## Repository Structure
 
-### Core Components
-
-1. **CLI Entry Point** (`pestjs`)
-   - Minimal, focused interface
-   - Essential project setup
-
-2. **Modular Generators** (`core/generators/`)
-   - `package.sh` - Package.json generation
-   - `config.sh` - Configuration files
-   - `app.sh` - Application setup
-
-3. **Utilities** (`core/utils/`)
-   - `helpers.sh` - Essential helper functions
-   - Validation and file operations
-
-### Design Principles
-
-- **Minimal Dependencies**: Only essential packages
-- **Modular Structure**: Focused, single-purpose files
-- **Developer Experience**: Clean, intuitive interface
-- **Scalable Foundation**: Easy to extend and customize
-
-## Dependencies
-
-### Core Dependencies
-- `express` - Web framework
-- `cors` - Cross-origin resource sharing
-- `helmet` - Security headers
-- `dotenv` - Environment variables
-
-### Development Dependencies
-- `typescript` - Type safety
-- `jest` - Testing framework
-- `eslint` - Code linting
-- `nodemon` - Development server
+```
+pest.js/
+├── packages/
+│   └── cli/                      # CLI package (published as pest-js)
+│       ├── src/
+│       │   ├── index.ts           # Entry point
+│       │   ├── cli.ts             # Prompt orchestration
+│       │   ├── types.ts           # Type definitions
+│       │   ├── constants.ts       # Versions and defaults
+│       │   ├── generators/        # Project generators
+│       │   │   ├── database/      # ORM-specific generators
+│       │   │   └── ...
+│       │   ├── templates/         # File templates
+│       │   └── utils/             # Utilities
+│       ├── package.json
+│       └── tsup.config.ts
+├── www/                           # Documentation website
+├── pnpm-workspace.yaml
+└── package.json
+```
 
 ## Contributing
 

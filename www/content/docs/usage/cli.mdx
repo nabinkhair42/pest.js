@@ -1,0 +1,75 @@
+---
+title: CLI Reference
+description: All CLI options and flags.
+---
+
+## Usage
+
+```bash
+npx pest-js [options]
+```
+
+Or install globally:
+
+```bash
+npm i -g pest-js
+pest-js [options]
+```
+
+## Options
+
+| Flag | Description |
+|------|-------------|
+| `--name <name>` | Project name (kebab-case) |
+| `--database <orm>` | `prisma`, `drizzle`, `typeorm`, or `none` |
+| `--db-provider <db>` | `postgresql`, `mysql`, or `sqlite` |
+| `--docker` | Enable Docker support |
+| `--no-docker` | Disable Docker support |
+| `-y, --yes` | Use defaults, skip prompts |
+| `-v, --version` | Print version |
+| `-h, --help` | Print help |
+
+## Non-interactive mode
+
+Use `--yes` to skip all prompts. Combine with other flags to customize:
+
+```bash
+npx pest-js --yes --name my-api
+```
+
+```bash
+npx pest-js --yes --name my-api --database prisma --db-provider postgresql --docker
+```
+
+Defaults when using `--yes`:
+
+| Option | Default |
+|--------|---------|
+| name | `my-app` |
+| description | `A PEST.js application` |
+| author | from `git config user.name` |
+| database | `none` |
+| db-provider | `postgresql` |
+| docker | `true` if database is set, `false` otherwise |
+| git | `true` |
+| install | `true` |
+
+## Examples
+
+Minimal project, no database:
+
+```bash
+npx pest-js --yes --name my-api
+```
+
+Prisma + PostgreSQL + Docker:
+
+```bash
+npx pest-js --yes --name my-api --database prisma --db-provider postgresql --docker
+```
+
+Drizzle + SQLite, no Docker:
+
+```bash
+npx pest-js --yes --name my-api --database drizzle --db-provider sqlite --no-docker
+```

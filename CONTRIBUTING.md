@@ -24,17 +24,32 @@ We welcome contributions! This document provides guidelines for contributing to 
 ### Code Standards
 
 - Follow the existing code style
-- Write clear, descriptive commit messages
+- Write clear, descriptive commit messages following conventional commits
 - Add tests for new features
 - Update documentation for API changes
-- Ensure your code passes linting
+- Ensure your code passes linting and type checking
 
 ## Development Setup
 
 1. Clone the repository
-2. Install dependencies: `npm install`
-3. Run tests: `npm test`
-4. Start development server: `npm run dev`
+2. Install dependencies: `pnpm install`
+3. Build the CLI: `pnpm --filter pest-js build`
+4. Run tests: `pnpm --filter pest-js test`
+5. Test locally: `node packages/cli/dist/index.js`
+
+## Project Structure
+
+- `packages/cli/` - The CLI package (published as `pest-js`)
+- `www/` - Documentation website
+
+## Useful Commands
+
+| Command | Description |
+|---------|-------------|
+| `pnpm --filter pest-js build` | Build the CLI |
+| `pnpm --filter pest-js test` | Run unit tests |
+| `pnpm --filter pest-js typecheck` | Run type checking |
+| `pnpm --filter pest-js dev` | Build with watch mode |
 
 ## License
 

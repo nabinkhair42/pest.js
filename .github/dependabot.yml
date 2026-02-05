@@ -1,6 +1,5 @@
 version: 2
 updates:
-  # Enable version updates for npm
   - package-ecosystem: "npm"
     directory: "/www"
     schedule:
@@ -19,7 +18,24 @@ updates:
       - "dependencies"
       - "automated"
 
-  # Enable version updates for GitHub Actions
+  - package-ecosystem: "npm"
+    directory: "/packages/cli"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+    open-pull-requests-limit: 5
+    reviewers:
+      - "nabinkhair42"
+    assignees:
+      - "nabinkhair42"
+    commit-message:
+      prefix: "chore"
+      include: "scope"
+    labels:
+      - "dependencies"
+      - "automated"
+
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:

@@ -1,0 +1,35 @@
+---
+title: Introduction
+description: What is PEST.js and why use it.
+---
+
+PEST.js is a CLI tool that scaffolds production-ready **Express 5 + TypeScript** projects.
+
+It sets up everything you need — routing, error handling, testing, linting, database, and Docker — so you can skip the boilerplate and start building.
+
+## What you get
+
+- **Express 5** with native async error handling
+- **TypeScript** with strict mode
+- **Jest + Supertest** for testing
+- **ESLint** flat config + **Prettier**
+- **Database ORM** — Prisma, Drizzle, or TypeORM
+- **Docker** with multi-stage builds and compose
+- **Vercel** deployment config
+
+## Quick start
+
+```bash
+npx pest-js
+```
+
+Follow the prompts to name your project, pick a database, and choose options. Or run it non-interactively:
+
+```bash
+npx pest-js --yes --name my-api --database prisma --db-provider postgresql --docker
+```
+
+<Cards>
+  <Card title="Getting Started" href="/docs/getting-started" />
+  <Card title="CLI Reference" href="/docs/cli" />
+</Cards>

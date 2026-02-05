@@ -1,0 +1,79 @@
+---
+title: Project Structure
+description: What gets generated and where everything lives.
+---
+
+## Directory layout
+
+```txt
+my-api/
+├── src/
+│   ├── app.ts                  # Express app (routes, middleware)
+│   ├── server.ts               # Starts the server
+│   ├── config/
+│   │   └── env.ts              # Typed environment variables
+│   ├── routes/
+│   │   └── health.ts           # Health check endpoint
+│   └── middleware/
+│       └── error-handler.ts    # Global error handler
+├── tests/
+│   └── app.test.ts             # Supertest tests
+├── .env                        # Environment variables
+├── .env.example
+├── package.json
+├── tsconfig.json
+├── eslint.config.mjs           # ESLint flat config
+├── jest.config.js
+├── .prettierrc
+├── vercel.json
+└── .gitignore
+```
+
+Additional files are added based on your choices (database, Docker).
+
+## Key files
+
+### `src/app.ts`
+
+The Express application. Sets up middleware (helmet, cors, json parsing), defines the root route, mounts the health router, handles 404s, and attaches the error handler.
+
+Exported separately from the server so tests can import it without starting a listener.
+
+### `src/server.ts`
+
+Imports the app and calls `app.listen()`. This is the entry point for `npm start` and `npm run dev`.
+
+### `src/config/env.ts`
+
+Loads `dotenv` and exports a typed `env` object:
+
+```ts
+export const env = {
+  NODE_ENV: process.env.NODE_ENV || "development",
+  PORT: parseInt(process.env.PORT || "3000", 10),
+  DATABASE_URL: process.env.DATABASE_URL || "", // if database selected
+} as const;
+```
+
+### `src/middleware/error-handler.ts`
+
+Express error middleware. Logs the error, returns the status code from the error object (or 500), and hides error details in production.
+
+### `tests/app.test.ts`
+
+Uses Supertest to make real HTTP requests against the app. Tests the root endpoint, health check, and 404 handling.
+
+## Scripts
+
+| Script | What it does |
+|--------|-------------|
+| `npm run dev` | Start with nodemon + ts-node |
+| `npm run build` | Compile TypeScript |
+| `npm start` | Run compiled JS |
+| `npm test` | Run Jest tests |
+| `npm run lint` | ESLint check |
+| `npm run lint:fix` | ESLint autofix |
+| `npm run format` | Prettier write |
+| `npm run format:check` | Prettier check |
+
+Database scripts (`db:migrate`, `db:generate`, `db:push`, `db:studio`) are added when a database ORM is selected.

@@ -1,0 +1,9 @@
+{
+  "root": true,
+  "pages": [
+    "index",
+    "getting-started",
+    "...usage",
+    "...features"
+  ]
+}

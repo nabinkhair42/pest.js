@@ -1,0 +1,94 @@
+---
+title: Database
+description: Prisma, Drizzle, and TypeORM support.
+---
+
+PEST.js supports three database ORMs. Each generates its own config files, schema, and client setup.
+
+## Providers
+
+All three ORMs support:
+
+- **PostgreSQL** — recommended for production
+- **MySQL**
+- **SQLite** — file-based, no server needed
+
+## Prisma
+
+Generates:
+
+```txt
+prisma/schema.prisma        # Schema definition
+src/lib/prisma.ts            # Singleton client
+```
+
+Scripts added:
+
+| Script | Command |
+|--------|---------|
+| `db:generate` | `prisma generate` |
+| `db:migrate` | `prisma migrate dev` |
+| `db:push` | `prisma db push` |
+| `db:studio` | `prisma studio` |
+
+After creating your project:
+
+```bash
+npx prisma migrate dev --name init
+```
+
+## Drizzle
+
+Generates:
+
+```txt
+drizzle.config.ts            # Drizzle Kit config
+src/db/schema.ts             # Table definitions
+src/db/index.ts              # Database client
+```
+
+Scripts added:
+
+| Script | Command |
+|--------|---------|
+| `db:generate` | `drizzle-kit generate` |
+| `db:migrate` | `drizzle-kit migrate` |
+| `db:push` | `drizzle-kit push` |
+| `db:studio` | `drizzle-kit studio` |
+
+After creating your project:
+
+```bash
+npm run db:push
+```
+
+## TypeORM
+
+Generates:
+
+```txt
+src/db/data-source.ts        # DataSource config
+src/db/index.ts              # Connection helper
+src/db/entities/user.ts      # Example entity
+```
+
+TypeORM enables `experimentalDecorators` and `emitDecoratorMetadata` in tsconfig.
+
+Scripts added:
+
+| Script | Command |
+|--------|---------|
+| `db:migrate` | `typeorm migration:run` |
+| `db:generate` | `typeorm migration:generate` |
+
+## DATABASE_URL
+
+When a database is selected, `DATABASE_URL` is added to `.env` and `.env.example` with a default connection string.
+
+The `src/config/env.ts` file exports it as part of the typed `env` object.
+
+| Provider | Example URL |
+|----------|-------------|
+| PostgreSQL | `postgresql://user:password@localhost:5432/mydb` |
+| MySQL | `mysql://user:password@localhost:3306/mydb` |
+| SQLite | `./dev.db` or `file:./dev.db` (Prisma) |

@@ -7,9 +7,9 @@ on:
     branches: [main]
 
 jobs:
-  code-quality:
+  cli-quality:
     runs-on: ubuntu-latest
-    name: Code Quality Checks
+    name: CLI Quality Checks
 
     steps:
       - name: Checkout code
@@ -18,70 +18,110 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v5
         with:
-          node-version: "18"
-          cache: "npm"
-          cache-dependency-path: "www/package-lock.json"
+          node-version: "20"
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
 
       - name: Install dependencies
-        run: |
-          cd www
-          npm ci --legacy-peer-deps
+        run: pnpm install
 
-      - name: Lint code
-        run: |
-          cd www
-          npm run lint
+      - name: Typecheck CLI
+        run: pnpm --filter pest-js typecheck
 
-      - name: Test CLI framework
-        run: |
-          chmod +x pestjs
-          chmod +x core/cli/main.sh
-          chmod +x core/generators/*.sh
-          chmod +x core/utils/*.sh
-          echo -e "test-project\ntest-user\ntest description" | ./pestjs
+      - name: Unit tests
+        run: pnpm --filter pest-js test
 
-      - name: Verify generated project structure
-        run: |
-          cd test-project
-          test -f package.json
-          test -f tsconfig.json
-          test -f .eslintrc.json
-          test -f .gitignore
-          test -f .env
-          test -f .env.example
-          test -f vercel.json
-          test -f .prettierrc
-          test -f .prettierignore
-          test -f jest.config.js
-          test -d src
-          test -d tests
-          test -d tests/unit
-          test -d src/features
-          test -d src/config
-          test -d src/middleware
-          test -d src/utils
-          test -d src/types
+      - name: Build CLI
+        run: pnpm --filter pest-js build
+
+  integration-test:
+    runs-on: ubuntu-latest
+    name: Integration Test (${{ matrix.config }})
+    needs: cli-quality
+
+    strategy:
+      matrix:
+        include:
+          - config: "none"
+            args: "--yes --name test-none --no-docker"
+          - config: "prisma-pg"
+            args: "--yes --name test-prisma --database prisma --db-provider postgresql --docker"
+          - config: "drizzle-pg"
+            args: "--yes --name test-drizzle --database drizzle --db-provider postgresql --docker"
+          - config: "typeorm-pg"
+            args: "--yes --name test-typeorm --database typeorm --db-provider postgresql"
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: "20"
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Build CLI
+        run: pnpm --filter pest-js build
+
+      - name: Generate project
+        run: node packages/cli/dist/index.js ${{ matrix.args }}
 
       - name: Install generated project dependencies
         run: |
-          cd test-project
-          npm install --legacy-peer-deps
+          cd test-*
+          npm install
 
       - name: Build generated project
         run: |
-          cd test-project
+          cd test-*
           npm run build
 
       - name: Test generated project
         run: |
-          cd test-project
-          npm test -- --passWithNoTests
-          npm run lint
-          npm run format:check
+          cd test-*
+          npm test
 
-      - name: Cleanup test project
+      - name: Lint generated project
         run: |
-          rm -rf test-project
+          cd test-*
+          npm run lint
+
+  www-quality:
+    runs-on: ubuntu-latest
+    name: Website Quality Checks
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: "20"
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Lint website
+        run: |
+          cd www
+          pnpm run lint
 
   pr-validation:
     runs-on: ubuntu-latest
@@ -99,42 +139,3 @@ jobs:
             echo "Examples: feat: add new feature, fix: resolve bug, docs: update readme"
             exit 1
           fi
-
-      - name: Check for merge conflicts
-        run: |
-          git fetch origin main
-          if git merge-tree $(git merge-base HEAD origin/main) HEAD origin/main | grep -q "<<<<<<<"; then
-            echo "Merge conflicts detected"
-            exit 1
-          fi
-
-      - name: Check file size limits
-        run: |
-          find . -type f -size +1M -not -path "./node_modules/*" -not -path "./.git/*" | while read file; do
-            echo "Large file detected: $file"
-          done
-
-  code-review:
-    runs-on: ubuntu-latest
-    name: Code Review Checks
-    if: github.event_name == 'pull_request'
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v5
-
-      - name: Check for TODO comments
-        run: |
-          if grep -r "TODO" . --exclude-dir=node_modules --exclude-dir=.git; then
-            echo "TODO comments found in code - please address before merging"
-          fi
-
-      - name: Check for console.log statements
-        run: |
-          if find . -name "*.ts" -o -name "*.tsx" -o -name "*.js" -o -name "*.jsx" | xargs grep -l "console\.log" | grep -v "test"; then
-            echo "console.log statements found in production code - please remove before merging"
-          fi
-
-      - name: Validate shell scripts
-        run: |
-          find . -name "*.sh" -exec bash -n {} \;

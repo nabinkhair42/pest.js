@@ -1,0 +1,94 @@
+---
+title: Docker
+description: Dockerfile and docker-compose generation.
+---
+
+When Docker support is enabled, PEST.js generates three files.
+
+## Dockerfile
+
+Multi-stage build for small production images:
+
+```dockerfile
+# Build stage
+FROM node:20-alpine AS builder
+WORKDIR /app
+COPY package*.json ./
+RUN npm ci
+COPY . .
+RUN npm run build
+
+# Production stage
+FROM node:20-alpine AS runner
+WORKDIR /app
+ENV NODE_ENV=production
+COPY package*.json ./
+RUN npm ci --omit=dev
+COPY --from=builder /app/dist ./dist
+EXPOSE 3000
+CMD ["node", "dist/server.js"]
+```
+
+When using **Prisma**, a `prisma generate` step is added to the build stage and the generated client is copied to the production stage.
+
+## docker-compose.yml
+
+Always includes an `app` service. When a database is selected (PostgreSQL or MySQL), a `db` service is added with health checks.
+
+### PostgreSQL example
+
+```yaml
+services:
+  app:
+    build: .
+    ports:
+      - "3000:3000"
+    env_file:
+      - .env
+    depends_on:
+      db:
+        condition: service_healthy
+
+  db:
+    image: postgres:16-alpine
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: mydb
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U user -d mydb"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  db_data:
+```
+
+### SQLite
+
+No `db` service is added since SQLite is file-based. Only the `app` service is generated.
+
+## .dockerignore
+
+```txt
+node_modules
+dist
+.env
+.git
+coverage
+*.log
+.DS_Store
+```
+
+## Running
+
+```bash
+docker compose up --build
+```
+
+The app will be available at `http://localhost:3000`.

@@ -8,7 +8,10 @@ on:
 jobs:
   release:
     runs-on: ubuntu-latest
-    name: Create Release
+    name: Create Release & Publish
+    permissions:
+      contents: write
+      id-token: write
 
     steps:
       - name: Checkout code
@@ -17,60 +20,56 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v5
         with:
-          node-version: "18"
-          cache: "npm"
-          cache-dependency-path: "www/package-lock.json"
+          node-version: "20"
+          registry-url: "https://registry.npmjs.org"
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
 
       - name: Install dependencies
-        run: |
-          cd www
-          npm ci --legacy-peer-deps
+        run: pnpm install
 
-      - name: Run lint
-        run: |
-          cd www
-          npm run lint
+      - name: Build CLI
+        run: pnpm --filter pest-js build
 
-      - name: Test CLI framework
+      - name: Run tests
+        run: pnpm --filter pest-js test
+
+      - name: Integration test
         run: |
-          chmod +x pestjs
-          chmod +x core/cli/main.sh
-          chmod +x core/generators/*.sh
-          chmod +x core/utils/*.sh
-          echo -e "test-release\ntest-user" | ./pestjs
+          node packages/cli/dist/index.js --yes --name test-release --no-docker
           cd test-release
-          npm install --legacy-peer-deps
+          npm install
           npm run build
+          npm test
           cd ..
           rm -rf test-release
 
-      - name: Create Release
-        uses: actions/create-release@v1
+      - name: Publish to npm
+        run: pnpm --filter pest-js publish --no-git-checks --access public
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
         with:
-          tag_name: ${{ github.ref }}
-          release_name: Release ${{ github.ref }}
+          generate_release_notes: true
           body: |
             ## PEST.js Framework Release
 
-            ### Changes
-            - CLI framework improvements
-            - Enhanced project generation
-            - Updated documentation
-
             ### Installation
             ```bash
-            git clone https://github.com/nabinkhair42/pest.js.git
-            cd pest.js
-            chmod +x pestjs
-            ./pestjs
+            npx pest-js
+            ```
+
+            Or install globally:
+            ```bash
+            npm i -g pest-js && pest-js
             ```
 
             ### Quick Start
-            1. Run `./pestjs`
-            2. Enter project details
-            3. Navigate to generated project
-            4. Run `npm install && npm run dev`
-          draft: false
-          prerelease: false
+            1. Run `npx pest-js`
+            2. Follow the interactive prompts
+            3. Start coding!

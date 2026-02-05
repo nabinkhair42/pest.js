@@ -1,0 +1,60 @@
+---
+title: Getting Started
+description: Create your first PEST.js project.
+---
+
+## Prerequisites
+
+- Node.js 18 or higher
+- npm, pnpm, or yarn
+
+## Create a project
+
+Run the CLI with npx:
+
+```bash
+npx pest-js
+```
+
+You'll be prompted for:
+
+1. **Project name** — kebab-case (e.g. `my-api`)
+2. **Description**
+3. **Author** — auto-detected from git config
+4. **Database ORM** — Prisma, Drizzle, TypeORM, or None
+5. **Database provider** — PostgreSQL, MySQL, or SQLite (if ORM selected)
+6. **Docker support**
+7. **Git init**
+8. **Install dependencies**
+
+## Start developing
+
+```bash
+cd my-api
+npm run dev
+```
+
+The dev server starts on `http://localhost:3000` with hot reload via nodemon.
+
+## Build and run
+
+```bash
+npm run build
+npm start
+```
+
+## Run tests
+
+```bash
+npm test
+```
+
+Tests use Jest with Supertest for HTTP assertions. The generated test file covers the root endpoint, health check, and 404 handling.
+
+## Lint
+
+```bash
+npm run lint
+```
+
+Uses ESLint flat config with TypeScript support.
