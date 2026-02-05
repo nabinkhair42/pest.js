@@ -11,6 +11,10 @@ export function baseOptions(): BaseLayoutProps {
         text: 'Docs',
         url: '/docs',
       },
+      {
+        text: 'Changelog',
+        url: '/changelog',
+      },
     ],
   };
 }
