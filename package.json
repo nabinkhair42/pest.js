@@ -5,11 +5,11 @@
   "private": true,
   "scripts": {
     "prepare": "husky",
-    "build": "pnpm --filter pest-js build",
+    "build": "pnpm --filter pest-js-app build",
     "build:www": "pnpm --filter www build",
     "dev": "pnpm --filter www dev",
-    "test": "pnpm --filter pest-js test",
-    "lint": "pnpm --filter pest-js typecheck && pnpm --filter www lint",
+    "test": "pnpm --filter pest-js-app test",
+    "lint": "pnpm --filter pest-js-app typecheck && pnpm --filter www lint",
     "format": "prettier --write .",
     "format:check": "prettier --check ."
   },

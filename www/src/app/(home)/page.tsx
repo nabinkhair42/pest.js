@@ -51,7 +51,7 @@ export default function HomePage() {
             Get Started
           </Link>
           <div className="inline-flex h-10 items-center gap-2 rounded-md border bg-fd-secondary px-4 font-mono text-sm text-fd-secondary-foreground">
-            npx pest-js
+            npx pest-js-app
           </div>
         </div>
 

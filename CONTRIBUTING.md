@@ -33,23 +33,23 @@ We welcome contributions! This document provides guidelines for contributing to 
 
 1. Clone the repository
 2. Install dependencies: `pnpm install`
-3. Build the CLI: `pnpm --filter pest-js build`
-4. Run tests: `pnpm --filter pest-js test`
+3. Build the CLI: `pnpm --filter pest-js-app build`
+4. Run tests: `pnpm --filter pest-js-app test`
 5. Test locally: `node packages/cli/dist/index.js`
 
 ## Project Structure
 
-- `packages/cli/` - The CLI package (published as `pest-js`)
+- `packages/cli/` - The CLI package (published as `pest-js-app`)
 - `www/` - Documentation website
 
 ## Useful Commands
 
 | Command | Description |
 |---------|-------------|
-| `pnpm --filter pest-js build` | Build the CLI |
-| `pnpm --filter pest-js test` | Run unit tests |
-| `pnpm --filter pest-js typecheck` | Run type checking |
-| `pnpm --filter pest-js dev` | Build with watch mode |
+| `pnpm --filter pest-js-app build` | Build the CLI |
+| `pnpm --filter pest-js-app test` | Run unit tests |
+| `pnpm --filter pest-js-app typecheck` | Run type checking |
+| `pnpm --filter pest-js-app dev` | Build with watch mode |
 
 ## License
 

@@ -29,13 +29,13 @@ jobs:
         run: pnpm install
 
       - name: Typecheck CLI
-        run: pnpm --filter pest-js typecheck
+        run: pnpm --filter pest-js-app typecheck
 
       - name: Unit tests
-        run: pnpm --filter pest-js test
+        run: pnpm --filter pest-js-app test
 
       - name: Build CLI
-        run: pnpm --filter pest-js build
+        run: pnpm --filter pest-js-app build
 
   integration-test:
     runs-on: ubuntu-latest
@@ -72,7 +72,7 @@ jobs:
         run: pnpm install
 
       - name: Build CLI
-        run: pnpm --filter pest-js build
+        run: pnpm --filter pest-js-app build
 
       - name: Generate project
         run: node packages/cli/dist/index.js ${{ matrix.args }}

@@ -1,125 +1,115 @@
-# PEST.js - Progressive Express Starter Template
+# PEST.js
 
 <div align="center">
   <img src="/assets/pestjs-logo.png" alt="PEST.js Logo" width="200" height="200"/>
 
-  <p><strong>Progressive • Elegant • Structured • TypeScript</strong></p>
+  <p><strong>Progressive Express Starter Template</strong></p>
+
+  [![npm version](https://img.shields.io/npm/v/pest-js-app.svg)](https://www.npmjs.com/package/pest-js-app)
+  [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 </div>
 
-## Overview
+---
 
-PEST.js is a **CLI scaffolding tool** that generates production-ready Node.js + Express 5 applications with TypeScript. Choose your database ORM, add Docker support, and start coding in seconds.
+Scaffold production-ready **Express 5 + TypeScript** projects in seconds. Pick a database ORM, add Docker, and start building.
 
-## Features
+```bash
+npx pest-js-app
+```
 
-- **Express 5**: Latest Express with native async error handling
-- **TypeScript-First**: Strict TypeScript configuration out of the box
-- **Database Support**: Choose Prisma, Drizzle, or TypeORM with PostgreSQL, MySQL, or SQLite
-- **Docker Ready**: Optional Dockerfile and docker-compose with database services
-- **Testing Ready**: Jest + Supertest with real HTTP assertions
-- **Modern Linting**: ESLint flat config with TypeScript support
-- **Interactive CLI**: Beautiful prompts with non-interactive CI mode
-- **Vercel Ready**: Deployment configuration included
+## Why PEST.js?
+
+Starting a new Express project means wiring up TypeScript, linting, testing, error handling, env config, and more — every single time. PEST.js does all of that in one command.
+
+- **Express 5** — native async error handling, no wrappers needed
+- **TypeScript** — strict mode, path resolution, source maps
+- **Database** — Prisma, Drizzle, or TypeORM with PostgreSQL, MySQL, or SQLite
+- **Docker** — multi-stage Dockerfile + compose with DB health checks
+- **Testing** — Jest + Supertest with real HTTP assertions
+- **Linting** — ESLint flat config + Prettier, pre-commit hooks via Husky
+- **Deploy** — Vercel config included out of the box
 
 ## Quick Start
 
-### Using npx (recommended)
-
 ```bash
-npx pest-js
+npx pest-js-app
 ```
 
-### Global install
+Follow the interactive prompts — or skip them entirely:
 
 ```bash
-npm i -g pest-js
-pest-js
+npx pest-js-app --yes --name my-api --database prisma --db-provider postgresql --docker
 ```
 
-### Non-interactive mode (CI)
+Then:
 
 ```bash
-npx pest-js --yes --name my-api --database prisma --db-provider postgresql --docker
+cd my-api
+npm run dev
 ```
+
+Your API is running at `http://localhost:3000`.
 
 ## CLI Options
 
-| Option | Description |
-|--------|-------------|
-| `--name <name>` | Project name (kebab-case) |
-| `--database <orm>` | `prisma` \| `drizzle` \| `typeorm` \| `none` |
-| `--db-provider <db>` | `postgresql` \| `mysql` \| `sqlite` |
-| `--docker` / `--no-docker` | Enable/disable Docker support |
-| `-y, --yes` | Use defaults (non-interactive) |
-| `-v, --version` | Show version |
-| `-h, --help` | Show help |
+```
+Usage: npx pest-js-app [options]
 
-## Generated Project Structure
+Options:
+  --name <name>         Project name (kebab-case)
+  --database <orm>      prisma | drizzle | typeorm | none
+  --db-provider <db>    postgresql | mysql | sqlite
+  --docker              Enable Docker support
+  --no-docker           Disable Docker support
+  -y, --yes             Skip all prompts, use defaults
+  -v, --version         Show version
+  -h, --help            Show help
+```
+
+## What Gets Generated
 
 ```
-your-project/
+my-api/
 ├── src/
-│   ├── app.ts                    # Express application
-│   ├── server.ts                 # Server entry point
-│   ├── config/
-│   │   └── env.ts                # Typed environment config
-│   ├── routes/
-│   │   └── health.ts             # Health check route
+│   ├── app.ts                  Express app (routes + middleware)
+│   ├── server.ts               Server entry point
+│   ├── config/env.ts           Typed environment variables
+│   ├── routes/health.ts        Health check endpoint
 │   ├── middleware/
-│   │   └── error-handler.ts      # Error handling middleware
-│   ├── db/                       # Database (if selected)
-│   │   ├── index.ts
-│   │   └── schema.ts             # or data-source.ts / entities/
-│   └── lib/
-│       └── prisma.ts             # Prisma client (if selected)
-├── tests/
-│   └── app.test.ts               # Supertest-based tests
-├── prisma/                       # Prisma schema (if selected)
-├── Dockerfile                    # Multi-stage build (if Docker)
-├── docker-compose.yml            # App + DB services (if Docker)
-└── [config files]                # tsconfig, eslint, prettier, jest, etc.
+│   │   └── error-handler.ts    Global error handler
+│   ├── db/                     Database setup (if selected)
+│   └── lib/prisma.ts           Prisma client (if selected)
+├── tests/app.test.ts           Supertest tests
+├── Dockerfile                  Multi-stage build (if Docker)
+├── docker-compose.yml          App + DB services (if Docker)
+├── tsconfig.json
+├── eslint.config.mjs
+├── jest.config.js
+├── .prettierrc
+└── vercel.json
 ```
 
-## Available Scripts (in generated project)
+## Scripts in Generated Project
 
 | Script | Description |
 |--------|-------------|
-| `npm run dev` | Start development server with hot reload |
-| `npm run build` | Compile TypeScript to JavaScript |
-| `npm start` | Start production server |
-| `npm test` | Run tests with Jest |
+| `npm run dev` | Dev server with hot reload |
+| `npm run build` | Compile TypeScript |
+| `npm start` | Run production build |
+| `npm test` | Run tests |
 | `npm run lint` | Lint with ESLint |
 | `npm run format` | Format with Prettier |
-| `npm run db:migrate` | Run database migrations (if DB selected) |
-| `npm run db:studio` | Open database GUI (Prisma/Drizzle) |
+| `npm run db:migrate` | Run migrations (if DB) |
+| `npm run db:studio` | Database GUI (if DB) |
 
-## Repository Structure
+## Documentation
 
-```
-pest.js/
-├── packages/
-│   └── cli/                      # CLI package (published as pest-js)
-│       ├── src/
-│       │   ├── index.ts           # Entry point
-│       │   ├── cli.ts             # Prompt orchestration
-│       │   ├── types.ts           # Type definitions
-│       │   ├── constants.ts       # Versions and defaults
-│       │   ├── generators/        # Project generators
-│       │   │   ├── database/      # ORM-specific generators
-│       │   │   └── ...
-│       │   ├── templates/         # File templates
-│       │   └── utils/             # Utilities
-│       ├── package.json
-│       └── tsup.config.ts
-├── www/                           # Documentation website
-├── pnpm-workspace.yaml
-└── package.json
-```
+Full docs at [pest.js docs](https://pestjs.vercel.app/docs).
 
 ## Contributing
 
-We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) for details.
+Contributions welcome. See [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+MIT

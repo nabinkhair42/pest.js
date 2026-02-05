@@ -32,10 +32,10 @@ jobs:
         run: pnpm install
 
       - name: Build CLI
-        run: pnpm --filter pest-js build
+        run: pnpm --filter pest-js-app build
 
       - name: Run tests
-        run: pnpm --filter pest-js test
+        run: pnpm --filter pest-js-app test
 
       - name: Integration test
         run: |
@@ -48,7 +48,7 @@ jobs:
           rm -rf test-release
 
       - name: Publish to npm
-        run: pnpm --filter pest-js publish --no-git-checks --access public
+        run: pnpm --filter pest-js-app publish --no-git-checks --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
@@ -61,15 +61,15 @@ jobs:
 
             ### Installation
             ```bash
-            npx pest-js
+            npx pest-js-app
             ```
 
             Or install globally:
             ```bash
-            npm i -g pest-js && pest-js
+            npm i -g pest-js-app && pest-js-app
             ```
 
             ### Quick Start
-            1. Run `npx pest-js`
+            1. Run `npx pest-js-app`
             2. Follow the interactive prompts
             3. Start coding!

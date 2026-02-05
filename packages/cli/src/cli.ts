@@ -33,7 +33,7 @@ export function parseArgs(argv: string[]): CliArgs {
     } else if (arg === "--no-docker") {
       args.docker = false;
     } else if (arg === "--version" || arg === "-v") {
-      console.log(`pest-js v${VERSION}`);
+      console.log(`pest-js-app v${VERSION}`);
       process.exit(0);
     } else if (arg === "--help" || arg === "-h") {
       printHelp();
@@ -47,10 +47,10 @@ export function parseArgs(argv: string[]): CliArgs {
 function printHelp(): void {
   console.log(`
 ${BANNER}
-  pest-js v${VERSION} - Progressive Express Starter Template
+  pest-js-app v${VERSION} - Progressive Express Starter Template
 
   Usage:
-    npx pest-js [options]
+    npx pest-js-app [options]
 
   Options:
     --name <name>         Project name (kebab-case)
@@ -63,9 +63,9 @@ ${BANNER}
     -h, --help            Show help
 
   Examples:
-    npx pest-js
-    npx pest-js --yes --name my-api
-    npx pest-js --name my-api --database prisma --db-provider postgresql --docker
+    npx pest-js-app
+    npx pest-js-app --yes --name my-api
+    npx pest-js-app --name my-api --database prisma --db-provider postgresql --docker
 `);
 }
 

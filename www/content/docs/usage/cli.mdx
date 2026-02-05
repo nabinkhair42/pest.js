@@ -6,14 +6,14 @@ description: All CLI options and flags.
 ## Usage
 
 ```bash
-npx pest-js [options]
+npx pest-js-app [options]
 ```
 
 Or install globally:
 
 ```bash
-npm i -g pest-js
-pest-js [options]
+npm i -g pest-js-app
+pest-js-app [options]
 ```
 
 ## Options
@@ -34,11 +34,11 @@ pest-js [options]
 Use `--yes` to skip all prompts. Combine with other flags to customize:
 
 ```bash
-npx pest-js --yes --name my-api
+npx pest-js-app --yes --name my-api
 ```
 
 ```bash
-npx pest-js --yes --name my-api --database prisma --db-provider postgresql --docker
+npx pest-js-app --yes --name my-api --database prisma --db-provider postgresql --docker
 ```
 
 Defaults when using `--yes`:
@@ -59,17 +59,17 @@ Defaults when using `--yes`:
 Minimal project, no database:
 
 ```bash
-npx pest-js --yes --name my-api
+npx pest-js-app --yes --name my-api
 ```
 
 Prisma + PostgreSQL + Docker:
 
 ```bash
-npx pest-js --yes --name my-api --database prisma --db-provider postgresql --docker
+npx pest-js-app --yes --name my-api --database prisma --db-provider postgresql --docker
 ```
 
 Drizzle + SQLite, no Docker:
 
 ```bash
-npx pest-js --yes --name my-api --database drizzle --db-provider sqlite --no-docker
+npx pest-js-app --yes --name my-api --database drizzle --db-provider sqlite --no-docker
 ```
