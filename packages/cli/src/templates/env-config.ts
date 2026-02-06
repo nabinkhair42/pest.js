@@ -19,7 +19,14 @@ export function envConfigTemplate(config: ProjectConfig): string {
   }
 
   lines.push("const rateLimitWindowMs = parseInt(process.env.RATE_LIMIT_WINDOW_MS || \"900000\", 10);");
+  lines.push("if (isNaN(rateLimitWindowMs) || rateLimitWindowMs < 0) {");
+  lines.push('  throw new Error(`Invalid RATE_LIMIT_WINDOW_MS: ${process.env.RATE_LIMIT_WINDOW_MS}. Must be a positive number.`);');
+  lines.push("}");
+  lines.push("");
   lines.push("const rateLimitMax = parseInt(process.env.RATE_LIMIT_MAX || \"100\", 10);");
+  lines.push("if (isNaN(rateLimitMax) || rateLimitMax < 1) {");
+  lines.push('  throw new Error(`Invalid RATE_LIMIT_MAX: ${process.env.RATE_LIMIT_MAX}. Must be a positive number.`);');
+  lines.push("}");
   lines.push("");
   lines.push("export const env = {");
   lines.push('  NODE_ENV: process.env.NODE_ENV || "development",');

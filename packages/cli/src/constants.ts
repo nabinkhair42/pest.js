@@ -1,4 +1,4 @@
-export const VERSION = "3.2.0";
+export const VERSION = "3.3.1";
 
 export const DEPS = [
   "express",
@@ -33,8 +33,8 @@ export const DEV_DEPS = [
 
 export const DB_DEPS = {
   prisma: {
-    dependencies: ["@prisma/client@^6"],
-    devDependencies: ["prisma@^6"],
+    dependencies: ["@prisma/client"],
+    devDependencies: ["prisma"],
   },
   drizzle: {
     base: {

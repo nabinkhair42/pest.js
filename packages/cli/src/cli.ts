@@ -1,12 +1,23 @@
 import * as p from "@clack/prompts";
 import { resolve } from "node:path";
 import { spawn } from "node:child_process";
+import { rmSync, existsSync } from "node:fs";
 import type { ProjectConfig, DatabaseORM, DatabaseProvider, PackageManager } from "./types.js";
 import { VERSION, BANNER } from "./constants.js";
 import { generateProject } from "./generators/index.js";
 import { getDependencies } from "./generators/package-json.js";
-import { gitInit, getGitUser } from "./utils/git.js";
-import { validateProjectName } from "./utils/validation.js";
+import { gitInit, getGitUser, isGitInstalled } from "./utils/git.js";
+import { validateProjectName, isPackageManagerInstalled } from "./utils/validation.js";
+
+function cleanupOnFailure(projectDir: string): void {
+  try {
+    if (existsSync(projectDir)) {
+      rmSync(projectDir, { recursive: true, force: true });
+    }
+  } catch {
+    // Ignore cleanup errors
+  }
+}
 
 interface CliArgs {
   yes: boolean;
@@ -75,20 +86,23 @@ ${BANNER}
 `);
 }
 
-function getInstallArgs(pm: PackageManager, deps: string[], dev: boolean): { cmd: string; args: string[] } {
+function getInstallCommand(pm: PackageManager, deps: string[], dev: boolean): string {
+  const devFlag = dev ? (pm === "npm" ? "-D" : "-D") : "";
+  const depsStr = deps.join(" ");
+
   switch (pm) {
     case "pnpm":
-      return { cmd: "pnpm", args: ["add", ...(dev ? ["-D"] : []), ...deps] };
+      return `pnpm add ${devFlag} ${depsStr}`.replace(/\s+/g, " ").trim();
     case "yarn":
-      return { cmd: "yarn", args: ["add", ...(dev ? ["-D"] : []), ...deps] };
+      return `yarn add ${devFlag} ${depsStr}`.replace(/\s+/g, " ").trim();
     default:
-      return { cmd: "npm", args: ["install", ...(dev ? ["-D"] : []), ...deps] };
+      return `npm install ${devFlag} ${depsStr}`.replace(/\s+/g, " ").trim();
   }
 }
 
-function runCommand(cmd: string, args: string[], cwd: string): Promise<void> {
+function runCommand(command: string, cwd: string): Promise<void> {
   return new Promise((resolve, reject) => {
-    const child = spawn(cmd, args, { cwd, stdio: "ignore" });
+    const child = spawn(command, { cwd, stdio: "ignore", shell: true });
     child.on("close", (code) => (code === 0 ? resolve() : reject(new Error(`Exit code ${code}`))));
     child.on("error", reject);
   });
@@ -128,32 +142,48 @@ export async function runCli(args: CliArgs): Promise<void> {
   const s = p.spinner();
   s.start("Creating project structure");
 
-  const ctx = { config, projectDir };
-  generateProject(ctx);
+  try {
+    const ctx = { config, projectDir };
+    generateProject(ctx);
+  } catch (err) {
+    s.stop("Failed to create project structure");
+    cleanupOnFailure(projectDir);
+    p.cancel(err instanceof Error ? err.message : "Unknown error during project generation");
+    process.exit(1);
+  }
 
   s.stop("Project structure created");
 
   // Git init
   if (config.git) {
-    s.start("Initializing git repository");
-    gitInit(projectDir);
-    s.stop("Git repository initialized");
+    if (!isGitInstalled()) {
+      p.log.warn("git is not installed. Skipping repository initialization.");
+    } else {
+      s.start("Initializing git repository");
+      gitInit(projectDir);
+      s.stop("Git repository initialized");
+    }
   }
 
   // Install dependencies
   if (config.install) {
-    const { deps, devDeps } = getDependencies(config);
     const pm = config.packageManager;
-    s.start("Installing dependencies");
-    try {
-      const prodCmd = getInstallArgs(pm, deps, false);
-      await runCommand(prodCmd.cmd, prodCmd.args, projectDir);
-      s.message("Installing dev dependencies");
-      const devCmd = getInstallArgs(pm, devDeps, true);
-      await runCommand(devCmd.cmd, devCmd.args, projectDir);
-      s.stop("Dependencies installed");
-    } catch {
-      s.stop(`Failed to install dependencies - run '${pm} install' manually`);
+
+    if (!isPackageManagerInstalled(pm)) {
+      p.log.warn(`${pm} is not installed. Run '${pm} install' manually after installing ${pm}.`);
+    } else {
+      const { deps, devDeps } = getDependencies(config);
+      s.start("Installing dependencies");
+      try {
+        const prodCmd = getInstallCommand(pm, deps, false);
+        await runCommand(prodCmd, projectDir);
+        s.message("Installing dev dependencies");
+        const devCmd = getInstallCommand(pm, devDeps, true);
+        await runCommand(devCmd, projectDir);
+        s.stop("Dependencies installed");
+      } catch {
+        s.stop(`Failed to install dependencies - run '${pm} install' manually`);
+      }
     }
   }
 

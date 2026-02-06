@@ -1,7 +1,12 @@
 import type { ProjectConfig } from "../types.js";
 
+function escapeString(str: string): string {
+  return str.replace(/\\/g, "\\\\").replace(/"/g, '\\"').replace(/`/g, "\\`");
+}
+
 export function appTemplate(config: ProjectConfig): string {
   const lines: string[] = [];
+  const safeName = escapeString(config.name);
 
   lines.push('import express from "express";');
   lines.push('import cors from "cors";');
@@ -27,7 +32,7 @@ export function appTemplate(config: ProjectConfig): string {
   lines.push("// Routes");
   lines.push('app.get("/", (_req, res) => {');
   lines.push("  res.json({");
-  lines.push(`    message: "Welcome to ${config.name} API",`);
+  lines.push(`    message: "Welcome to ${safeName} API",`);
   lines.push('    version: "1.0.0",');
   lines.push("    environment: env.NODE_ENV,");
   lines.push("  });");

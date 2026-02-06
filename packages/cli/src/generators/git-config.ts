@@ -1,6 +1,6 @@
 import type { GeneratorContext } from "../types.js";
 import { writeFile, ensureDir } from "../utils/fs.js";
-import { chmodSync } from "node:fs";
+import { writeFileSync, chmodSync } from "node:fs";
 import { join } from "node:path";
 
 export function generateGitConfig(ctx: GeneratorContext): void {
@@ -20,9 +20,17 @@ ${lockfileIgnores}`
 
   const huskyDir = join(ctx.projectDir, ".husky");
   ensureDir(huskyDir);
-  const huskyFile = join(ctx.projectDir, ".husky/pre-commit");
-  writeFile(ctx.projectDir, ".husky/pre-commit", "npx lint-staged\n");
-  chmodSync(huskyFile, 0o755);
+
+  // Husky hooks must use LF line endings even on Windows
+  const huskyFile = join(huskyDir, "pre-commit");
+  writeFileSync(huskyFile, "#!/usr/bin/env sh\nnpx lint-staged\n", "utf-8");
+
+  // chmod is needed on Unix for executable bit; skip on Windows
+  try {
+    chmodSync(huskyFile, 0o755);
+  } catch {
+    // Fails on Windows — that's okay, git handles executable bit via config
+  }
 }
 
 function getLockfileIgnores(pm: string): string {

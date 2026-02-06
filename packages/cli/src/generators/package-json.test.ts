@@ -106,8 +106,8 @@ describe("getDependencies", () => {
 
   it("should add prisma deps", () => {
     const { deps, devDeps } = getDependencies(makeConfig({ database: "prisma" }));
-    expect(deps).toContain("@prisma/client@^6");
-    expect(devDeps).toContain("prisma@^6");
+    expect(deps).toContain("@prisma/client");
+    expect(devDeps).toContain("prisma");
   });
 
   it("should add drizzle deps with driver", () => {

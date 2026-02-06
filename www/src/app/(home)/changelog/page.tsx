@@ -3,6 +3,26 @@ import type { ChangelogEntry } from "@/components/changelog";
 
 const entries: ChangelogEntry[] = [
   {
+    version: "v3.3.1",
+    date: "6 February 2026",
+    title: "Cross-platform fixes & Prisma 7 support",
+    description:
+      "Fixes critical installation issues on Windows and macOS, upgrades to Prisma 7 with the new config file format, and hardens the CLI with better error handling across all platforms.",
+    items: [
+      "Fix: Windows install failures — spawn now uses single command string instead of args+shell",
+      "Fix: Husky pre-commit uses LF line endings and skips chmod on Windows",
+      "Fix: Git commands work on Windows with shell: true",
+      "Prisma 7 support — url moved from schema.prisma to prisma.config.ts with defineConfig",
+      "Graceful handling when git is not installed",
+      "Graceful handling when pnpm/yarn is not installed",
+      "TypeORM server.ts now catches database connection failures instead of unhandled rejection",
+      "Rate limit env vars (RATE_LIMIT_WINDOW_MS, RATE_LIMIT_MAX) validated and included in .env",
+      "Project name sanitized before template interpolation",
+      "Project name length capped at 214 characters (npm limit)",
+      "Failed project generation now cleans up partial files",
+    ],
+  },
+  {
     version: "v3.3.0",
     date: "5 February 2026",
     title: "Rate limiting, docs rewrite & website polish",

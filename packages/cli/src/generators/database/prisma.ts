@@ -11,7 +11,7 @@ export function generatePrismaDatabase(ctx: GeneratorContext): void {
   const { config, projectDir } = ctx;
   const provider = PRISMA_PROVIDERS[config.dbProvider] ?? "postgresql";
 
-  // prisma/schema.prisma
+  // prisma/schema.prisma (Prisma 7 compatible - no url in schema)
   writeFile(
     projectDir,
     "prisma/schema.prisma",
@@ -21,8 +21,24 @@ export function generatePrismaDatabase(ctx: GeneratorContext): void {
 
 datasource db {
   provider = "${provider}"
-  url      = env("DATABASE_URL")
 }
+`
+  );
+
+  // prisma.config.ts (Prisma 7 config file)
+  writeFile(
+    projectDir,
+    "prisma.config.ts",
+    `import "dotenv/config";
+import { defineConfig } from "prisma/config";
+
+export default defineConfig({
+  earlyAccess: true,
+  schema: "./prisma/schema.prisma",
+  datasource: {
+    url: process.env.DATABASE_URL!,
+  },
+});
 `
   );
 

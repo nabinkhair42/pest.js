@@ -76,7 +76,7 @@ describe("generateProject", () => {
     expect(existsSync(join(projectDir, ".dockerignore"))).toBe(true);
   });
 
-  it("should generate prisma files", () => {
+  it("should generate prisma files with Prisma 7 config", () => {
     const ctx: GeneratorContext = {
       config: makeConfig({ database: "prisma" }),
       projectDir,
@@ -84,7 +84,17 @@ describe("generateProject", () => {
     generateProject(ctx);
 
     expect(existsSync(join(projectDir, "prisma/schema.prisma"))).toBe(true);
+    expect(existsSync(join(projectDir, "prisma.config.ts"))).toBe(true);
     expect(existsSync(join(projectDir, "src/lib/prisma.ts"))).toBe(true);
+
+    // schema.prisma should NOT contain url (Prisma 7)
+    const schema = readFileSync(join(projectDir, "prisma/schema.prisma"), "utf-8");
+    expect(schema).not.toContain("env(");
+
+    // prisma.config.ts should contain datasource url
+    const config = readFileSync(join(projectDir, "prisma.config.ts"), "utf-8");
+    expect(config).toContain("defineConfig");
+    expect(config).toContain("DATABASE_URL");
 
     const envContent = readFileSync(join(projectDir, ".env"), "utf-8");
     expect(envContent).toContain("DATABASE_URL");
@@ -141,6 +151,15 @@ describe("generateProject", () => {
     expect(envContent).not.toContain("DATABASE_URL");
   });
 
+  it("should include rate limit vars in .env file", () => {
+    const ctx: GeneratorContext = { config: makeConfig(), projectDir };
+    generateProject(ctx);
+
+    const envContent = readFileSync(join(projectDir, ".env"), "utf-8");
+    expect(envContent).toContain("RATE_LIMIT_WINDOW_MS=900000");
+    expect(envContent).toContain("RATE_LIMIT_MAX=100");
+  });
+
   it("should include db service in docker-compose for postgres", () => {
     const ctx: GeneratorContext = {
       config: makeConfig({
@@ -195,7 +214,7 @@ describe("generateProject", () => {
     expect(mode & 0o111).toBeGreaterThan(0); // executable bit set
   });
 
-  it("should call initializeDatabase in server.ts for typeorm", () => {
+  it("should call initializeDatabase in server.ts for typeorm with error handling", () => {
     const ctx: GeneratorContext = {
       config: makeConfig({ database: "typeorm", dbProvider: "postgresql" }),
       projectDir,
@@ -205,6 +224,8 @@ describe("generateProject", () => {
     const server = readFileSync(join(projectDir, "src/server.ts"), "utf-8");
     expect(server).toContain("initializeDatabase");
     expect(server).toContain(".then(");
+    expect(server).toContain(".catch(");
+    expect(server).toContain("process.exit(1)");
   });
 
   it("should not call initializeDatabase in server.ts for non-typeorm", () => {
@@ -385,7 +406,7 @@ describe("generateProject", () => {
     expect(app).toContain("rate-limit");
   });
 
-  it("should include rate limit env vars in env config", () => {
+  it("should include rate limit env vars with validation in env config", () => {
     const ctx: GeneratorContext = { config: makeConfig(), projectDir };
     generateProject(ctx);
 
@@ -394,6 +415,8 @@ describe("generateProject", () => {
     expect(envConfig).toContain("RATE_LIMIT_MAX");
     expect(envConfig).toContain("900000");
     expect(envConfig).toContain("100");
+    expect(envConfig).toContain("isNaN(rateLimitWindowMs)");
+    expect(envConfig).toContain("isNaN(rateLimitMax)");
   });
 
   it("should throw NotFoundError in 404 handler", () => {

@@ -5,10 +5,19 @@ import { writeFile } from "../utils/fs.js";
 export function generateEnv(ctx: GeneratorContext): void {
   const { config, projectDir } = ctx;
 
-  const lines = ["NODE_ENV=development", "PORT=3000"];
+  const lines = [
+    "NODE_ENV=development",
+    "PORT=3000",
+    "",
+    "# Rate limiting",
+    "RATE_LIMIT_WINDOW_MS=900000",
+    "RATE_LIMIT_MAX=100",
+  ];
 
   if (config.database !== "none") {
     const url = DATABASE_URLS[config.dbProvider]?.[config.database] ?? "";
+    lines.push("");
+    lines.push("# Database");
     lines.push(`DATABASE_URL="${url}"`);
   }
 
