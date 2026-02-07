@@ -1,6 +1,6 @@
 export function appTestTemplate(): string {
   return `import request from "supertest";
-import app from "../src/app";
+import app from "../src/app.js";
 
 describe("App", () => {
   it("should return welcome message on GET /", async () => {

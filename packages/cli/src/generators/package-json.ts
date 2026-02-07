@@ -44,12 +44,12 @@ export function generatePackageJson(ctx: GeneratorContext): void {
     start: "node dist/server.js",
     dev: "tsx watch src/server.ts",
     build: "tsc",
-    test: "jest",
+    test: "NODE_ENV=test jest",
     lint: "eslint src/",
     "lint:fix": "eslint src/ --fix",
     format: 'prettier --write "src/**/*.ts"',
     "format:check": 'prettier --check "src/**/*.ts"',
-    prepare: "husky",
+    prepare: "husky || true",
   };
 
   if (config.database === "prisma") {
@@ -63,9 +63,9 @@ export function generatePackageJson(ctx: GeneratorContext): void {
     scripts["db:push"] = "drizzle-kit push";
     scripts["db:studio"] = "drizzle-kit studio";
   } else if (config.database === "typeorm") {
-    scripts["db:migrate"] = "typeorm migration:run -d src/db/data-source.ts";
+    scripts["db:migrate"] = "tsx node_modules/typeorm/cli.js migration:run -d src/db/data-source.ts";
     scripts["db:generate"] =
-      "typeorm migration:generate -d src/db/data-source.ts";
+      "tsx node_modules/typeorm/cli.js migration:generate -d src/db/data-source.ts";
   }
 
   const pkg: Record<string, unknown> = {

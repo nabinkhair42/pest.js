@@ -23,7 +23,8 @@ ${lockfileIgnores}`
 
   // Husky hooks must use LF line endings even on Windows
   const huskyFile = join(huskyDir, "pre-commit");
-  writeFileSync(huskyFile, "#!/usr/bin/env sh\nnpx lint-staged\n", "utf-8");
+  const execCmd = ctx.config.packageManager === "pnpm" ? "pnpm exec" : "npx";
+  writeFileSync(huskyFile, `#!/usr/bin/env sh\n${execCmd} lint-staged\n`, "utf-8");
 
   // chmod is needed on Unix for executable bit; skip on Windows
   try {

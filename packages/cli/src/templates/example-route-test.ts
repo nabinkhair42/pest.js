@@ -1,6 +1,6 @@
 export function exampleRouteTestTemplate(): string {
   return `import request from "supertest";
-import app from "../src/app";
+import app from "../src/app.js";
 
 describe("Example API", () => {
   let createdId: number;

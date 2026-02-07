@@ -70,7 +70,7 @@ describe("generatePackageJson", () => {
     expect(pkg.scripts["db:studio"]).toBeDefined();
   });
 
-  it("should include db scripts for typeorm", () => {
+  it("should include db scripts for typeorm using tsx", () => {
     const ctx: GeneratorContext = {
       config: makeConfig({ database: "typeorm", dbProvider: "mysql" }),
       projectDir,
@@ -78,8 +78,24 @@ describe("generatePackageJson", () => {
     generatePackageJson(ctx);
 
     const pkg = JSON.parse(readFileSync(join(projectDir, "package.json"), "utf-8"));
-    expect(pkg.scripts["db:migrate"]).toBeDefined();
-    expect(pkg.scripts["db:generate"]).toBeDefined();
+    expect(pkg.scripts["db:migrate"]).toContain("tsx");
+    expect(pkg.scripts["db:generate"]).toContain("tsx");
+  });
+
+  it("should use safe prepare script for husky", () => {
+    const ctx: GeneratorContext = { config: makeConfig(), projectDir };
+    generatePackageJson(ctx);
+
+    const pkg = JSON.parse(readFileSync(join(projectDir, "package.json"), "utf-8"));
+    expect(pkg.scripts.prepare).toBe("husky || true");
+  });
+
+  it("should set NODE_ENV=test in test script", () => {
+    const ctx: GeneratorContext = { config: makeConfig(), projectDir };
+    generatePackageJson(ctx);
+
+    const pkg = JSON.parse(readFileSync(join(projectDir, "package.json"), "utf-8"));
+    expect(pkg.scripts.test).toContain("NODE_ENV=test");
   });
 });
 

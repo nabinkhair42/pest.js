@@ -3,6 +3,28 @@ import type { ChangelogEntry } from "@/components/changelog";
 
 const entries: ChangelogEntry[] = [
   {
+    version: "v3.3.2",
+    date: "7 February 2026",
+    title: "Docker, template & code quality fixes",
+    description:
+      "Fixes broken Docker builds for yarn users, improves generated code consistency, and cleans up template quality across the board.",
+    items: [
+      "Fix: Yarn Dockerfile now includes corepack enable (Docker builds were failing)",
+      "Fix: Dockerfile uses package-manager-specific prisma generate (pnpm exec / yarn / npx)",
+      "Fix: Error handler uses centralized env.NODE_ENV instead of process.env.NODE_ENV",
+      "Fix: Generated test files use .js import extensions, consistent with source files",
+      "Fix: Drizzle returning variant function formatting cleaned up",
+      "CLI arg validation for --database, --db-provider, and --package-manager flags",
+      "Husky hook uses pnpm exec lint-staged when package manager is pnpm",
+      "Prisma 7 config uses env() helper instead of earlyAccess flag",
+      "Prepare script uses husky || true to avoid failures without .git",
+      "Test script sets NODE_ENV=test for rate limiter skip",
+      "TypeORM migration scripts use tsx loader",
+      "Rate limiter skips in test environment",
+      "80 unit tests (up from 27)",
+    ],
+  },
+  {
     version: "v3.3.1",
     date: "6 February 2026",
     title: "Cross-platform fixes & Prisma 7 support",

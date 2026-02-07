@@ -13,6 +13,7 @@ export function rateLimitTemplate(): string {
   lines.push("  limit: env.RATE_LIMIT_MAX,");
   lines.push("  standardHeaders: true,");
   lines.push("  legacyHeaders: false,");
+  lines.push('  skip: () => env.NODE_ENV === "test",');
   lines.push("});");
   lines.push("");
   lines.push("/**");

@@ -38,15 +38,33 @@ export function parseArgs(argv: string[]): CliArgs {
     } else if (arg === "--name" && argv[i + 1]) {
       args.name = argv[++i];
     } else if (arg === "--database" && argv[i + 1]) {
-      args.database = argv[++i] as DatabaseORM;
+      const val = argv[++i];
+      const valid: DatabaseORM[] = ["prisma", "drizzle", "typeorm", "none"];
+      if (!valid.includes(val as DatabaseORM)) {
+        console.error(`Invalid --database value: "${val}". Must be one of: ${valid.join(", ")}`);
+        process.exit(1);
+      }
+      args.database = val as DatabaseORM;
     } else if (arg === "--db-provider" && argv[i + 1]) {
-      args.dbProvider = argv[++i] as DatabaseProvider;
+      const val = argv[++i];
+      const valid: DatabaseProvider[] = ["postgresql", "mysql", "sqlite"];
+      if (!valid.includes(val as DatabaseProvider)) {
+        console.error(`Invalid --db-provider value: "${val}". Must be one of: ${valid.join(", ")}`);
+        process.exit(1);
+      }
+      args.dbProvider = val as DatabaseProvider;
     } else if (arg === "--docker") {
       args.docker = true;
     } else if (arg === "--no-docker") {
       args.docker = false;
     } else if (arg === "--package-manager" && argv[i + 1]) {
-      args.packageManager = argv[++i] as PackageManager;
+      const val = argv[++i];
+      const valid: PackageManager[] = ["npm", "pnpm", "yarn"];
+      if (!valid.includes(val as PackageManager)) {
+        console.error(`Invalid --package-manager value: "${val}". Must be one of: ${valid.join(", ")}`);
+        process.exit(1);
+      }
+      args.packageManager = val as PackageManager;
     } else if (arg === "--version" || arg === "-v") {
       console.log(`pest-js-app v${VERSION}`);
       process.exit(0);
@@ -87,7 +105,7 @@ ${BANNER}
 }
 
 function getInstallCommand(pm: PackageManager, deps: string[], dev: boolean): string {
-  const devFlag = dev ? (pm === "npm" ? "-D" : "-D") : "";
+  const devFlag = dev ? "-D" : "";
   const depsStr = deps.join(" ");
 
   switch (pm) {
@@ -173,11 +191,11 @@ export async function runCli(args: CliArgs): Promise<void> {
       p.log.warn(`${pm} is not installed. Run '${pm} install' manually after installing ${pm}.`);
     } else {
       const { deps, devDeps } = getDependencies(config);
-      s.start("Installing dependencies");
+      s.start(`Installing ${deps.join(", ")}`);
       try {
         const prodCmd = getInstallCommand(pm, deps, false);
         await runCommand(prodCmd, projectDir);
-        s.message("Installing dev dependencies");
+        s.message(`Installing dev: ${devDeps.join(", ")}`);
         const devCmd = getInstallCommand(pm, devDeps, true);
         await runCommand(devCmd, projectDir);
         s.stop("Dependencies installed");

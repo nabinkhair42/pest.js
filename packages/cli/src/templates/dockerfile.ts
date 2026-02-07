@@ -2,8 +2,10 @@ import type { ProjectConfig } from "../types.js";
 
 export function dockerfileTemplate(config: ProjectConfig): string {
   const pm = config.packageManager;
+  const prismaExec =
+    pm === "pnpm" ? "pnpm exec" : pm === "yarn" ? "yarn" : "npx";
   const prismaGenerate =
-    config.database === "prisma" ? "\nRUN npx prisma generate" : "";
+    config.database === "prisma" ? `\nRUN ${prismaExec} prisma generate` : "";
   const prismaCopy =
     config.database === "prisma"
       ? "\nCOPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma"
@@ -19,8 +21,9 @@ WORKDIR /app
 
 COPY package.json pnpm-lock.yaml ./
 RUN pnpm install --frozen-lockfile
-${prismaGenerate}
+
 COPY . .
+${prismaGenerate}
 RUN pnpm run build
 
 # Production stage
@@ -47,16 +50,21 @@ CMD ["node", "dist/server.js"]
     return `# Build stage
 FROM node:20-alpine AS builder
 
+RUN corepack enable
+
 WORKDIR /app
 
 COPY package.json yarn.lock ./
 RUN yarn install --frozen-lockfile
-${prismaGenerate}
+
 COPY . .
+${prismaGenerate}
 RUN yarn build
 
 # Production stage
 FROM node:20-alpine AS runner
+
+RUN corepack enable
 
 WORKDIR /app
 
@@ -81,8 +89,9 @@ WORKDIR /app
 
 COPY package*.json ./
 RUN npm ci
-${prismaGenerate}
+
 COPY . .
+${prismaGenerate}
 RUN npm run build
 
 # Production stage

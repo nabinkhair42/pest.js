@@ -11,7 +11,7 @@ export function envConfigTemplate(config: ProjectConfig): string {
   lines.push("}");
   lines.push("");
 
-  if (config.database !== "none") {
+  if (config.database !== "none" && config.dbProvider !== "sqlite") {
     lines.push("if (!process.env.DATABASE_URL) {");
     lines.push('  throw new Error("DATABASE_URL environment variable is required.");');
     lines.push("}");
@@ -34,8 +34,10 @@ export function envConfigTemplate(config: ProjectConfig): string {
   lines.push("  RATE_LIMIT_WINDOW_MS: rateLimitWindowMs,");
   lines.push("  RATE_LIMIT_MAX: rateLimitMax,");
 
-  if (config.database !== "none") {
-    lines.push("  DATABASE_URL: process.env.DATABASE_URL,");
+  if (config.database !== "none" && config.dbProvider !== "sqlite") {
+    lines.push("  DATABASE_URL: process.env.DATABASE_URL!,");
+  } else if (config.database !== "none" && config.dbProvider === "sqlite") {
+    lines.push('  DATABASE_URL: process.env.DATABASE_URL || "./dev.db",');
   }
 
   lines.push("} as const;");

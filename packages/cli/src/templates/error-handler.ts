@@ -3,6 +3,7 @@ export function errorHandlerTemplate(): string {
 import { AppError } from "../lib/errors.js";
 import { ZodError } from "zod";
 import { logger } from "../lib/logger.js";
+import { env } from "../config/env.js";
 
 export const errorHandler: ErrorRequestHandler = (err, _req, res, _next) => {
   if (err instanceof AppError) {
@@ -21,7 +22,7 @@ export const errorHandler: ErrorRequestHandler = (err, _req, res, _next) => {
 
   const status = err.status || err.statusCode || 500;
   const message =
-    process.env.NODE_ENV === "production"
+    env.NODE_ENV === "production"
       ? "Internal Server Error"
       : err.message || "Internal Server Error";
 

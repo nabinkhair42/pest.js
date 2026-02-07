@@ -91,10 +91,11 @@ describe("generateProject", () => {
     const schema = readFileSync(join(projectDir, "prisma/schema.prisma"), "utf-8");
     expect(schema).not.toContain("env(");
 
-    // prisma.config.ts should contain datasource url
+    // prisma.config.ts should contain datasource url (Prisma 7 env helper)
     const config = readFileSync(join(projectDir, "prisma.config.ts"), "utf-8");
     expect(config).toContain("defineConfig");
-    expect(config).toContain("DATABASE_URL");
+    expect(config).toContain('env("DATABASE_URL")');
+    expect(config).not.toContain("earlyAccess");
 
     const envContent = readFileSync(join(projectDir, ".env"), "utf-8");
     expect(envContent).toContain("DATABASE_URL");
@@ -319,9 +320,9 @@ describe("generateProject", () => {
     expect(envConfig).toContain("65535");
   });
 
-  it("should validate DATABASE_URL when database is configured", () => {
+  it("should validate DATABASE_URL when database is configured with non-sqlite provider", () => {
     const ctx: GeneratorContext = {
-      config: makeConfig({ database: "prisma" }),
+      config: makeConfig({ database: "prisma", dbProvider: "postgresql" }),
       projectDir,
     };
     generateProject(ctx);
@@ -329,6 +330,20 @@ describe("generateProject", () => {
     const envConfig = readFileSync(join(projectDir, "src/config/env.ts"), "utf-8");
     expect(envConfig).toContain("DATABASE_URL");
     expect(envConfig).toContain("required");
+    expect(envConfig).toContain("DATABASE_URL!");
+  });
+
+  it("should not require DATABASE_URL for sqlite and provide fallback", () => {
+    const ctx: GeneratorContext = {
+      config: makeConfig({ database: "drizzle", dbProvider: "sqlite" }),
+      projectDir,
+    };
+    generateProject(ctx);
+
+    const envConfig = readFileSync(join(projectDir, "src/config/env.ts"), "utf-8");
+    expect(envConfig).toContain("DATABASE_URL");
+    expect(envConfig).not.toContain("required");
+    expect(envConfig).toContain("./dev.db");
   });
 
   it("should not validate DATABASE_URL when database is none", () => {
@@ -468,7 +483,7 @@ describe("generateProject", () => {
     expect(dockerfile).toContain("pnpm-lock.yaml");
   });
 
-  it("should generate yarn Dockerfile when package manager is yarn", () => {
+  it("should generate yarn Dockerfile with corepack enable", () => {
     const ctx: GeneratorContext = {
       config: makeConfig({ packageManager: "yarn", docker: true }),
       projectDir,
@@ -476,6 +491,7 @@ describe("generateProject", () => {
     generateProject(ctx);
 
     const dockerfile = readFileSync(join(projectDir, "Dockerfile"), "utf-8");
+    expect(dockerfile).toContain("corepack enable");
     expect(dockerfile).toContain("yarn install");
     expect(dockerfile).toContain("yarn.lock");
   });
@@ -489,5 +505,115 @@ describe("generateProject", () => {
 
     const dockerfile = readFileSync(join(projectDir, "Dockerfile"), "utf-8");
     expect(dockerfile).toContain("npm ci");
+  });
+
+  it("should run prisma generate after COPY in Dockerfile", () => {
+    const ctx: GeneratorContext = {
+      config: makeConfig({ database: "prisma", docker: true }),
+      projectDir,
+    };
+    generateProject(ctx);
+
+    const dockerfile = readFileSync(join(projectDir, "Dockerfile"), "utf-8");
+    const copyIdx = dockerfile.indexOf("COPY . .");
+    const prismaIdx = dockerfile.indexOf("RUN npx prisma generate");
+    expect(prismaIdx).toBeGreaterThan(-1);
+    expect(copyIdx).toBeGreaterThan(-1);
+    expect(prismaIdx).toBeGreaterThan(copyIdx);
+  });
+
+  it("should not use module-level getRepository in typeorm example route", () => {
+    const ctx: GeneratorContext = {
+      config: makeConfig({ database: "typeorm", dbProvider: "postgresql" }),
+      projectDir,
+    };
+    generateProject(ctx);
+
+    const route = readFileSync(join(projectDir, "src/routes/example.ts"), "utf-8");
+    // getRepository should only appear inside handler functions, not at module level
+    const lines = route.split("\n");
+    const topLevelRepo = lines.find(
+      (l) => l.startsWith("const userRepo") || l.startsWith("const userRepo ")
+    );
+    expect(topLevelRepo).toBeUndefined();
+    // But getRepository should still be used inside handlers
+    expect(route).toContain("getRepository(User)");
+  });
+
+  it("should skip rate limiter in test environment", () => {
+    const ctx: GeneratorContext = { config: makeConfig(), projectDir };
+    generateProject(ctx);
+
+    const rateLimit = readFileSync(join(projectDir, "src/middleware/rate-limit.ts"), "utf-8");
+    expect(rateLimit).toContain("skip");
+    expect(rateLimit).toContain("test");
+  });
+
+  it("should use pnpm exec in husky hook when package manager is pnpm", () => {
+    const ctx: GeneratorContext = {
+      config: makeConfig({ packageManager: "pnpm" }),
+      projectDir,
+    };
+    generateProject(ctx);
+
+    const hook = readFileSync(join(projectDir, ".husky/pre-commit"), "utf-8");
+    expect(hook).toContain("pnpm exec lint-staged");
+    expect(hook).not.toContain("npx");
+  });
+
+  it("should use npx in husky hook when package manager is npm", () => {
+    const ctx: GeneratorContext = {
+      config: makeConfig({ packageManager: "npm" }),
+      projectDir,
+    };
+    generateProject(ctx);
+
+    const hook = readFileSync(join(projectDir, ".husky/pre-commit"), "utf-8");
+    expect(hook).toContain("npx lint-staged");
+  });
+
+  it("should use pnpm exec prisma generate in pnpm Dockerfile", () => {
+    const ctx: GeneratorContext = {
+      config: makeConfig({ database: "prisma", packageManager: "pnpm", docker: true }),
+      projectDir,
+    };
+    generateProject(ctx);
+
+    const dockerfile = readFileSync(join(projectDir, "Dockerfile"), "utf-8");
+    expect(dockerfile).toContain("pnpm exec prisma generate");
+    expect(dockerfile).not.toContain("npx prisma generate");
+  });
+
+  it("should use yarn prisma generate in yarn Dockerfile", () => {
+    const ctx: GeneratorContext = {
+      config: makeConfig({ database: "prisma", packageManager: "yarn", docker: true }),
+      projectDir,
+    };
+    generateProject(ctx);
+
+    const dockerfile = readFileSync(join(projectDir, "Dockerfile"), "utf-8");
+    expect(dockerfile).toContain("yarn prisma generate");
+    expect(dockerfile).not.toContain("npx prisma generate");
+  });
+
+  it("should use env.NODE_ENV in error handler instead of process.env", () => {
+    const ctx: GeneratorContext = { config: makeConfig(), projectDir };
+    generateProject(ctx);
+
+    const handler = readFileSync(join(projectDir, "src/middleware/error-handler.ts"), "utf-8");
+    expect(handler).toContain('import { env } from "../config/env.js"');
+    expect(handler).toContain("env.NODE_ENV");
+    expect(handler).not.toContain("process.env.NODE_ENV");
+  });
+
+  it("should use .js extension in generated test imports", () => {
+    const ctx: GeneratorContext = { config: makeConfig(), projectDir };
+    generateProject(ctx);
+
+    const appTest = readFileSync(join(projectDir, "tests/app.test.ts"), "utf-8");
+    expect(appTest).toContain('from "../src/app.js"');
+
+    const exampleTest = readFileSync(join(projectDir, "tests/example.test.ts"), "utf-8");
+    expect(exampleTest).toContain('from "../src/app.js"');
   });
 });

@@ -177,7 +177,8 @@ exampleRouter.delete("/:id", async (req, res) => {
   await db.delete(users).where(eq(users.id, existing.id));
   res.status(204).end();
 });
-`;}
+`;
+}
 
 function drizzleMysqlVariant(): string {
   return `import { Router } from "express";
@@ -243,8 +244,6 @@ import { User } from "../db/entities/user.js";
 
 export const exampleRouter = Router();
 
-const userRepo = AppDataSource.getRepository(User);
-
 const createSchema = z.object({
   body: z.object({
     name: z.string().min(1),
@@ -261,17 +260,20 @@ const updateSchema = z.object({
 });
 
 exampleRouter.get("/", async (_req, res) => {
+  const userRepo = AppDataSource.getRepository(User);
   const users = await userRepo.find();
   res.json(users);
 });
 
 exampleRouter.post("/", validate(createSchema), async (req, res) => {
+  const userRepo = AppDataSource.getRepository(User);
   const user = userRepo.create(req.body);
   const saved = await userRepo.save(user);
   res.status(201).json(saved);
 });
 
 exampleRouter.put("/:id", validate(updateSchema), async (req, res) => {
+  const userRepo = AppDataSource.getRepository(User);
   const user = await userRepo.findOneBy({ id: Number(req.params.id) });
   if (!user) throw new NotFoundError("User not found");
   userRepo.merge(user, req.body);
@@ -280,6 +282,7 @@ exampleRouter.put("/:id", validate(updateSchema), async (req, res) => {
 });
 
 exampleRouter.delete("/:id", async (req, res) => {
+  const userRepo = AppDataSource.getRepository(User);
   const user = await userRepo.findOneBy({ id: Number(req.params.id) });
   if (!user) throw new NotFoundError("User not found");
   await userRepo.remove(user);
