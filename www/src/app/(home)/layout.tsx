@@ -1,15 +1,15 @@
-import { HomeLayout } from 'fumadocs-ui/layouts/home';
-import { baseOptions } from '@/lib/layout.shared';
-import { Footer } from '@/components/landing/footer';
+import { Navbar } from "@/components/layout/navbar";
+import { Footer } from "@/components/landing/footer";
 
-export default function Layout({ children }: LayoutProps<'/'>) {
+export default function Layout({ children }: LayoutProps<"/">) {
   return (
-    <HomeLayout {...baseOptions()}>
+    <>
+      <Navbar />
       {children}
       <div className="page-rails">
         <div className="section-divider" aria-hidden="true" />
         <Footer />
       </div>
-    </HomeLayout>
+    </>
   );
 }
