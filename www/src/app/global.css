@@ -47,6 +47,7 @@
 }
 
 :root {
+  --fd-layout-width: 75rem;
   --radius: 0.625rem;
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
@@ -122,4 +123,49 @@
   body {
     @apply bg-background text-foreground;
   }
+}
+
+/* Vertical rail lines */
+.page-rails {
+  --rail-offset: max(1rem, calc(50% - 36rem));
+  position: relative;
+  overflow-x: clip;
+}
+.page-rails::before,
+.page-rails::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: var(--border);
+  pointer-events: none;
+  z-index: 1;
+}
+.page-rails::before {
+  left: var(--rail-offset);
+}
+.page-rails::after {
+  right: var(--rail-offset);
+}
+
+/* Content bounded to rail edges — margins match rail offset */
+.rail-bounded {
+  margin-left: var(--rail-offset);
+  margin-right: var(--rail-offset);
+}
+
+/* Section divider — solid line between rails */
+.section-divider {
+  position: relative;
+  height: 1px;
+  z-index: 2;
+}
+.section-divider::before {
+  content: '';
+  position: absolute;
+  left: var(--rail-offset, max(1rem, calc(50% - 36rem)));
+  right: var(--rail-offset, max(1rem, calc(50% - 36rem)));
+  height: 1px;
+  background: var(--border);
 }
