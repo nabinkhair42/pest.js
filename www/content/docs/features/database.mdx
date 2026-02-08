@@ -1,17 +1,17 @@
 ---
 title: Database
-description: Prisma, Drizzle, and TypeORM support.
+description: Prisma, Drizzle, and TypeORM setup.
 ---
 
-PEST.js supports three database ORMs. Each generates its own config files, schema, client setup, and a CRUD example route at `/api/examples`.
+PEST.js supports three ORMs. Each one generates its own config, schema, client setup, and a working CRUD route at `/api/examples` so you can see how it all connects.
 
-## Providers
+## Supported providers
 
-All three ORMs support:
+All three ORMs work with:
 
-- **PostgreSQL** — recommended for production
+- **PostgreSQL** (recommended for production)
 - **MySQL**
-- **SQLite** — file-based, no server needed
+- **SQLite** (file-based, no server needed)
 
 ## ORM setup
 
@@ -38,6 +38,8 @@ All three ORMs support:
       </Folder>
     </Files>
 
+    `prisma.ts` exports a singleton PrismaClient instance. The example route uses it directly for queries.
+
     ### Scripts
 
     | Script | Command |
@@ -49,13 +51,11 @@ All three ORMs support:
 
     ### First migration
 
+    After generating your project, run:
+
     ```bash title="Terminal"
     npx prisma migrate dev --name init
     ```
-
-    <Callout>
-      Prisma is pinned to `^6` to avoid breaking changes in v7.
-    </Callout>
   </TabsContent>
   <TabsContent value="drizzle">
     ### Generated files
@@ -73,6 +73,8 @@ All three ORMs support:
       <File name="drizzle.config.ts" />
     </Files>
 
+    `schema.ts` defines your tables. `index.ts` creates and exports the drizzle client. The config file tells `drizzle-kit` where to find your schema and how to connect.
+
     ### Scripts
 
     | Script | Command |
@@ -82,14 +84,14 @@ All three ORMs support:
     | `db:push` | `drizzle-kit push` |
     | `db:studio` | `drizzle-kit studio` |
 
-    ### Push schema
+    ### Push your schema
 
     ```bash title="Terminal"
     npm run db:push
     ```
 
     <Callout>
-      MySQL uses `$returningId()` instead of `.returning()` since MySQL doesn't support `RETURNING` clauses.
+      MySQL doesn't support `RETURNING` clauses. The generated code uses `$returningId()` instead of `.returning()` for MySQL.
     </Callout>
   </TabsContent>
   <TabsContent value="typeorm">
@@ -110,7 +112,9 @@ All three ORMs support:
       </Folder>
     </Files>
 
-    TypeORM enables `experimentalDecorators` and `emitDecoratorMetadata` in tsconfig. Entity columns use explicit types (e.g. `@Column("varchar")`, `@PrimaryGeneratedColumn("increment")`) for compatibility with `tsx`/esbuild which doesn't emit decorator metadata.
+    `data-source.ts` configures the TypeORM connection. Entity columns use explicit types (e.g. `@Column("varchar")`) for compatibility with `tsx`/esbuild, which doesn't emit decorator metadata.
+
+    The generated `tsconfig.json` enables `experimentalDecorators` and `emitDecoratorMetadata`.
 
     ### Scripts
 
@@ -120,17 +124,17 @@ All three ORMs support:
     | `db:generate` | `typeorm migration:generate` |
 
     <Callout>
-      SQLite uses `datetime` column type instead of `timestamp` since better-sqlite3 doesn't support the timestamp type.
+      SQLite uses `datetime` instead of `timestamp` for date columns because better-sqlite3 doesn't support the timestamp type.
     </Callout>
   </TabsContent>
 </Tabs>
 
 ## DATABASE_URL
 
-When a database is selected, `DATABASE_URL` is added to `.env` and `.env.example` with a default connection string. The `src/config/env.ts` file validates that it's set and exports it as part of the typed `env` object.
+When a database is selected, `DATABASE_URL` is added to `.env` and `.env.example`. The `src/config/env.ts` file validates that it's set at startup. See [Environment Variables](/docs/features/environment-variables) for more on how env config works.
 
-| Provider | Example URL |
-|----------|-------------|
+| Provider | Example |
+|----------|---------|
 | PostgreSQL | `postgresql://user:password@localhost:5432/mydb` |
 | MySQL | `mysql://user:password@localhost:3306/mydb` |
 | SQLite | `./dev.db` or `file:./dev.db` (Prisma) |

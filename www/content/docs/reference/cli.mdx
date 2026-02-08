@@ -1,6 +1,6 @@
 ---
 title: CLI Reference
-description: All CLI options and flags.
+description: All available flags and options.
 ---
 
 ## Usage
@@ -9,38 +9,38 @@ description: All CLI options and flags.
 npx pest-js-app [options]
 ```
 
-## Options
+## Flags
 
 | Flag | Description |
 |------|-------------|
-| `--name <name>` | Project name (kebab-case) |
+| `--name <name>` | Project name in kebab-case |
 | `--database <orm>` | `prisma`, `drizzle`, `typeorm`, or `none` |
 | `--db-provider <db>` | `postgresql`, `mysql`, or `sqlite` |
-| `--docker` | Enable Docker support |
-| `--no-docker` | Disable Docker support |
+| `--docker` | Include Docker files |
+| `--no-docker` | Skip Docker files |
 | `--package-manager <pm>` | `npm`, `pnpm`, or `yarn` |
-| `-y, --yes` | Use defaults, skip prompts |
+| `-y, --yes` | Skip all prompts, use defaults |
 | `-v, --version` | Print version |
 | `-h, --help` | Print help |
 
 ## Non-interactive mode
 
-Use `--yes` to skip all prompts. Combine with other flags to customize:
+Pass `--yes` to skip prompts and use sensible defaults. You can override any default with additional flags:
 
 ```bash title="Terminal"
 npx pest-js-app --yes --name my-api
 ```
 
-Defaults when using `--yes`:
+### Defaults with `--yes`
 
 | Option | Default |
 |--------|---------|
 | name | `my-app` |
 | description | `A PEST.js application` |
-| author | from `git config user.name` |
+| author | From `git config user.name` |
 | database | `none` |
 | db-provider | `postgresql` |
-| docker | `true` if database is set, `false` otherwise |
+| docker | `true` if a database is selected |
 | package-manager | `npm` |
 | git | `true` |
 | install | `true` |
@@ -70,7 +70,7 @@ Defaults when using `--yes`:
     ```
   </Tab>
   <Tab value="TypeORM + pnpm">
-    TypeORM with MySQL and pnpm:
+    TypeORM with MySQL using pnpm:
 
     ```bash title="Terminal"
     npx pest-js-app --yes --name my-api --database typeorm --db-provider mysql --package-manager pnpm

@@ -3,25 +3,28 @@ title: Introduction
 description: What is PEST.js and why use it.
 ---
 
-PEST.js is a CLI tool that scaffolds production-ready **Express 5 + TypeScript** projects.
+PEST.js is a CLI that generates complete **Express 5 + TypeScript** backend projects. You run one command, answer a few questions, and get a working API with routing, validation, logging, testing, linting, and optionally a database and Docker.
 
-It sets up everything you need — routing, error handling, logging, validation, testing, linting, database, and Docker — so you can skip the boilerplate and start building.
+No copy-pasting boilerplate. No wiring up config files by hand. Just a clean starting point that works out of the box.
 
-## What you get
+## What's in the box
+
+Every generated project includes:
 
 - **Express 5** with native async error handling
-- **TypeScript** with strict mode
-- **Structured logging** with pino + pino-http
-- **Request validation** with zod middleware
-- **Rate limiting** with express-rate-limit (global + per-route)
-- **Custom error classes** — AppError, NotFoundError, ValidationError, UnauthorizedError
-- **CRUD example route** (`/api/examples`) wired to your chosen ORM
+- **TypeScript** in strict mode
+- **Pino** for structured JSON logging
+- **Zod** for request validation
+- **Rate limiting** (global and per-route)
 - **Jest + Supertest** for testing
-- **ESLint** flat config + **Prettier** + **Husky** pre-commit hooks
-- **Database ORM** — Prisma, Drizzle, or TypeORM
-- **Docker** with multi-stage builds and compose
+- **ESLint flat config**, **Prettier**, and **Husky** pre-commit hooks
 - **Vercel** deployment config
-- **Package manager choice** — npm, pnpm, or yarn
+
+You also choose from:
+
+- **Database ORM**: Prisma, Drizzle, or TypeORM (with PostgreSQL, MySQL, or SQLite)
+- **Docker**: multi-stage Dockerfile and docker-compose with database services
+- **Package manager**: npm, pnpm, or yarn
 
 ## Quick start
 
@@ -29,7 +32,7 @@ It sets up everything you need — routing, error handling, logging, validation,
 npx pest-js-app
 ```
 
-Follow the prompts to name your project, pick a database, choose a package manager, and select options. Or run it non-interactively:
+The CLI walks you through project setup interactively. Or skip the prompts entirely:
 
 <Tabs items={["Minimal", "With database", "With pnpm"]}>
   <Tab value="Minimal">

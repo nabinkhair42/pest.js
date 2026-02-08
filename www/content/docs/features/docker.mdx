@@ -1,13 +1,11 @@
 ---
 title: Docker
-description: Dockerfile and docker-compose generation.
+description: Multi-stage builds and docker-compose.
 ---
 
-When Docker support is enabled, PEST.js generates three files. The Dockerfile adapts to your chosen package manager.
+When you enable Docker support, PEST.js generates a `Dockerfile`, `docker-compose.yml`, and `.dockerignore`. The Dockerfile uses multi-stage builds for small production images, and the install commands match your chosen package manager.
 
 ## Dockerfile
-
-Multi-stage build for small production images. The install commands match your package manager:
 
 <Tabs defaultValue="npm">
   <TabsList>
@@ -77,12 +75,12 @@ Multi-stage build for small production images. The install commands match your p
 </Tabs>
 
 <Callout>
-  When using **Prisma**, a `prisma generate` step is added to the build stage and the generated client is copied to the production stage.
+  Prisma projects get an extra `prisma generate` step in the build stage, and the generated client is copied into the production image.
 </Callout>
 
 ## docker-compose.yml
 
-Always includes an `app` service. When a database is selected (PostgreSQL or MySQL), a `db` service is added with health checks, and the `app` service gets a `DATABASE_URL` environment override that uses `db` as the hostname instead of `localhost`.
+The compose file always includes an `app` service. When you select PostgreSQL or MySQL, a `db` service is added with health checks. The app waits for the database to be healthy before starting.
 
 <Tabs defaultValue="postgresql">
   <TabsList>
@@ -162,7 +160,7 @@ Always includes an `app` service. When a database is selected (PostgreSQL or MyS
     ```
   </TabsContent>
   <TabsContent value="sqlite">
-    No `db` service is added since SQLite is file-based. Only the `app` service is generated:
+    SQLite is file-based, so no database service is needed:
 
     ```yaml title="docker-compose.yml"
     services:
@@ -175,6 +173,8 @@ Always includes an `app` service. When a database is selected (PostgreSQL or MyS
     ```
   </TabsContent>
 </Tabs>
+
+The `DATABASE_URL` in the compose file uses `db` as the hostname instead of `localhost` because containers communicate over Docker's internal network.
 
 ## .dockerignore
 
@@ -194,4 +194,4 @@ coverage
 docker compose up --build
 ```
 
-The app will be available at `http://localhost:3000`.
+Your API will be available at `http://localhost:3000`.

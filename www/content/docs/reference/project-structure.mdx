@@ -1,0 +1,127 @@
+---
+title: Project Structure
+description: What gets generated and where everything lives.
+---
+
+## Directory layout
+
+<Files>
+  <Folder name="src" defaultOpen>
+    <Folder name="config" defaultOpen>
+      <File name="env.ts" />
+    </Folder>
+    <Folder name="lib" defaultOpen>
+      <File name="errors.ts" />
+      <File name="logger.ts" />
+    </Folder>
+    <Folder name="middleware" defaultOpen>
+      <File name="error-handler.ts" />
+      <File name="validate.ts" />
+      <File name="rate-limit.ts" />
+    </Folder>
+    <Folder name="routes" defaultOpen>
+      <File name="health.ts" />
+      <File name="example.ts" />
+    </Folder>
+    <File name="app.ts" />
+    <File name="server.ts" />
+  </Folder>
+  <Folder name="tests" defaultOpen>
+    <File name="app.test.ts" />
+    <File name="example.test.ts" />
+  </Folder>
+  <File name=".env" />
+  <File name=".env.example" />
+  <File name="package.json" />
+  <File name="tsconfig.json" />
+  <File name="eslint.config.mjs" />
+  <File name="jest.config.js" />
+  <File name=".prettierrc" />
+  <File name="vercel.json" />
+  <File name=".gitignore" />
+</Files>
+
+Database and Docker files are added based on your choices. See the [Database](/docs/features/database) and [Docker](/docs/features/docker) pages for details.
+
+## Application
+
+### `src/app.ts`
+
+The Express application. Middleware is applied in this order:
+
+1. `helmet` for security headers
+2. `cors` for cross-origin requests
+3. `express.json()` for body parsing
+4. `globalLimiter` for rate limiting (100 requests per 15 minutes)
+5. `pinoHttp` for structured request logging
+
+Routes are mounted after middleware: `/health` for the health check, `/api/examples` for the CRUD example. Unmatched routes throw a `NotFoundError`, and the error handler catches everything.
+
+The app is exported separately from the server so tests can import it without starting a listener.
+
+### `src/server.ts`
+
+Imports the app and starts listening on the configured port. Uses `logger.info()` for the startup message. For TypeORM projects, the database connection is initialized before the server starts.
+
+This is what `npm start` and `npm run dev` run.
+
+## Config and utilities
+
+### `src/config/env.ts`
+
+Loads environment variables with `dotenv` and exports a typed `env` object. Port is validated to be a number between 0 and 65535. Rate limit values are configurable. When a database is selected, `DATABASE_URL` is required. See [Environment Variables](/docs/features/environment-variables) for the full reference.
+
+### `src/lib/logger.ts`
+
+Pino logger that uses `pino-pretty` formatting in development and raw JSON in production.
+
+### `src/lib/errors.ts`
+
+Custom error classes that map to HTTP status codes:
+
+| Error class | Status code |
+|-------------|-------------|
+| `AppError` | Configurable (base class) |
+| `NotFoundError` | 404 |
+| `ValidationError` | 400 |
+| `UnauthorizedError` | 401 |
+
+## Middleware
+
+### `src/middleware/error-handler.ts`
+
+The global error handler. It checks the error type and responds accordingly: `AppError` subclasses return their own status code and message, `ZodError` returns 400 with validation details, and everything else returns 500. Error details are hidden in production. All errors are logged with Pino.
+
+### `src/middleware/validate.ts`
+
+A factory that takes a Zod schema and returns middleware. It parses `req.body`, `req.query`, and `req.params` against the schema. If validation fails, the ZodError bubbles up to the error handler.
+
+### `src/middleware/rate-limit.ts`
+
+Two exports: `globalLimiter` (applied to all routes in `app.ts`) and `createLimiter()` for per-route limits. Both are configurable through [environment variables](/docs/features/environment-variables#rate-limiting).
+
+## Routes
+
+### `src/routes/health.ts`
+
+A simple `GET /health` endpoint that returns `{ status: "ok" }`.
+
+### `src/routes/example.ts`
+
+A full CRUD route at `/api/examples` with create, list, get by ID, and delete. The implementation depends on your ORM choice: Prisma uses the Prisma client, Drizzle uses drizzle-orm queries, TypeORM uses the repository pattern, and "none" uses an in-memory array.
+
+## Tests
+
+The `tests/` directory contains Jest + Supertest tests. `app.test.ts` covers the root endpoint, health check, and 404 handling. `example.test.ts` is generated when no database is selected and tests the in-memory CRUD route. See [Testing](/docs/features/testing) for details on the config and writing your own tests.
+
+## Scripts
+
+| Script | What it does |
+|--------|-------------|
+| `dev` | Start with `tsx watch` (hot reload) |
+| `build` | Compile TypeScript with `tsc` |
+| `start` | Run compiled output (`node dist/server.js`) |
+| `test` | Run Jest tests |
+| `lint` | Run ESLint |
+
+When a database ORM is selected, additional scripts are added for migrations, schema push, and database studio. See the [Database](/docs/features/database) page for the full list.

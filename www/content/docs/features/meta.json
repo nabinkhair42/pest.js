@@ -1,4 +1,4 @@
 {
   "title": "Features",
-  "pages": ["database", "docker"]
+  "pages": ["database", "docker", "environment-variables", "testing", "deployment"]
 }

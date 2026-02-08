@@ -1,0 +1,172 @@
+---
+title: Testing
+description: Jest and Supertest setup for API testing.
+---
+
+Every generated project comes with Jest, Supertest, and a set of starter tests. The test suite runs against your Express app directly, without starting the HTTP server.
+
+## Running tests
+
+<Tabs defaultValue="npm">
+  <TabsList>
+    <TabsTrigger value="npm"><NPM className="size-4" /> npm</TabsTrigger>
+    <TabsTrigger value="pnpm"><Pnpm className="size-4" /> pnpm</TabsTrigger>
+    <TabsTrigger value="yarn"><Yarn className="size-4" /> yarn</TabsTrigger>
+  </TabsList>
+  <TabsContent value="npm">
+    ```bash title="Terminal"
+    npm test
+    ```
+  </TabsContent>
+  <TabsContent value="pnpm">
+    ```bash title="Terminal"
+    pnpm test
+    ```
+  </TabsContent>
+  <TabsContent value="yarn">
+    ```bash title="Terminal"
+    yarn test
+    ```
+  </TabsContent>
+</Tabs>
+
+## Configuration
+
+The Jest config lives at `jest.config.js` in the project root:
+
+```js title="jest.config.js"
+module.exports = {
+  preset: "ts-jest",
+  testEnvironment: "node",
+  testMatch: ["**/tests/**/*.test.ts"],
+  moduleNameMapper: {
+    "^(\\.\\.?/.*)\\.js$": "$1",
+  },
+};
+```
+
+The `moduleNameMapper` is important. TypeScript source uses `.js` extensions in imports (for ESM compatibility), but Jest needs to resolve those to the actual `.ts` files. This mapping strips the `.js` extension so `ts-jest` can find them.
+
+## Generated tests
+
+### `tests/app.test.ts`
+
+Covers the core endpoints every project has:
+
+```ts title="tests/app.test.ts"
+import request from "supertest";
+import app from "../src/app.js";
+
+describe("App", () => {
+  it("should return welcome message on GET /", async () => {
+    const res = await request(app).get("/");
+    expect(res.status).toBe(200);
+    expect(res.body).toHaveProperty("message");
+    expect(res.body).toHaveProperty("version");
+  });
+
+  it("should return health status on GET /health", async () => {
+    const res = await request(app).get("/health");
+    expect(res.status).toBe(200);
+    expect(res.body).toHaveProperty("status", "ok");
+  });
+
+  it("should return 404 for unknown routes", async () => {
+    const res = await request(app).get("/unknown-route");
+    expect(res.status).toBe(404);
+  });
+});
+```
+
+### `tests/example.test.ts`
+
+Generated when no database is selected. Tests the full CRUD lifecycle against the in-memory example route:
+
+```ts title="tests/example.test.ts"
+import request from "supertest";
+import app from "../src/app.js";
+
+describe("Example API", () => {
+  let createdId: number;
+
+  it("should create an example on POST /api/examples", async () => {
+    const res = await request(app)
+      .post("/api/examples")
+      .send({ name: "Test", description: "A test example" });
+    expect(res.status).toBe(201);
+    expect(res.body).toHaveProperty("id");
+    createdId = res.body.id;
+  });
+
+  it("should return 400 for invalid POST body", async () => {
+    const res = await request(app)
+      .post("/api/examples")
+      .send({ name: "" });
+    expect(res.status).toBe(400);
+  });
+
+  it("should delete an example on DELETE /api/examples/:id", async () => {
+    const res = await request(app).delete(`/api/examples/${createdId}`);
+    expect(res.status).toBe(204);
+  });
+});
+```
+
+When a database is selected, this file is not generated because the CRUD route depends on a live database connection.
+
+## Writing your own tests
+
+Tests go in the `tests/` directory and must match `*.test.ts`. Here's the pattern:
+
+```ts title="tests/users.test.ts"
+import request from "supertest";
+import app from "../src/app.js";
+
+describe("Users API", () => {
+  it("should list users", async () => {
+    const res = await request(app).get("/api/users");
+    expect(res.status).toBe(200);
+    expect(Array.isArray(res.body)).toBe(true);
+  });
+
+  it("should validate request body", async () => {
+    const res = await request(app)
+      .post("/api/users")
+      .send({ email: "not-an-email" });
+    expect(res.status).toBe(400);
+    expect(res.body).toHaveProperty("error");
+  });
+});
+```
+
+Key things to note:
+
+- Import `app`, not `server`. The app is the Express instance without `listen()`, so Supertest can bind to it directly.
+- Import paths use `.js` extensions (`../src/app.js`). The `moduleNameMapper` in Jest config handles resolving these to `.ts` files.
+- Rate limiting is skipped when `NODE_ENV=test`, so it won't interfere with your tests.
+
+## Testing with a database
+
+When using a database ORM, you'll need a test database. The simplest approach is a separate `.env.test` file:
+
+```bash title=".env.test"
+DATABASE_URL="postgresql://user:password@localhost:5432/mydb_test"
+NODE_ENV=test
+```
+
+Load it before running tests by updating your test script:
+
+```json title="package.json"
+{
+  "scripts": {
+    "test": "NODE_ENV=test jest"
+  }
+}
+```
+
+For SQLite, you can use an in-memory database or a separate file:
+
+```bash title=".env.test"
+DATABASE_URL="./test.db"
+NODE_ENV=test
+```

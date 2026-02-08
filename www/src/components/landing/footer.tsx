@@ -15,17 +15,13 @@ export function Footer() {
             <span className="font-semibold">PEST.js</span>
           </div>
           <p className="mt-2 text-sm text-muted-foreground">
-            Generate Express APIs
-            <br />
-            in seconds, not hours.
+            Generate Express APIs in seconds, not hours.
           </p>
         </div>
 
         {/* Product links */}
         <div className="border-t border-dashed px-6 py-10 sm:border-l sm:border-t-0">
-          <p className="text-xs font-medium uppercase tracking-widest text-muted-foreground">
-            Product
-          </p>
+          <p className="font-medium text-muted-foreground">Product</p>
           <nav className="mt-4 flex flex-col gap-3">
             <Link
               href="/docs"
@@ -44,11 +40,9 @@ export function Footer() {
 
         {/* Community links */}
         <div className="border-t border-dashed px-6 py-10 sm:border-l sm:border-t-0">
-          <p className="text-xs font-medium uppercase tracking-widest text-muted-foreground">
-            Community
-          </p>
+          <p className="font-medium text-muted-foreground">Community</p>
           <nav className="mt-4 flex flex-col gap-3">
-            <a
+            <Link
               href="https://github.com/nabinkhair42/pest.js"
               target="_blank"
               rel="noopener noreferrer"
@@ -56,8 +50,8 @@ export function Footer() {
             >
               <GitHub className="size-3.5" />
               GitHub
-            </a>
-            <a
+            </Link>
+            <Link
               href="https://www.npmjs.com/package/pest-js-app"
               target="_blank"
               rel="noopener noreferrer"
@@ -65,14 +59,14 @@ export function Footer() {
             >
               <NPM className="size-3.5" />
               npm
-            </a>
+            </Link>
           </nav>
         </div>
       </div>
 
       {/* Bottom bar */}
       <div className="flex items-center justify-between border-t border-dashed px-6 py-6">
-        <p className="text-xs text-muted-foreground">
+        <p className="text-sm text-muted-foreground">
           Built by{" "}
           <a
             href="https://nabinkhair.com.np"
@@ -83,13 +77,13 @@ export function Footer() {
             Nabin Khair
           </a>
         </p>
-        <p className="text-xs text-muted-foreground">
+        <p className="text-sm text-muted-foreground">
           Built at{" "}
           <a
             href="https://github.com/codixra"
             target="_blank"
             rel="noopener noreferrer"
-            className="text-xs text-muted-foreground transition-colors hover:text-yellow-400"
+            className="text-sm text-muted-foreground transition-colors hover:text-yellow-400"
           >
             Codixra Lab
           </a>

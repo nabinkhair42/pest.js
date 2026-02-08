@@ -1,0 +1,118 @@
+---
+title: Deployment
+description: Deploy to Vercel, Docker, or any Node.js host.
+---
+
+Every generated project includes a `vercel.json` config and can be deployed with Docker or any platform that runs Node.js.
+
+## Vercel
+
+The generated `vercel.json` is ready to go:
+
+```json title="vercel.json"
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "dist/server.js",
+      "use": "@vercel/node",
+      "config": { "maxDuration": 60, "memory": 1024 }
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "dist/server.js",
+      "methods": ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"]
+    }
+  ]
+}
+```
+
+<Steps>
+  <Step>
+    ### Build the project
+
+    ```bash title="Terminal"
+    npm run build
+    ```
+  </Step>
+  <Step>
+    ### Deploy
+
+    ```bash title="Terminal"
+    npx vercel --prod
+    ```
+  </Step>
+</Steps>
+
+Set your environment variables in the Vercel dashboard under **Settings > Environment Variables**. At minimum, set `NODE_ENV=production` and `DATABASE_URL` if you're using a database.
+
+<Callout>
+  Vercel's serverless functions are stateless. If you're using SQLite, you'll need to switch to PostgreSQL or MySQL for production since SQLite requires a persistent filesystem.
+</Callout>
+
+## Docker
+
+If you enabled Docker during scaffolding, you already have a `Dockerfile` and `docker-compose.yml`. See the [Docker](/docs/features/docker) page for the full setup.
+
+To deploy with Docker on any host:
+
+```bash title="Terminal"
+docker compose up --build -d
+```
+
+For production, make sure to:
+
+- Set `NODE_ENV=production` in your `.env`
+- Use strong passwords for your database
+- Place a reverse proxy (nginx, Caddy) in front for TLS
+
+## Railway
+
+Railway auto-detects Node.js projects. Push your code and set the environment variables in the dashboard.
+
+```bash title="Terminal"
+npm run build
+```
+
+Set the start command to `node dist/server.js` and add your environment variables (`NODE_ENV`, `PORT`, `DATABASE_URL`).
+
+Railway provides managed PostgreSQL and MySQL databases that you can connect directly via `DATABASE_URL`.
+
+## Any Node.js host
+
+The generated project compiles to plain JavaScript. Any platform that runs Node.js 18+ works:
+
+<Steps>
+  <Step>
+    ### Install and build
+
+    ```bash title="Terminal"
+    npm ci
+    npm run build
+    ```
+  </Step>
+  <Step>
+    ### Start the server
+
+    ```bash title="Terminal"
+    NODE_ENV=production node dist/server.js
+    ```
+  </Step>
+</Steps>
+
+The server listens on the port defined by `PORT` (defaults to 3000). Point your reverse proxy or load balancer at that port.
+
+## Environment variables in production
+
+At minimum, set these for any production deployment:
+
+| Variable | Value |
+|----------|-------|
+| `NODE_ENV` | `production` |
+| `PORT` | Your host's expected port |
+| `DATABASE_URL` | Your production database connection string |
+| `RATE_LIMIT_MAX` | Adjust based on expected traffic |
+
+See the [Environment Variables](/docs/features/environment-variables) page for the full list.

@@ -1,9 +1,12 @@
 {
   "root": true,
   "pages": [
+    "---Docs---",
     "index",
     "getting-started",
-    "...usage",
+    "---Reference---",
+    "...reference",
+    "---Features---",
     "...features"
   ]
 }

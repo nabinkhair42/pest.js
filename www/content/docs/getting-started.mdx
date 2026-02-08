@@ -1,6 +1,6 @@
 ---
 title: Getting Started
-description: Create your first PEST.js project.
+description: Create your first PEST.js project in under a minute.
 ---
 
 ## Prerequisites
@@ -12,28 +12,26 @@ description: Create your first PEST.js project.
 
 <Steps>
   <Step>
-    ### Scaffold
-
-    Run the CLI with npx:
+    ### Run the CLI
 
     ```bash title="Terminal"
     npx pest-js-app
     ```
 
-    You'll be prompted for:
+    You'll be asked to configure your project:
 
-    1. **Project name** — kebab-case (e.g. `my-api`)
+    1. **Project name** (kebab-case, e.g. `my-api`)
     2. **Description**
-    3. **Author** — auto-detected from git config
-    4. **Database ORM** — Prisma, Drizzle, TypeORM, or None
-    5. **Database provider** — PostgreSQL, MySQL, or SQLite (if ORM selected)
+    3. **Author** (pulled from your git config)
+    4. **Database ORM** (Prisma, Drizzle, TypeORM, or None)
+    5. **Database provider** (PostgreSQL, MySQL, or SQLite)
     6. **Docker support**
-    7. **Package manager** — npm, pnpm, or yarn
+    7. **Package manager** (npm, pnpm, or yarn)
     8. **Git init**
     9. **Install dependencies**
   </Step>
   <Step>
-    ### Start developing
+    ### Start the dev server
 
     <Tabs defaultValue="npm">
       <TabsList>
@@ -61,10 +59,10 @@ description: Create your first PEST.js project.
       </TabsContent>
     </Tabs>
 
-    The dev server starts on `http://localhost:3000` with hot reload via `tsx watch`.
+    Your API is now running at `http://localhost:3000` with hot reload via `tsx watch`.
   </Step>
   <Step>
-    ### Build and run
+    ### Build for production
 
     <Tabs defaultValue="npm">
       <TabsList>
@@ -94,69 +92,23 @@ description: Create your first PEST.js project.
   </Step>
 </Steps>
 
-## Routes
+## Default routes
 
-Your project comes with these routes out of the box:
+Every project ships with these endpoints:
 
-| Route | Description |
-|-------|-------------|
-| `GET /` | Welcome message with API version and environment |
-| `GET /health` | Health check |
-| `GET /api/examples` | List all examples (CRUD) |
-| `POST /api/examples` | Create an example (validated with zod) |
-| `GET /api/examples/:id` | Get a single example |
-| `DELETE /api/examples/:id` | Delete an example |
+| Route | Method | Description |
+|-------|--------|-------------|
+| `/` | GET | Welcome message with API version and environment |
+| `/health` | GET | Health check |
+| `/api/examples` | GET | List all examples |
+| `/api/examples` | POST | Create an example (validated with Zod) |
+| `/api/examples/:id` | GET | Get a single example |
+| `/api/examples/:id` | DELETE | Delete an example |
 
-## Run tests
+## Next steps
 
-<Tabs defaultValue="npm">
-  <TabsList>
-    <TabsTrigger value="npm"><NPM className="size-4" /> npm</TabsTrigger>
-    <TabsTrigger value="pnpm"><Pnpm className="size-4" /> pnpm</TabsTrigger>
-    <TabsTrigger value="yarn"><Yarn className="size-4" /> yarn</TabsTrigger>
-  </TabsList>
-  <TabsContent value="npm">
-    ```bash title="Terminal"
-    npm test
-    ```
-  </TabsContent>
-  <TabsContent value="pnpm">
-    ```bash title="Terminal"
-    pnpm test
-    ```
-  </TabsContent>
-  <TabsContent value="yarn">
-    ```bash title="Terminal"
-    yarn test
-    ```
-  </TabsContent>
-</Tabs>
-
-Tests use Jest with Supertest for HTTP assertions. The generated tests cover the root endpoint, health check, 404 handling, and the example CRUD route (when no database is selected).
-
-## Lint
-
-<Tabs defaultValue="npm">
-  <TabsList>
-    <TabsTrigger value="npm"><NPM className="size-4" /> npm</TabsTrigger>
-    <TabsTrigger value="pnpm"><Pnpm className="size-4" /> pnpm</TabsTrigger>
-    <TabsTrigger value="yarn"><Yarn className="size-4" /> yarn</TabsTrigger>
-  </TabsList>
-  <TabsContent value="npm">
-    ```bash title="Terminal"
-    npm run lint
-    ```
-  </TabsContent>
-  <TabsContent value="pnpm">
-    ```bash title="Terminal"
-    pnpm lint
-    ```
-  </TabsContent>
-  <TabsContent value="yarn">
-    ```bash title="Terminal"
-    yarn lint
-    ```
-  </TabsContent>
-</Tabs>
-
-Uses ESLint flat config with TypeScript support. Husky runs `lint-staged` on pre-commit.
+- [Project Structure](/docs/reference/project-structure) to understand what was generated
+- [Environment Variables](/docs/features/environment-variables) to configure your app
+- [Testing](/docs/features/testing) to run and write tests
+- [Database](/docs/features/database) if you selected an ORM
+- [Deployment](/docs/features/deployment) when you're ready to ship

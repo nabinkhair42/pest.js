@@ -1,0 +1,94 @@
+---
+title: Environment Variables
+description: Configuration through environment variables.
+---
+
+Every generated project includes a `.env` file and a `.env.example` file with the same defaults. The `src/config/env.ts` file loads and validates these at startup, so the app fails fast if something is misconfigured.
+
+## Default variables
+
+```bash title=".env"
+NODE_ENV=development
+PORT=3000
+
+# Rate limiting
+RATE_LIMIT_WINDOW_MS=900000
+RATE_LIMIT_MAX=100
+```
+
+When you select a database, `DATABASE_URL` is also added:
+
+```bash title=".env"
+# Database
+DATABASE_URL="postgresql://user:password@localhost:5432/mydb"
+```
+
+## Variable reference
+
+| Variable | Type | Default | Description |
+|----------|------|---------|-------------|
+| `NODE_ENV` | string | `development` | `development`, `production`, or `test` |
+| `PORT` | number | `3000` | Server port (0-65535) |
+| `RATE_LIMIT_WINDOW_MS` | number | `900000` | Rate limit window in milliseconds (15 min) |
+| `RATE_LIMIT_MAX` | number | `100` | Max requests per window |
+| `DATABASE_URL` | string | varies | Connection string (when a database is selected) |
+
+## Validation
+
+The `src/config/env.ts` file validates every variable at startup:
+
+- `PORT` must be a number between 0 and 65535
+- `RATE_LIMIT_WINDOW_MS` must be a positive number
+- `RATE_LIMIT_MAX` must be at least 1
+- `DATABASE_URL` is required when using PostgreSQL or MySQL (optional for SQLite, defaults to `./dev.db`)
+
+If any check fails, the process throws immediately with a descriptive error message. This prevents the server from starting with bad config.
+
+## Adding your own variables
+
+To add a new environment variable:
+
+1. Add the variable to `.env` and `.env.example`
+2. Parse and validate it in `src/config/env.ts`
+3. Add it to the exported `env` object
+
+```ts title="src/config/env.ts"
+const redisUrl = process.env.REDIS_URL;
+if (!redisUrl) {
+  throw new Error("REDIS_URL environment variable is required.");
+}
+
+export const env = {
+  // ... existing variables
+  REDIS_URL: redisUrl,
+} as const;
+```
+
+Then import from `env` anywhere in your app:
+
+```ts
+import { env } from "../config/env.js";
+
+const redis = createClient({ url: env.REDIS_URL });
+```
+
+## Rate limiting
+
+The global rate limiter reads `RATE_LIMIT_WINDOW_MS` and `RATE_LIMIT_MAX` from the environment. To tighten limits for production:
+
+```bash title=".env"
+RATE_LIMIT_WINDOW_MS=60000   # 1 minute
+RATE_LIMIT_MAX=30            # 30 requests per minute
+```
+
+Rate limiting is automatically skipped when `NODE_ENV=test` so it doesn't interfere with your test suite.
+
+For per-route limits (like login or signup), use the `createLimiter` helper:
+
+```ts title="src/routes/auth.ts"
+import { createLimiter } from "../middleware/rate-limit.js";
+
+const authLimiter = createLimiter({ windowMs: 15 * 60 * 1000, limit: 5 });
+
+router.post("/login", authLimiter, loginHandler);
+```
