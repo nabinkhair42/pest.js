@@ -3,14 +3,17 @@ import { Navbar } from "@/components/layout/navbar";
 import { Sidebar } from "@/components/layout/sidebar";
 import { MobileNavTrigger } from "@/components/layout/mobile-nav";
 import { Footer } from "@/components/landing/footer";
+import { getGitHubStars } from "@/lib/github";
 
-export default function Layout({ children }: LayoutProps<"/docs">) {
+export default async function Layout({ children }: LayoutProps<"/docs">) {
   const tree = source.getPageTree();
+  const stars = await getGitHubStars();
 
   return (
     <div className="flex min-h-screen flex-col">
       <Navbar
         sidebarTrigger={<MobileNavTrigger nodes={tree.children} />}
+        stars={stars}
       />
       <div className="page-rails flex-1">
         <div className="rail-bounded flex">

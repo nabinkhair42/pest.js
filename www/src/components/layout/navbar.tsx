@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useSearchContext } from "fumadocs-ui/contexts/search";
-import { Search } from "lucide-react";
+import { Search, Star } from "lucide-react";
 import { Pest } from "@/components/icons/pest";
 import { GitHub } from "@/components/icons/github";
 import { Button } from "../ui/button";
@@ -15,9 +15,10 @@ const navLinks = [
 
 interface NavbarProps {
   sidebarTrigger?: React.ReactNode;
+  stars?: number | null;
 }
 
-export function Navbar({ sidebarTrigger }: NavbarProps) {
+export function Navbar({ sidebarTrigger, stars }: NavbarProps) {
   const pathname = usePathname();
   const { setOpenSearch } = useSearchContext();
 
@@ -61,20 +62,25 @@ export function Navbar({ sidebarTrigger }: NavbarProps) {
           >
             <Search className="size-4" />
           </Button>
-          <Button
-            type="button"
-            variant={"ghost"}
-            className="inline-flex size-8 items-center justify-center rounded-md sm:size-9"
-            aria-label="GitHub"
+          <Link
+            href="https://github.com/nabinkhair42/pest.js"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex h-8 items-center gap-2 rounded-lg border bg-card px-3 text-sm transition-colors hover:bg-accent"
           >
-            <Link
-              href="https://github.com/nabinkhair42/pest.js"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <GitHub className="size-4" />
-            </Link>
-          </Button>
+            <GitHub className="size-3.5" />
+            {stars != null && (
+              <>
+                <span className="h-3.5 w-px bg-border" aria-hidden="true" />
+                <span className="inline-flex items-center gap-1 text-xs text-muted-foreground tabular-nums">
+                  <Star className="size-3 fill-yellow-500 text-yellow-500" />
+                  {stars >= 1000
+                    ? `${(stars / 1000).toFixed(1)}k`
+                    : stars}
+                </span>
+              </>
+            )}
+          </Link>
         </div>
       </div>
     </header>
