@@ -147,7 +147,7 @@ export function Cta() {
       <AuroraBackground />
       <div className="relative mx-auto w-full max-w-6xl lg:flex  lg:justify-between lg:items-center lg:gap-12 px-6">
         {/* Left */}
-        <div className="">
+        <div className="py-8">
           <h2 className="text-3xl font-bold tracking-tight sm:text-4xl lg:text-5xl">
             Ready to build?
           </h2>
