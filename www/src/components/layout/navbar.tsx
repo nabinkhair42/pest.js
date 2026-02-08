@@ -24,15 +24,20 @@ export function Navbar({ sidebarTrigger }: NavbarProps) {
 
   return (
     <header className="sticky top-0 z-40 h-14 border-b bg-fd-background/80 backdrop-blur">
-      <div className="mx-auto flex h-full max-w-6xl items-center px-6">
+      <div className="mx-auto flex h-full max-w-6xl items-center px-4 lg:px-0">
         {sidebarTrigger}
         <Link href="/" className="flex items-center gap-2 font-semibold">
           <Pest className="size-5" />
-          PEST.js
+          <span className="font-semibold">PEST.js</span>
         </Link>
 
-        <nav className="ml-6 hidden items-center gap-4 md:flex">
-          {navLinks.map((link) => (
+        {/* Nav links: always visible on non-docs, hidden on mobile for docs (sidebar handles it) */}
+        <nav
+          className={`ml-4 items-center gap-3 sm:ml-6 sm:gap-4 ${
+            sidebarTrigger ? "hidden md:flex" : "flex"
+          }`}
+        >
+          {navLinks.map(link => (
             <Link
               key={link.href}
               href={link.href}
@@ -47,11 +52,11 @@ export function Navbar({ sidebarTrigger }: NavbarProps) {
           ))}
         </nav>
 
-        <div className="ml-auto flex items-center gap-1">
+        <div className="ml-auto flex items-center gap-0.5 sm:gap-1">
           <button
             type="button"
             onClick={() => setOpenSearch(true)}
-            className="inline-flex size-9 items-center justify-center rounded-md text-fd-muted-foreground transition-colors hover:bg-fd-accent hover:text-fd-foreground"
+            className="inline-flex size-8 items-center justify-center rounded-md text-fd-muted-foreground transition-colors hover:bg-fd-accent hover:text-fd-foreground sm:size-9"
             aria-label="Search"
           >
             <Search className="size-4" />
@@ -61,7 +66,7 @@ export function Navbar({ sidebarTrigger }: NavbarProps) {
             onClick={() =>
               setTheme(resolvedTheme === "dark" ? "light" : "dark")
             }
-            className="inline-flex size-9 items-center justify-center rounded-md text-fd-muted-foreground transition-colors hover:bg-fd-accent hover:text-fd-foreground"
+            className="inline-flex size-8 items-center justify-center rounded-md text-fd-muted-foreground transition-colors hover:bg-fd-accent hover:text-fd-foreground sm:size-9"
             aria-label="Toggle theme"
           >
             <Sun className="size-4 rotate-0 scale-100 transition-transform dark:-rotate-90 dark:scale-0" />
@@ -71,7 +76,7 @@ export function Navbar({ sidebarTrigger }: NavbarProps) {
             href="https://github.com/nabinkhair42/pest.js"
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex size-9 items-center justify-center rounded-md text-fd-muted-foreground transition-colors hover:bg-fd-accent hover:text-fd-foreground"
+            className="hidden size-8 items-center justify-center rounded-md text-fd-muted-foreground transition-colors hover:bg-fd-accent hover:text-fd-foreground sm:inline-flex sm:size-9"
             aria-label="GitHub"
           >
             <GitHub className="size-4" />

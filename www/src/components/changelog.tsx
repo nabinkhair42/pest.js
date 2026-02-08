@@ -84,19 +84,19 @@ const Changelog1 = ({
                     alt={`${entry.version} visual`}
                     width={800}
                     height={450}
-                    className="mt-8 w-full rounded-lg border object-cover dark:hidden"
+                    className="mt-8 w-full rounded-lg dark:hidden"
                   />
                   <Image
                     src={`${entry.image}-dark.png`}
                     alt={`${entry.version} visual dark`}
                     width={800}
                     height={450}
-                    className="mt-8 hidden w-full rounded-lg border object-cover dark:block"
+                    className="mt-8 hidden w-full rounded-lg dark:block"
                   />
                 </>
               ) : null}
               {entry.button ? (
-                <Button variant="link" className="mt-4 self-end" asChild>
+                <Button variant="link" asChild>
                   <a
                     href={entry.button.url}
                     target="_blank"

@@ -1,8 +1,8 @@
-import type { PageTree } from "fumadocs-core/server";
+import type { Root } from "fumadocs-core/page-tree";
 import { SidebarTree } from "./sidebar-tree";
 
 interface SidebarProps {
-  tree: PageTree.Root;
+  tree: Root;
 }
 
 export function Sidebar({ tree }: SidebarProps) {

@@ -24,7 +24,7 @@ export function CliSection() {
         </div>
 
         {/* Right — terminal with full-height dashed divider */}
-        <div className="relative lg:border-l lg:border-dashed lg:py-24">
+        <div className="relative lg:border-l lg:border-dashed py-12 lg:py-24">
           <AuroraBackground fill />
           <div className="relative px-6 lg:pl-6">
             <TerminalDemo />

@@ -58,7 +58,7 @@ export function Footer() {
               GitHub
             </a>
             <a
-              href="https://www.npmjs.com/package/pest-js"
+              href="https://www.npmjs.com/package/pest-js-app"
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 text-sm text-fd-muted-foreground transition-colors hover:text-fd-foreground"

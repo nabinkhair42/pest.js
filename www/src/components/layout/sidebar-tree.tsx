@@ -4,9 +4,14 @@ import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ChevronRight } from "lucide-react";
-import type { PageTree } from "fumadocs-core/server";
+import type {
+  Node,
+  Item,
+  Folder,
+  Separator,
+} from "fumadocs-core/page-tree";
 
-export function SidebarTree({ nodes }: { nodes: PageTree.Node[] }) {
+export function SidebarTree({ nodes }: { nodes: Node[] }) {
   return (
     <ul className="flex flex-col gap-0.5">
       {nodes.map((node, i) => (
@@ -16,13 +21,13 @@ export function SidebarTree({ nodes }: { nodes: PageTree.Node[] }) {
   );
 }
 
-function SidebarNode({ node }: { node: PageTree.Node }) {
+function SidebarNode({ node }: { node: Node }) {
   if (node.type === "separator") return <SidebarSeparator node={node} />;
   if (node.type === "folder") return <SidebarFolder node={node} />;
   return <SidebarItem node={node} />;
 }
 
-function SidebarItem({ node }: { node: PageTree.Item }) {
+function SidebarItem({ node }: { node: Item }) {
   const pathname = usePathname();
   const active = pathname === node.url;
 
@@ -43,7 +48,7 @@ function SidebarItem({ node }: { node: PageTree.Item }) {
   );
 }
 
-function SidebarFolder({ node }: { node: PageTree.Folder }) {
+function SidebarFolder({ node }: { node: Folder }) {
   const pathname = usePathname();
   const isActive =
     node.index?.url === pathname ||
@@ -83,7 +88,7 @@ function SidebarFolder({ node }: { node: PageTree.Folder }) {
   );
 }
 
-function SidebarSeparator({ node }: { node: PageTree.Separator }) {
+function SidebarSeparator({ node }: { node: Separator }) {
   return (
     <li className="mt-4 first:mt-0">
       {node.name && (
@@ -95,7 +100,7 @@ function SidebarSeparator({ node }: { node: PageTree.Separator }) {
   );
 }
 
-function hasActiveChild(nodes: PageTree.Node[], pathname: string): boolean {
+function hasActiveChild(nodes: Node[], pathname: string): boolean {
   return nodes.some((node) => {
     if (node.type === "page") return node.url === pathname;
     if (node.type === "folder") {

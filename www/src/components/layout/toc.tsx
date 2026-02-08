@@ -1,7 +1,7 @@
 "use client";
 
 import { useActiveAnchor } from "fumadocs-core/toc";
-import type { TOCItemType } from "fumadocs-core/server";
+import type { TOCItemType } from "fumadocs-core/toc";
 
 interface TOCProps {
   items: TOCItemType[];
@@ -13,13 +13,13 @@ export function TOC({ items }: TOCProps) {
   if (items.length === 0) return null;
 
   return (
-    <aside className="sticky top-24 hidden w-56 shrink-0 xl:block">
-      <p className="mb-3 text-xs font-medium uppercase tracking-widest text-fd-muted-foreground">
-        On this page
+    <div className="sticky top-24">
+      <p className="mb-3 text-xs font-medium text-fd-muted-foreground">
+        On This Page
       </p>
       <ul className="flex flex-col text-sm">
-        {items.map((item) => {
-          const id = item.url.slice(1); // remove leading #
+        {items.map(item => {
+          const id = item.url.slice(1);
           const active = activeId === id;
 
           return (
@@ -40,6 +40,6 @@ export function TOC({ items }: TOCProps) {
           );
         })}
       </ul>
-    </aside>
+    </div>
   );
 }
