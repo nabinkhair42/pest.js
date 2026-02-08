@@ -14,7 +14,11 @@ export function CopyCommand({ command }: { command: string }) {
   }, [command]);
 
   return (
-    <Button type="button" onClick={handleCopy} variant={"ghost"}>
+    <button
+      type="button"
+      onClick={handleCopy}
+      className="p-0 py-0 flex items-center gap-2"
+    >
       <span className="text-muted-foreground">$</span>
       <span>{command}</span>
       <span className="relative flex size-4 items-center justify-center">
@@ -29,6 +33,6 @@ export function CopyCommand({ command }: { command: string }) {
           }`}
         />
       </span>
-    </Button>
+    </button>
   );
 }

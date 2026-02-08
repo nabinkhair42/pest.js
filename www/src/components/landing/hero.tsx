@@ -56,9 +56,10 @@ export function Hero() {
           </span>
         </h1>
 
-        <p className="relative text-lg text-muted-foreground">
-          Scaffold a complete Express 5 + TypeScript API with your stack.
-          Configured, tested, ready to deploy.
+        <p className="relative text-lg text-muted-foreground max-w-2xl">
+          Skip the boilerplate. Generate a production-ready Express 5 +
+          TypeScript API with Prisma, Drizzle, or TypeORM, Docker, testing, and
+          deployment config included.
         </p>
 
         <div className="relative flex items-center gap-3 mt-6">
