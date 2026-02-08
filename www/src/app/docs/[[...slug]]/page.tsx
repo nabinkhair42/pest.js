@@ -37,7 +37,7 @@ export default async function Page(props: PageProps<"/docs/[[...slug]]">) {
                 {page.data.title}
               </h1>
               {page.data.description && (
-                <p className="text-fd-muted-foreground">
+                <p className="text-muted-foreground">
                   {page.data.description}
                 </p>
               )}
@@ -54,7 +54,7 @@ export default async function Page(props: PageProps<"/docs/[[...slug]]">) {
           </div>
 
           {/* Body */}
-          <DocsBody className="px-4">
+          <DocsBody className="px-4 text-normal">
             <MDX
               components={getMDXComponents({
                 a: createRelativeLink(source, page),
@@ -67,9 +67,9 @@ export default async function Page(props: PageProps<"/docs/[[...slug]]">) {
             {neighbours.previous ? (
               <Link
                 href={neighbours.previous.url}
-                className="group flex flex-1 flex-col gap-1 rounded-md border border-dashed p-4 transition-colors hover:bg-fd-accent/50"
+                className="group flex flex-1 flex-col gap-1 rounded-md border border-dashed p-4 transition-colors hover:bg-accent/50"
               >
-                <span className="flex items-center gap-1 text-xs text-fd-muted-foreground">
+                <span className="flex items-center gap-1 text-xs text-muted-foreground">
                   <ChevronLeft className="size-3" />
                   Previous
                 </span>
@@ -83,9 +83,9 @@ export default async function Page(props: PageProps<"/docs/[[...slug]]">) {
             {neighbours.next ? (
               <Link
                 href={neighbours.next.url}
-                className="group flex flex-1 flex-col items-end gap-1 rounded-md border border-dashed p-4 transition-colors hover:bg-fd-accent/50"
+                className="group flex flex-1 flex-col items-end gap-1 rounded-md border border-dashed p-4 transition-colors hover:bg-accent/50"
               >
-                <span className="flex items-center gap-1 text-xs text-fd-muted-foreground">
+                <span className="flex items-center gap-1 text-xs text-muted-foreground">
                   Next
                   <ChevronRight className="size-3" />
                 </span>

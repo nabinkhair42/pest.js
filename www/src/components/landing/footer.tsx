@@ -14,7 +14,7 @@ export function Footer() {
             <Pest className="size-5" />
             <span className="font-semibold">PEST.js</span>
           </div>
-          <p className="mt-2 text-sm text-fd-muted-foreground">
+          <p className="mt-2 text-sm text-muted-foreground">
             Generate Express APIs
             <br />
             in seconds, not hours.
@@ -23,19 +23,19 @@ export function Footer() {
 
         {/* Product links */}
         <div className="border-t border-dashed px-6 py-10 sm:border-l sm:border-t-0">
-          <p className="text-xs font-medium uppercase tracking-widest text-fd-muted-foreground">
+          <p className="text-xs font-medium uppercase tracking-widest text-muted-foreground">
             Product
           </p>
           <nav className="mt-4 flex flex-col gap-3">
             <Link
               href="/docs"
-              className="text-sm text-fd-muted-foreground transition-colors hover:text-fd-foreground"
+              className="text-sm text-muted-foreground transition-colors hover:text-foreground"
             >
               Documentation
             </Link>
             <Link
               href="/changelog"
-              className="text-sm text-fd-muted-foreground transition-colors hover:text-fd-foreground"
+              className="text-sm text-muted-foreground transition-colors hover:text-foreground"
             >
               Changelog
             </Link>
@@ -44,7 +44,7 @@ export function Footer() {
 
         {/* Community links */}
         <div className="border-t border-dashed px-6 py-10 sm:border-l sm:border-t-0">
-          <p className="text-xs font-medium uppercase tracking-widest text-fd-muted-foreground">
+          <p className="text-xs font-medium uppercase tracking-widest text-muted-foreground">
             Community
           </p>
           <nav className="mt-4 flex flex-col gap-3">
@@ -52,7 +52,7 @@ export function Footer() {
               href="https://github.com/nabinkhair42/pest.js"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 text-sm text-fd-muted-foreground transition-colors hover:text-fd-foreground"
+              className="inline-flex items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-foreground"
             >
               <GitHub className="size-3.5" />
               GitHub
@@ -61,7 +61,7 @@ export function Footer() {
               href="https://www.npmjs.com/package/pest-js-app"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 text-sm text-fd-muted-foreground transition-colors hover:text-fd-foreground"
+              className="inline-flex items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-foreground"
             >
               <NPM className="size-3.5" />
               npm
@@ -72,10 +72,10 @@ export function Footer() {
 
       {/* Bottom bar */}
       <div className="flex items-center justify-between border-t border-dashed px-6 py-6">
-        <p className="text-xs text-fd-muted-foreground">
+        <p className="text-xs text-muted-foreground">
           Built by{" "}
           <a
-            href="https://nabinkhair.com"
+            href="https://nabinkhair.com.np"
             target="_blank"
             rel="noopener noreferrer"
             className="transition-colors hover:text-yellow-400"
@@ -83,13 +83,13 @@ export function Footer() {
             Nabin Khair
           </a>
         </p>
-        <p className="text-xs text-fd-muted-foreground">
+        <p className="text-xs text-muted-foreground">
           Built at{" "}
           <a
             href="https://github.com/codixra"
             target="_blank"
             rel="noopener noreferrer"
-            className="text-xs text-fd-muted-foreground transition-colors hover:text-yellow-400"
+            className="text-xs text-muted-foreground transition-colors hover:text-yellow-400"
           >
             Codixra Lab
           </a>

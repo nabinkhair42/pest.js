@@ -14,7 +14,7 @@ export function TOC({ items }: TOCProps) {
 
   return (
     <div className="sticky top-24">
-      <p className="mb-3 text-xs font-medium text-fd-muted-foreground">
+      <p className="mb-3 text-xs font-medium text-muted-foreground">
         On This Page
       </p>
       <ul className="flex flex-col text-sm">
@@ -30,8 +30,8 @@ export function TOC({ items }: TOCProps) {
                   item.depth > 2 ? "pl-6" : "pl-3"
                 } ${
                   active
-                    ? "border-fd-foreground font-medium text-fd-foreground"
-                    : "border-fd-border text-fd-muted-foreground hover:text-fd-foreground"
+                    ? "border-foreground font-medium text-foreground"
+                    : "border-border text-muted-foreground hover:text-foreground"
                 }`}
               >
                 {item.title}

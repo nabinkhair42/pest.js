@@ -1,42 +1,72 @@
+import { Docker } from "@/components/icons/docker";
+import { DrizzleORM } from "@/components/icons/drizzle";
+import { Expressjs } from "@/components/icons/express";
+import { Prisma } from "@/components/icons/prisma";
+import { TypeORM } from "@/components/icons/typeorm";
+import { TypeScript } from "@/components/icons/typescript";
 import { AuroraBackground } from "@/components/landing/aurora-bg";
 import { CopyCommand } from "@/components/landing/copy-command";
-import { Expressjs } from "@/components/icons/express";
-import { Badge } from "@/components/ui/badge";
+import { StackAvatars } from "@/components/landing/stack-avatars";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 
+const stackIcons = [
+  {
+    icon: <Expressjs className="size-[60%]" />,
+    label: "Express",
+    bgColor: "bg-zinc-900",
+  },
+  {
+    icon: <Prisma className="size-[60%]" />,
+    label: "Prisma",
+    bgColor: "bg-zinc-800",
+  },
+  {
+    icon: <DrizzleORM className="size-[60%]" />,
+    label: "Drizzle",
+    bgColor: "bg-zinc-800",
+  },
+  {
+    icon: <TypeORM className="size-[60%]" />,
+    label: "TypeORM",
+    bgColor: "bg-zinc-800",
+  },
+  {
+    icon: <Docker className="size-[60%]" />,
+    label: "Docker",
+    bgColor: "bg-zinc-800",
+  },
+  {
+    icon: <TypeScript className="size-[60%]" />,
+    label: "TypeScript",
+    bgColor: "bg-zinc-900",
+  },
+];
+
 export function Hero() {
   return (
-    <section className="relative flex flex-col items-center px-4 pb-24 pt-24 text-center sm:pb-32 sm:pt-36">
+    <section className="relative pb-24 pt-24 sm:pb-32 sm:pt-36">
       <AuroraBackground />
+      <div className="relative mx-auto w-full max-w-6xl px-6 flex flex-col gap-5">
+        <h1 className="relative text-4xl font-bold tracking-tighter sm:text-5xl md:text-6xl lg:text-7xl">
+          Production-grade,
+          <br />
+          <span className="flex flex-wrap gap-2 items-center">
+            Backend with <StackAvatars items={stackIcons} />
+          </span>
+        </h1>
 
-      <Link href="/changelog">
-        <Badge
-          variant="outline"
-          className="relative mb-6 cursor-pointer transition-colors hover:bg-fd-accent"
-        >
-          v3.3.2 &mdash; 80 tests passing
-        </Badge>
-      </Link>
+        <p className="relative text-lg text-muted-foreground">
+          Scaffold a complete Express 5 + TypeScript API with your stack.
+          Configured, tested, ready to deploy.
+        </p>
 
-      <h1 className="relative max-w-3xl text-5xl font-bold tracking-tighter sm:text-6xl lg:text-7xl">
-        Build <Expressjs className="inline-block size-[0.65em] align-[-0.05em]" /> Express APIs
-        <br />
-        <span className="text-fd-muted-foreground">
-          in seconds, not hours
-        </span>
-      </h1>
-
-      <p className="relative mx-auto mt-6 max-w-xl text-lg text-fd-muted-foreground">
-        Generate production-ready Express 5 + TypeScript projects with your
-        choice of database, Docker, and testing. All wired up and ready to go.
-      </p>
-
-      <div className="relative mt-10 flex flex-col items-center gap-3 sm:flex-row">
-        <Button asChild>
-          <Link href="/docs">Get Started</Link>
-        </Button>
-        <CopyCommand command="npx pest-js-app" />
+        <div className="relative flex items-center gap-3 mt-6">
+          <Button asChild>
+            <Link href="/docs">Get Started</Link>
+          </Button>
+          <CopyCommand command="npx pest-js-app" />
+        </div>
       </div>
     </section>
   );

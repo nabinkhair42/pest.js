@@ -27,13 +27,13 @@ export function TechStack() {
     <section>
       <div className="mx-auto w-full max-w-6xl px-6">
         <div className="pb-6 pt-16">
-          <p className="text-xs font-medium uppercase tracking-widest text-fd-muted-foreground">
+          <p className="text-xs font-medium uppercase tracking-widest text-muted-foreground">
             Tech Stack
           </p>
           <h2 className="mt-3 text-2xl font-bold tracking-tight sm:text-3xl">
             Built with the best tools
           </h2>
-          <p className="mt-2 max-w-lg text-fd-muted-foreground">
+          <p className="mt-2 max-w-lg text-muted-foreground">
             Every project comes preconfigured with industry-standard tooling.
           </p>
         </div>
@@ -52,10 +52,10 @@ export function TechStack() {
                 ${i >= 2 ? "max-sm:border-t max-sm:border-dashed" : ""}
               `}
             >
-              <div className="inline-flex size-12 items-center justify-center rounded-xl border bg-fd-card [&>svg]:size-6 [&>img]:size-6">
+              <div className="inline-flex size-12 items-center justify-center rounded-xl border bg-card [&>svg]:size-6 [&>img]:size-6">
                 {tech.icon}
               </div>
-              <span className="text-sm font-medium text-fd-muted-foreground">
+              <span className="text-sm font-medium text-muted-foreground">
                 {tech.name}
               </span>
             </div>

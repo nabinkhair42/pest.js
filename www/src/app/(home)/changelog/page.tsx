@@ -1,4 +1,4 @@
-import { Changelog1 } from "@/components/changelog";
+import { Changelog } from "@/components/changelog";
 import type { ChangelogEntry } from "@/components/changelog";
 
 const entries: ChangelogEntry[] = [
@@ -193,7 +193,7 @@ export const metadata = {
 
 export default function ChangelogPage() {
   return (
-    <Changelog1
+    <Changelog
       title="Changelog"
       description="Latest updates and improvements to PEST.js."
       entries={entries}

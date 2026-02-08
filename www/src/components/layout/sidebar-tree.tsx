@@ -37,8 +37,8 @@ function SidebarItem({ node }: { node: Item }) {
         href={node.url}
         className={`flex items-center gap-2 rounded-md px-3 py-1.5 text-sm transition-colors ${
           active
-            ? "bg-fd-accent font-medium text-fd-foreground"
-            : "text-fd-muted-foreground hover:bg-fd-accent/50 hover:text-fd-foreground"
+            ? "bg-accent font-medium text-foreground"
+            : "text-muted-foreground hover:bg-accent/50 hover:text-foreground"
         }`}
       >
         {node.icon}
@@ -62,8 +62,8 @@ function SidebarFolder({ node }: { node: Folder }) {
         onClick={() => setOpen(!open)}
         className={`flex w-full items-center gap-2 rounded-md px-3 py-1.5 text-sm transition-colors ${
           node.index?.url === pathname
-            ? "bg-fd-accent font-medium text-fd-foreground"
-            : "text-fd-muted-foreground hover:bg-fd-accent/50 hover:text-fd-foreground"
+            ? "bg-accent font-medium text-foreground"
+            : "text-muted-foreground hover:bg-accent/50 hover:text-foreground"
         }`}
       >
         {node.icon}
@@ -73,7 +73,7 @@ function SidebarFolder({ node }: { node: Folder }) {
         />
       </button>
       {open && (
-        <ul className="ml-3 flex flex-col gap-0.5 border-l border-fd-border pl-2 pt-0.5">
+        <ul className="ml-3 flex flex-col gap-0.5 border-l border-border pl-2 pt-0.5">
           {node.index && (
             <SidebarItem
               node={{ ...node.index, name: "Overview" }}
@@ -92,7 +92,7 @@ function SidebarSeparator({ node }: { node: Separator }) {
   return (
     <li className="mt-4 first:mt-0">
       {node.name && (
-        <p className="px-3 py-1.5 text-xs font-medium uppercase tracking-widest text-fd-muted-foreground">
+        <p className="px-3 py-1.5 text-xs font-medium uppercase tracking-widest text-muted-foreground">
           {node.name}
         </p>
       )}

@@ -15,11 +15,11 @@ export function CopyCommand({ command }: { command: string }) {
 
   return (
     <Button type="button" onClick={handleCopy} variant={"ghost"}>
-      <span className="text-fd-muted-foreground">$</span>
+      <span className="text-muted-foreground">$</span>
       <span>{command}</span>
       <span className="relative flex size-4 items-center justify-center">
         <Copy
-          className={`absolute size-3.5 text-fd-muted-foreground transition-all duration-200 ${
+          className={`absolute size-3.5 text-muted-foreground transition-all duration-200 ${
             copied ? "scale-0 opacity-0" : "scale-100 opacity-100"
           }`}
         />

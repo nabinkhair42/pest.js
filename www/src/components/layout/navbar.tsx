@@ -2,11 +2,11 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useTheme } from "next-themes";
 import { useSearchContext } from "fumadocs-ui/contexts/search";
-import { Moon, Sun, Search } from "lucide-react";
+import { Search } from "lucide-react";
 import { Pest } from "@/components/icons/pest";
 import { GitHub } from "@/components/icons/github";
+import { Button } from "../ui/button";
 
 const navLinks = [
   { href: "/docs", label: "Docs" },
@@ -20,10 +20,9 @@ interface NavbarProps {
 export function Navbar({ sidebarTrigger }: NavbarProps) {
   const pathname = usePathname();
   const { setOpenSearch } = useSearchContext();
-  const { resolvedTheme, setTheme } = useTheme();
 
   return (
-    <header className="sticky top-0 z-40 h-14 border-b bg-fd-background/80 backdrop-blur">
+    <header className="sticky top-0 z-40 h-14 border-b bg-background">
       <div className="mx-auto flex h-full max-w-6xl items-center px-4 lg:px-0">
         {sidebarTrigger}
         <Link href="/" className="flex items-center gap-2 font-semibold">
@@ -43,8 +42,8 @@ export function Navbar({ sidebarTrigger }: NavbarProps) {
               href={link.href}
               className={`text-sm transition-colors ${
                 pathname.startsWith(link.href)
-                  ? "text-fd-foreground"
-                  : "text-fd-muted-foreground hover:text-fd-foreground"
+                  ? "text-foreground"
+                  : "text-muted-foreground hover:text-foreground"
               }`}
             >
               {link.label}
@@ -53,34 +52,29 @@ export function Navbar({ sidebarTrigger }: NavbarProps) {
         </nav>
 
         <div className="ml-auto flex items-center gap-0.5 sm:gap-1">
-          <button
+          <Button
             type="button"
+            variant={"ghost"}
             onClick={() => setOpenSearch(true)}
-            className="inline-flex size-8 items-center justify-center rounded-md text-fd-muted-foreground transition-colors hover:bg-fd-accent hover:text-fd-foreground sm:size-9"
+            className="inline-flex size-8 items-center justify-center rounded-md sm:size-9"
             aria-label="Search"
           >
             <Search className="size-4" />
-          </button>
-          <button
+          </Button>
+          <Button
             type="button"
-            onClick={() =>
-              setTheme(resolvedTheme === "dark" ? "light" : "dark")
-            }
-            className="inline-flex size-8 items-center justify-center rounded-md text-fd-muted-foreground transition-colors hover:bg-fd-accent hover:text-fd-foreground sm:size-9"
-            aria-label="Toggle theme"
-          >
-            <Sun className="size-4 rotate-0 scale-100 transition-transform dark:-rotate-90 dark:scale-0" />
-            <Moon className="absolute size-4 rotate-90 scale-0 transition-transform dark:rotate-0 dark:scale-100" />
-          </button>
-          <a
-            href="https://github.com/nabinkhair42/pest.js"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="hidden size-8 items-center justify-center rounded-md text-fd-muted-foreground transition-colors hover:bg-fd-accent hover:text-fd-foreground sm:inline-flex sm:size-9"
+            variant={"ghost"}
+            className="inline-flex size-8 items-center justify-center rounded-md sm:size-9"
             aria-label="GitHub"
           >
-            <GitHub className="size-4" />
-          </a>
+            <Link
+              href="https://github.com/nabinkhair42/pest.js"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <GitHub className="size-4" />
+            </Link>
+          </Button>
         </div>
       </div>
     </header>

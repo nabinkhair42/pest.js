@@ -50,13 +50,13 @@ export function Features() {
     <section>
       <div className="mx-auto w-full max-w-6xl px-6">
         <div className="pb-6 pt-16">
-          <p className="text-xs font-medium uppercase tracking-widest text-fd-muted-foreground">
+          <p className="text-xs font-medium uppercase tracking-widest text-muted-foreground">
             Features
           </p>
           <h2 className="mt-3 text-2xl font-bold tracking-tight sm:text-3xl">
             Everything you need
           </h2>
-          <p className="mt-2 max-w-lg text-fd-muted-foreground">
+          <p className="mt-2 max-w-lg text-muted-foreground">
             A complete project setup so you can focus on building your API.
           </p>
         </div>
@@ -76,11 +76,11 @@ export function Features() {
                 i >= 1 ? "max-sm:border-t max-sm:border-dashed" : ""
               }`}
             >
-              <div className="mb-3 inline-flex size-10 items-center justify-center rounded-xl border bg-fd-card text-fd-foreground [&>img]:size-5 [&>svg]:size-5">
+              <div className="mb-3 inline-flex size-10 items-center justify-center rounded-xl border bg-card [&>img]:size-5 [&>svg]:size-5">
                 {feature.icon}
               </div>
               <h3 className="font-semibold tracking-tight">{feature.title}</h3>
-              <p className="mt-1.5 text-sm leading-relaxed text-fd-muted-foreground">
+              <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">
                 {feature.description}
               </p>
             </div>

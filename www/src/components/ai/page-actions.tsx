@@ -10,6 +10,7 @@ import { Scira } from '@/components/icons/scira';
 import { OpenAI } from '@/components/icons/openai';
 import { Anthropic } from '@/components/icons/anthropic';
 import { T3Stack } from '@/components/icons/t3-chat';
+import Link from 'next/link';
 
 const cache = new Map<string, string>();
 
@@ -51,7 +52,7 @@ export function LLMCopyButton({
         buttonVariants({
           color: 'secondary',
           size: 'sm',
-          className: 'gap-2 [&_svg]:size-3.5 [&_svg]:text-fd-muted-foreground',
+          className: 'gap-2 [&_svg]:size-3.5 [&_svg]:text-muted-foreground',
         }),
       )}
       onClick={onClick}
@@ -122,21 +123,21 @@ export function ViewOptions({
         )}
       >
         Open
-        <ChevronDown className="size-3.5 text-fd-muted-foreground" />
+        <ChevronDown className="size-3.5 text-muted-foreground" />
       </PopoverTrigger>
       <PopoverContent className="flex flex-col">
         {items.map((item) => (
-          <a
+          <Link
             key={item.href}
             href={item.href}
             rel="noreferrer noopener"
             target="_blank"
-            className="text-sm p-2 rounded-lg inline-flex items-center gap-2 hover:text-fd-accent-foreground hover:bg-fd-accent [&_svg]:size-4"
+            className="text-sm p-2 rounded-lg inline-flex items-center gap-2 hover:text-accent-foreground hover:bg-accent [&_svg]:size-4"
           >
             {item.icon}
             {item.title}
-            <ExternalLinkIcon className="text-fd-muted-foreground size-3.5 ms-auto" />
-          </a>
+            <ExternalLinkIcon className="text-muted-foreground size-3.5 ms-auto" />
+          </Link>
         ))}
       </PopoverContent>
     </Popover>
