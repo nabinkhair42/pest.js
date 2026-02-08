@@ -26,7 +26,7 @@ export function StackAvatars({ items }: StackAvatarsProps) {
           <Tooltip key={item.label}>
             <TooltipTrigger asChild>
               <span
-                className={`inline-flex size-[0.75em] cursor-default items-center justify-center rounded-full border-1 lg:border-2 border-foreground transition-transform hover:scale-110 ${item.bgColor}`}
+                className={`inline-flex size-[0.75em] cursor-default items-center justify-center rounded-full border lg:border-2 border-foreground transition-transform hover:scale-110 ${item.bgColor}`}
                 style={{
                   marginLeft: i > 0 ? "-0.15em" : 0,
                   zIndex: items.length - i,
