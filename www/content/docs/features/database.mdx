@@ -36,9 +36,12 @@ All three ORMs work with:
           <File name="example.ts" />
         </Folder>
       </Folder>
+      <File name="prisma.config.ts" />
     </Files>
 
     `prisma.ts` exports a singleton PrismaClient instance. The example route uses it directly for queries.
+
+    `prisma.config.ts` is the Prisma configuration file where the database URL is set via `env("DATABASE_URL")`. The `schema.prisma` file does not contain the URL directly — this is the modern Prisma pattern.
 
     ### Scripts
 

@@ -30,18 +30,22 @@ description: What gets generated and where everything lives.
     <File name="app.test.ts" />
     <File name="example.test.ts" />
   </Folder>
+  <Folder name=".husky" defaultOpen>
+    <File name="pre-commit" />
+  </Folder>
   <File name=".env" />
   <File name=".env.example" />
-  <File name="package.json" />
-  <File name="tsconfig.json" />
+  <File name=".gitignore" />
+  <File name=".prettierrc" />
+  <File name=".prettierignore" />
   <File name="eslint.config.mjs" />
   <File name="jest.config.js" />
-  <File name=".prettierrc" />
+  <File name="package.json" />
+  <File name="tsconfig.json" />
   <File name="vercel.json" />
-  <File name=".gitignore" />
 </Files>
 
-Database and Docker files are added based on your choices. See the [Database](/docs/features/database) and [Docker](/docs/features/docker) pages for details.
+When you select a database, additional files are generated (e.g. `prisma/schema.prisma` + `prisma.config.ts` for Prisma, or `src/db/` for Drizzle/TypeORM). When Docker is enabled, you get a `Dockerfile`, `.dockerignore`, and `docker-compose.yml`. See the [Database](/docs/features/database) and [Docker](/docs/features/docker) pages for details.
 
 ## Application
 
@@ -62,6 +66,8 @@ The app is exported separately from the server so tests can import it without st
 ### `src/server.ts`
 
 Imports the app and starts listening on the configured port. Uses `logger.info()` for the startup message. For TypeORM projects, the database connection is initialized before the server starts.
+
+Includes graceful shutdown handlers for `SIGTERM` and `SIGINT`. When the process receives a shutdown signal (e.g. from Docker, Kubernetes, or Ctrl+C), it stops accepting new connections, finishes in-flight requests, closes the database connection (if applicable), and exits cleanly.
 
 This is what `npm start` and `npm run dev` run.
 

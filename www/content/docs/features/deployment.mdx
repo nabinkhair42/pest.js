@@ -68,6 +68,8 @@ For production, make sure to:
 - Use strong passwords for your database
 - Place a reverse proxy (nginx, Caddy) in front for TLS
 
+The generated server handles `SIGTERM` gracefully, so Docker and Kubernetes can shut down containers without dropping in-flight requests.
+
 ## Railway
 
 Railway auto-detects Node.js projects. Push your code and set the environment variables in the dashboard.

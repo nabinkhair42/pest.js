@@ -27,11 +27,3 @@ export function isPackageManagerInstalled(pm: "npm" | "pnpm" | "yarn"): boolean 
   }
 }
 
-export function hasNode(): boolean {
-  try {
-    execSync("node --version", { stdio: "ignore" });
-    return true;
-  } catch {
-    return false;
-  }
-}

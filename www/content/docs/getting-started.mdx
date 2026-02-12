@@ -99,10 +99,10 @@ Every project ships with these endpoints:
 | Route | Method | Description |
 |-------|--------|-------------|
 | `/` | GET | Welcome message with API version and environment |
-| `/health` | GET | Health check |
+| `/health` | GET | Health check (status, timestamp, uptime) |
 | `/api/examples` | GET | List all examples |
 | `/api/examples` | POST | Create an example (validated with Zod) |
-| `/api/examples/:id` | GET | Get a single example |
+| `/api/examples/:id` | PUT | Update an example |
 | `/api/examples/:id` | DELETE | Delete an example |
 
 ## Next steps

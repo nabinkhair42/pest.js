@@ -75,7 +75,7 @@ When you enable Docker support, PEST.js generates a `Dockerfile`, `docker-compos
 </Tabs>
 
 <Callout>
-  Prisma projects get an extra `prisma generate` step in the build stage, and the generated client is copied into the production image.
+  Prisma projects get an extra `prisma generate` step in the build stage. The generated client, the `prisma/` directory, and `prisma.config.ts` are all copied into the production image.
 </Callout>
 
 ## docker-compose.yml
@@ -160,7 +160,7 @@ The compose file always includes an `app` service. When you select PostgreSQL or
     ```
   </TabsContent>
   <TabsContent value="sqlite">
-    SQLite is file-based, so no database service is needed:
+    SQLite is file-based, so no database service is needed. A volume mount persists the database file across container restarts:
 
     ```yaml title="docker-compose.yml"
     services:
@@ -170,6 +170,10 @@ The compose file always includes an `app` service. When you select PostgreSQL or
           - "3000:3000"
         env_file:
           - .env
+        environment:
+          DATABASE_URL: "/app/data/dev.db"
+        volumes:
+          - ./data:/app/data
     ```
   </TabsContent>
 </Tabs>

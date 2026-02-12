@@ -21,6 +21,8 @@ export function dockerComposeTemplate(config: ProjectConfig): string {
 
   const needsDb =
     config.database !== "none" && config.dbProvider !== "sqlite";
+  const isSqlite =
+    config.database !== "none" && config.dbProvider === "sqlite";
 
   if (needsDb) {
     const dbUrl = getDockerDatabaseUrl(config);
@@ -29,6 +31,13 @@ export function dockerComposeTemplate(config: ProjectConfig): string {
     lines.push(`    depends_on:`);
     lines.push(`      db:`);
     lines.push(`        condition: service_healthy`);
+  }
+
+  if (isSqlite) {
+    lines.push(`    environment:`);
+    lines.push(`      DATABASE_URL: "/app/data/dev.db"`);
+    lines.push(`    volumes:`);
+    lines.push(`      - ./data:/app/data`);
   }
 
   lines.push(``);

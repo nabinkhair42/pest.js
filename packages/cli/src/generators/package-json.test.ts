@@ -100,23 +100,19 @@ describe("generatePackageJson", () => {
 });
 
 describe("getDependencies", () => {
-  it("should return base deps for no database", () => {
+  it("should return all base deps for no database", () => {
     const { deps, devDeps } = getDependencies(makeConfig());
     expect(deps).toContain("express");
     expect(deps).toContain("cors");
     expect(deps).toContain("helmet");
     expect(deps).toContain("dotenv");
-    expect(devDeps).toContain("typescript");
-    expect(devDeps).toContain("tsx");
-    expect(devDeps).toContain("jest");
-  });
-
-  it("should include pino, zod, and express-rate-limit in base deps", () => {
-    const { deps, devDeps } = getDependencies(makeConfig());
     expect(deps).toContain("pino");
     expect(deps).toContain("pino-http");
     expect(deps).toContain("zod");
     expect(deps).toContain("express-rate-limit");
+    expect(devDeps).toContain("typescript");
+    expect(devDeps).toContain("tsx");
+    expect(devDeps).toContain("jest");
     expect(devDeps).toContain("pino-pretty");
   });
 

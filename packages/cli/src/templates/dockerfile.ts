@@ -8,7 +8,7 @@ export function dockerfileTemplate(config: ProjectConfig): string {
     config.database === "prisma" ? `\nRUN ${prismaExec} prisma generate` : "";
   const prismaCopy =
     config.database === "prisma"
-      ? "\nCOPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma"
+      ? "\nCOPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma\nCOPY --from=builder /app/prisma ./prisma\nCOPY --from=builder /app/prisma.config.ts ./"
       : "";
 
   if (pm === "pnpm") {
