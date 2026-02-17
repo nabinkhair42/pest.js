@@ -229,7 +229,7 @@ async function collectInteractiveConfig(args: CliArgs): Promise<ProjectConfig> {
     message: "Project name",
     placeholder: "my-app",
     defaultValue: args.name || "my-app",
-    validate: (value) => validateProjectName(value),
+    validate: (value) => validateProjectName(value ?? ""),
   });
 
   if (p.isCancel(name)) {

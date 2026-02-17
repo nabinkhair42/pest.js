@@ -19,15 +19,15 @@
     "clean": "rm -rf dist"
   },
   "dependencies": {
-    "@clack/prompts": "^0.10.0"
+    "@clack/prompts": "^1.0.1"
   },
   "devDependencies": {
-    "@types/node": "^20.11.5",
-    "eslint": "^9.35.0",
-    "tsup": "^8.4.0",
-    "typescript": "^5.7.0",
-    "typescript-eslint": "^8.33.0",
-    "vitest": "^3.1.0"
+    "@types/node": "^25.2.3",
+    "eslint": "^10.0.0",
+    "tsup": "^8.5.1",
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.56.0",
+    "vitest": "^4.0.18"
   },
   "engines": {
     "node": ">=18.0.0"
